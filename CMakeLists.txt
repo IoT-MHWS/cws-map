@@ -17,6 +17,10 @@ else()
 endif()
 
 
+if (APP)
+  add_subdirectory(app)
+endif (APP)
+
 add_subdirectory(cws-map)
 
 if (GRPC_SERVER)
