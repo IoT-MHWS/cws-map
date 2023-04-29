@@ -1,0 +1,38 @@
+set(PROJECT_NAME grpc-server)
+
+project(${PROJECT_NAME} LANGUAGES C CXX)
+
+
+if (NOT DEFINED PROTO_LOC)
+  message(FATAL_ERROR "PROTO_LOC is not defined")
+endif (NOT DEFINED PROTO_LOC)
+
+
+if (FETCH)
+  set(FETCHCONTENT_QUIET OFF)
+  include(FetchContent)
+
+  FetchContent_Declare(
+    gRPC
+    GIT_REPOSITORY https://github.com/grpc/grpc
+    GIT_TAG v1.54.0
+  )
+
+  FetchContent_MakeAvailable(gRPC)
+endif (FETCH)
+
+
+include(cmake/proto.cmake)
+
+
+add_executable(${PROJECT_NAME}
+  ./src/main.cpp
+)
+
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+  cws-proto
+  protobuf
+  grpc
+  grpc++
+)

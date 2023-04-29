@@ -1,13 +1,19 @@
 cmake_minimum_required(VERSION 3.25)
 
-set(PROJECT_NAME cws-map)
 
-project(${PROJECT_NAME} LANGUAGES C CXX)
+project(cws)
+
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_FLAGS "-std=c++2b ${CMAKE_CXX_FLAGS}")
-set(CMAKE_C_FLAGS "-std=c2x ${CMAKE_C_FLAGS}")
+
+if (NOT DEFINED PROTO_LOC)
+  set(PROTO_LOC ${CMAKE_CURRENT_SOURCE_DIR}/proto)
+endif (NOT DEFINED PROTO_LOC)
+
 
 add_subdirectory(cws)
-add_subdirectory(grpc-server)
+
+if (GRPC)
+  add_subdirectory(grpc-server)
+endif (GRPC)
