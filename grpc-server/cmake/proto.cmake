@@ -2,7 +2,7 @@ find_package(Protobuf REQUIRED)
 find_program(_GRPC_CPP_PLUGIN_LOCATION grpc_cpp_plugin)
 
 
-set(PROTOC_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/cws_proto)
+set(PROTOC_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/cws-proto)
 file(MAKE_DIRECTORY ${PROTOC_OUT_DIR})
 
 
