@@ -8,18 +8,14 @@ if (NOT DEFINED PROTO_LOC)
 endif (NOT DEFINED PROTO_LOC)
 
 
-if (FETCH)
-  set(FETCHCONTENT_QUIET OFF)
-  include(FetchContent)
-
+if (FETCH_GRPC)
   FetchContent_Declare(
     gRPC
     GIT_REPOSITORY https://github.com/grpc/grpc
     GIT_TAG v1.54.0
   )
-
   FetchContent_MakeAvailable(gRPC)
-endif (FETCH)
+endif (FETCH_GRPC)
 
 
 include(cmake/proto.cmake)

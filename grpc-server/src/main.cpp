@@ -3,5 +3,7 @@
 #include <hello.pb.h>
 
 int main() {
-  std::cout << "Server" << std::endl;
+  cws::Hello hello;
+  hello.set_content("hello");
+  std::cout << hello.content() << std::endl;
 }
