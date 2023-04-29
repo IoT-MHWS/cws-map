@@ -17,7 +17,7 @@ else()
 endif()
 
 
-add_subdirectory(cws)
+add_subdirectory(cws-map)
 
 if (GRPC_SERVER)
   add_subdirectory(grpc-server)

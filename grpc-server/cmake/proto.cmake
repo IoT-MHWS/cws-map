@@ -7,7 +7,7 @@ file(MAKE_DIRECTORY ${PROTOC_OUT_DIR})
 
 
 set(PROTO_FILES
-  ${PROTO_LOC}/cws/hello.proto
+  ${PROTO_LOC}/cws-map/hello.proto
 )
 
 
