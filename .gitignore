@@ -34,3 +34,4 @@
 # Generated
 build/
 .cache/
+compile_commands.json
