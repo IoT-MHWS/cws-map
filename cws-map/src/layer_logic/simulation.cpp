@@ -18,8 +18,7 @@ void Simulation::run() {
     auto waitTime = std::max(taskMaxDuration - leadTime, std::chrono::nanoseconds(0));
 
     #ifndef NDEBUG
-    std::cout << "NEXT:(" << repetitions << ")" <<  std::endl;
-    std::cout << "wait time: " << waitTime << std::endl;
+    std::cout << "NEXT:(" << repetitions << "), wait time: " << waitTime << std::endl;
     #endif
 
     std::this_thread::sleep_for(waitTime);
