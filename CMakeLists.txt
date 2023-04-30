@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.25)
 project(cws)
 
 
+set(CMAKE_CXX_FLAGS "-std=c++2b ${CMAKE_CXX_FLAGS}")
+set(CMAKE_C_FLAGS "-std=c2x ${CMAKE_C_FLAGS}")
+
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(FETCHCONTENT_QUIET OFF)

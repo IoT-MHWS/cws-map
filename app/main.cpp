@@ -1,8 +1,6 @@
-#include <iostream>
-
-#include <cws/main.hpp>
+#include "cws/general.hpp"
+#include <cws/map.hpp>
 
 int main() {
-  std::cout << "HELLO" << std::endl;
-  hello();
+  Map map(Dimension{.width = 5, .height = 10});
 }

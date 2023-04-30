@@ -27,3 +27,8 @@ Others:
 ```
 cmake --build build
 ```
+
+## TODO
+
+* [x] Remember how to write in c++
+* [ ] Learn c++20 and multithreading (long journey)
