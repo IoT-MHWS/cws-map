@@ -8,8 +8,8 @@
 #include <vector>
 
 #include "cws/general.hpp"
-#include "layers/base.hpp"
-#include "util.hpp"
+#include "cws/layer/base.hpp"
+#include "cws/util.hpp"
 
 /*
  * Just a normal cell that contains element in it

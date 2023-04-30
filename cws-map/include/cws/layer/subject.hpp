@@ -1,6 +1,7 @@
 #pragma once
 
-#include "cws/layers/base.hpp"
+#include "cws/layer/base.hpp"
+
 #include <list>
 
 class Subject {

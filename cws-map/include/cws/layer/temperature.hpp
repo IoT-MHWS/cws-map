@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base.hpp"
+#include "cws/layer/base.hpp"
 
 struct Temperature {
   double temp;

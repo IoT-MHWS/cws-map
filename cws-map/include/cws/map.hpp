@@ -2,33 +2,31 @@
 
 #include <memory>
 
-#include "cws/layers/subjects.hpp"
-#include "cws/layers/temperature.hpp"
-#include "general.hpp"
-#include "map_layer.hpp"
+#include "cws/layer_state/temperature.hpp"
+#include "cws/layer_structure/subject.hpp"
 
 /*
  * Stays same while state changes
  */
 class Structures {
-  MapLayer<LayerSubject> subjects;
+  MapLayerSubject subjects;
 
 public:
   Structures(Dimension dimension) : subjects(dimension) {}
 
-  const MapLayer<LayerSubject> & getSubjectLayer() const { return subjects; }
+  const MapLayerSubject & getSubjectLayer() const { return subjects; }
 };
 
 /*
  * Changes every call for the next state
  */
 class LayersState {
-  MapLayer<LayerTemperature> tempLayer;
+  MapLayerTemperature tempLayer;
 
 public:
   LayersState(Dimension dimension) : tempLayer(dimension){};
 
-  const MapLayer<LayerTemperature> & getTemperatureLayer() const { return tempLayer; }
+  const MapLayerTemperature & getTemperatureLayer() const { return tempLayer; }
 
   void buildNextState(const LayersState & state, const Structures & structures);
 };
@@ -38,14 +36,14 @@ public:
  * NOTE: may be will have to use shared_pointers for multithreading
  */
 class States {
-  LayersState currentState;
+  LayersState stateCurrent;
 
 public:
-  States(Dimension dimension) : currentState(dimension) {}
+  States(Dimension dimension) : stateCurrent(dimension) {}
 
-  const LayersState & getCurrentState() const { return currentState; }
+  const LayersState & getCurrentState() const { return stateCurrent; }
 
-  void buildNextState(const Structures & structures, const Dimension & dimension);
+  void nextState(const Structures & structures, const Dimension & dimension);
 };
 
 /*
@@ -66,5 +64,5 @@ public:
 
   Dimension getDimension() const { return dimension; }
 
-  void buildNextState();
+  void nextState();
 };

@@ -5,10 +5,10 @@ void LayersState::buildNextState(const LayersState & state,
 
 }
 
-void States::buildNextState(const Structures & structures,
+void States::nextState(const Structures & structures,
                             const Dimension & dimension) {
-  LayersState nextState(dimension);
-  nextState.buildNextState(currentState, structures);
+  LayersState stateNext(dimension);
+  stateNext.buildNextState(stateCurrent, structures);
 }
 
-void Map::buildNextState() { states.buildNextState(structures, dimension); }
+void Map::nextState() { states.nextState(structures, dimension); }
