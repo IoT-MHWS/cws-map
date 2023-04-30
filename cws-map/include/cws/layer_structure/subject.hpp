@@ -5,7 +5,7 @@
 #include "cws/map_layer.hpp"
 
 /*
- * Logic only for temperature layer
+ * Extended logic for subject layer
  */
 class MapLayerSubject : public MapLayer<LayerSubject> {
 public:

@@ -6,7 +6,7 @@
 #include "cws/map_layer.hpp"
 
 /*
- * Logic only for temperature layer
+ * Extended logic for temperature layer
  */
 class MapLayerTemperature : public MapLayerState<LayerTemperature> {
 public:
