@@ -32,3 +32,7 @@ cmake --build build
 
 * [x] Refresh how to write in c++
 * [ ] Learn c++20 and multithreading (long journey)
+
+### Might
+
+* [ ] Add spdlog for the project

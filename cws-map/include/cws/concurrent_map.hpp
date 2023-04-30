@@ -8,4 +8,6 @@ public:
   ConcurrentMap(Dimension dimension) : Map(dimension) {}
   
   Dimension getDimension() const { return Map::getDimension(); }
+
+  void nextState() { return Map::nextState(); }
 };

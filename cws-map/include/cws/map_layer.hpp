@@ -22,7 +22,9 @@ public:
   CellLayer(){};
 
   CellLayer(T && element) {
+    #ifndef NDEBUG
     std::cout << __PRETTY_FUNCTION__ << std::endl;
+    #endif
     this->element = std::move(element);
   }
 

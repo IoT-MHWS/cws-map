@@ -12,3 +12,17 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PRIVATE
   cws-map
 )
+
+target_compile_options(${PROJECT_NAME} PUBLIC
+  -Wall
+  $<$<CONFIG:DEBUG>:-g -O0>
+  $<$<CONFIG:RELEASE>: -O3>
+  $<$<CONFIG:SANITIZED>:-fsanitize=address,undefined,leak -g>
+)
+
+target_link_options(${PROJECT_NAME} PUBLIC
+  -Wall
+  $<$<CONFIG:DEBUG>:-g -O0 -DNDEBUG>
+  $<$<CONFIG:RELEASE>: -O3>
+  $<$<CONFIG:SANITIZED>:-fsanitize=address,undefined,leak -g>
+)
