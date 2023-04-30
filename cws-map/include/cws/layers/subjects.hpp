@@ -7,7 +7,7 @@ class Subject {
   int id;
 };
 
-class LayerSubject : public Layer {
+class LayerSubject : public BaseLayer {
   std::list<Subject> subject_list;
 
 public:

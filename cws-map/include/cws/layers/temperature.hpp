@@ -6,14 +6,13 @@ struct Temperature {
   double temp;
 };
 
-class LayerTemperature : public Layer {
+class LayerTemperature : public BaseLayer {
   Temperature temperature;
 
 public:
-  LayerTemperature(){};
+  LayerTemperature() {}
 
-  explicit LayerTemperature(Temperature t)
-      : Layer(LayerType::TEMPARATURE), temperature(t){};
+  explicit LayerTemperature(Temperature t) : temperature(t) {}
 
   Temperature getTemperature() { return temperature; }
 };
