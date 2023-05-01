@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "layer_logic/subject.hpp"
-#include "layer_logic/temperature.hpp"
+#include "map_layer/subject.hpp"
+#include "map_layer/temperature.hpp"
 
 /*
  * Changes every call for the next state

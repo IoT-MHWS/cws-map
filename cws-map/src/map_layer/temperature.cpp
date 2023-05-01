@@ -1,3 +1,3 @@
-#include <cws/layer_logic/temperature.hpp>
+#include <cws/map_layer/temperature.hpp>
 
 void MapLayerTemperature::nextState(const Layers & state) {}

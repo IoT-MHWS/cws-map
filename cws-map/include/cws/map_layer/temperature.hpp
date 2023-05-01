@@ -1,7 +1,7 @@
 #pragma once
 
 #include "cws/layer/temperature.hpp"
-#include "cws/layer_logic/base.hpp"
+#include "cws/map_layer/base.hpp"
 
 /*
  * Extended logic for temperature layer
