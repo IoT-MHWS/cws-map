@@ -19,7 +19,7 @@ include(FetchContent)
 if (NOT DEFINED PROTO_LOC)
   set(PROTO_LOC ${CMAKE_CURRENT_SOURCE_DIR}/proto)
 else()
-  get_filename_component(PROTO_LOC "${CMAKE_CURRENT_SOURCE_DIR}/${PROTO_LOC}" ABSOLUTE)
+  get_filename_component(PROTO_LOC "${PROTO_LOC}" ABSOLUTE)
 endif()
 
 

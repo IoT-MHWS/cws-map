@@ -18,6 +18,7 @@ if (FETCH_GRPC)
 endif (FETCH_GRPC)
 
 
+include(cmake/custom-protobuf-generate.cmake)
 include(cmake/proto.cmake)
 
 
