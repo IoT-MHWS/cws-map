@@ -12,3 +12,11 @@ struct Dimension {
   int width;
   int height;
 };
+
+struct Percentage {
+  double value;
+};
+
+struct Temperature {
+  double temp;
+};

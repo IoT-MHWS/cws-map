@@ -1,10 +1,7 @@
 #pragma once
 
+#include "cws/general.hpp"
 #include "cws/layer/base.hpp"
-
-struct Temperature {
-  double temp;
-};
 
 class LayerTemperature : public BaseLayer {
   Temperature temperature;
