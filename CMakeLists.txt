@@ -4,7 +4,9 @@ cmake_minimum_required(VERSION 3.25)
 project(cws)
 
 
-set(CMAKE_CXX_STANDARD 23)
+# set(CMAKE_CXX_STANDARD 23) NOTE: not supported by lsp
+set(CMAKE_CXX_FLAGS "-std=c++2b ${CMAKE_CXX_FLAGS}")
+
 set(CMAKE_C_STANDARD 17)
 
 
