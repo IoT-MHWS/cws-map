@@ -18,18 +18,17 @@ function(custom_protobuf_generate)
   # plugin
   set(_plugin --plugin=${protobuf_generate_PLUGIN})
 
-  # generate protobufs
-  set(_generated_srcs_all)
-
   get_target_property(_source_list ${protobuf_generate_TARGET} SOURCES)
 
-  # don't include proto files
+  # don't include non-proto files
   set(_proto_list)
   foreach(_file ${_source_list})
     if(_file MATCHES "proto$")
       list(APPEND _proto_list ${_file})
     endif()
   endforeach()
+
+  set(_generated_srcs_all)
 
   foreach(_source ${_proto_list})
     file(RELATIVE_PATH _source_rel ${protobuf_generate_PROTO_ROOT} ${_source})
@@ -56,6 +55,7 @@ function(custom_protobuf_generate)
     list(APPEND _generated_srcs_all ${_generated_srcs})
   endforeach()
 
+  # set target sources
   set_source_files_properties(${_generated_srcs_all} PROPERTIES GENERATED TRUE)
 
   target_sources(${protobuf_generate_TARGET} PRIVATE ${_generated_srcs_all})
