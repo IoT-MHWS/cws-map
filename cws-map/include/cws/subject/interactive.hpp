@@ -3,7 +3,7 @@
 #include "cws/subject/base.hpp"
 
 enum class InteractionStateType {
-  UNKNOWN = 0,
+  UNSPECIFIED = 0,
   OPENED = 1,
   CLOSED = 2,
 };

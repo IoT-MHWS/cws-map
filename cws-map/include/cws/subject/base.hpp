@@ -7,7 +7,7 @@
 class Layers;
 
 enum class SubjectType {
-  UNKNOWN = 0,
+  UNSPECIFIED = 0,
   INTERACTIVE = 1,
   PLAIN = 2,
   SENSOR = 3,
@@ -36,7 +36,7 @@ protected:
   SubjectParameters parameters;
 
 public:
-  BaseSubject() : type(SubjectType::UNKNOWN) {}
+  BaseSubject() : type(SubjectType::UNSPECIFIED) {}
 
   BaseSubject(SubjectType type, SubjectParameters parameters)
       : type(type), parameters(parameters) {}

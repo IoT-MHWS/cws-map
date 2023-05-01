@@ -16,7 +16,7 @@ public:
     std::swap(this->subjectList, obj.subjectList);
   }
 
-  LayerSubject(const LayerSubject & obj) noexcept : BaseLayer() {
+  LayerSubject(const LayerSubject & obj) noexcept : BaseLayer(obj) {
     subjectList.clear();
     for (const auto & e: obj.subjectList) {
       subjectList.push_back(std::unique_ptr<BaseSubject>(e->clone()));

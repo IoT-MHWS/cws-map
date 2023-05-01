@@ -4,7 +4,7 @@
 #include "cws/subject/base.hpp"
 
 enum class SensorType {
-  UNKNOWN = 0,
+  UNSPECIFIED = 0,
   TEMPERATURE = 1,
   HUMIDITY = 2,
   LUMINOSITY = 3,

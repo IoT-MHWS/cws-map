@@ -18,5 +18,5 @@ struct Percentage {
 };
 
 struct Temperature {
-  double temp;
+  double value;
 };
