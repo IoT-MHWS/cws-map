@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "cws/simulation.hpp"
 #include "grpcpp/completion_queue.h"
 #include "grpcpp/security/server_credentials.h"
 #include "grpcpp/server_builder.h"
@@ -21,13 +22,14 @@ void registerService(grpc::ServerBuilder & builder, T & service) {
 
 
 int main(int argc, char * argv[]) {
+  Simulation simulation;
   grpc::ServerBuilder builder;
 
   buildServer(builder, "127.0.0.1", 8200);
 
-  SimulationService simulationService;
-  MapService mapService;
-  MapSensorService sensorService;
+  SimulationService simulationService(simulation);
+  MapService mapService(simulation);
+  MapSensorService sensorService(simulation);
 
   registerService(builder, simulationService);
   registerService(builder, mapService);

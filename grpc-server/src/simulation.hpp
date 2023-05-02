@@ -1,9 +1,17 @@
 #pragma once
 
+#include "cws/simulation.hpp"
 #include "cwspb/service/simulation.grpc.pb.h"
 #include <grpcpp/support/status.h>
 
 class SimulationService final : public cws::SimulationService::Service {
+private:
+  Simulation & simulation;
+
+public:
+  SimulationService(Simulation & simulation) : simulation(simulation) {}
+
+public:
   ::grpc::Status
   GetSimulationStatus(::grpc::ServerContext * context, const ::cws::Request * request,
                       ::cws::ResponseSimulationStatus * response) override {

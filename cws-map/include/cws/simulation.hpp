@@ -17,9 +17,12 @@ class Simulation {
   ConcurrentMap concurrentMap;
 
 public:
+  Simulation() : Simulation(Dimension{10, 10}) {}
+
   Simulation(Dimension dimension) : concurrentMap(dimension) {
     repetitions = 0;
     repetitionsLeft = 0;
+    taskFrequency = 4;
     simulationType = SimulationType::LIMITED;
   }
 
