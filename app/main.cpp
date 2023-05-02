@@ -1,7 +1,6 @@
 #include "cwspb/general.pb.h"
 #include "grpcpp/create_channel.h"
 #include "grpcpp/security/credentials.h"
-#include <cws/concurrent_map.hpp>
 #include <cws/general.hpp>
 #include <cws/map.hpp>
 #include <cws/simulation.hpp>
@@ -9,8 +8,7 @@
 #include <cwspb/service/simulation.pb.h>
 
 void simulation() {
-  Simulation simulation(Dimension{.width = 5, .height = 10}, SimulationType::LIMITED,
-                        20, 10);
+  Simulation simulation;
 
   cws::Dimension dimension;
 

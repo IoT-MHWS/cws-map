@@ -13,7 +13,7 @@ class Layers {
   MapLayerSubject subjectLayer;
 
 public:
-  Layers(Dimension dimension) : temperatureLayer(dimension), subjectLayer(dimension) {}
+  explicit Layers(Dimension dimension) : temperatureLayer(dimension), subjectLayer(dimension) {}
 
   const MapLayerTemperature & getTemperatureLayer() const { return temperatureLayer; }
 
@@ -30,7 +30,7 @@ class Map {
   Dimension dimension;
 
 public:
-  Map(Dimension dimension) : layers(dimension), dimension(dimension) {}
+  explicit Map(Dimension dimension) : layers(dimension), dimension(dimension) {}
 
   const Layers & getLayers() const { return layers; }
 

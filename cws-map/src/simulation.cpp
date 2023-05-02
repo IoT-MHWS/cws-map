@@ -11,7 +11,7 @@ void Simulation::run() {
   while (simulationType == SimulationType::INFINITE || repetitionsLeft-- != 0) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    concurrentMap.nextState();
+    map.nextState();
     ++repetitions;
 
     auto leadTime = std::chrono::high_resolution_clock::now() - start;
