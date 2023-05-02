@@ -22,10 +22,12 @@ include(cmake/custom-protobuf-generate.cmake)
 include(cmake/proto.cmake)
 
 
-add_executable(${PROJECT_NAME}
-  ./src/main.cpp
+file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS
+  ./*.c
+  ./*.cpp
 )
 
+add_executable(${PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
   cws-map

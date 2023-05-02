@@ -5,9 +5,12 @@ project(${PROJECT_NAME}
   LANGUAGES C CXX
 )
 
-add_executable(${PROJECT_NAME}
-  ./main.cpp
+file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS
+  ./*.c
+  ./*.cpp
 )
+
+add_executable(${PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
   cws-map
