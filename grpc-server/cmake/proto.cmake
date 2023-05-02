@@ -2,19 +2,18 @@ find_package(Protobuf REQUIRED)
 find_program(_GRPC_CPP_PLUGIN_LOCATION grpc_cpp_plugin)
 
 
-set(PROTOC_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/cws-proto)
+set(PROTOC_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto)
 file(MAKE_DIRECTORY ${PROTOC_OUT_DIR})
 
-
-set(CWS_PROTO_LOC ${PROTO_LOC}/cws-map)
+# root of protobuf project
+set(CWS_PROTO_LOC ${PROTO_LOC})
 
 file(GLOB_RECURSE PROTO_FILES CONFIGURE_DEPENDS
-  ${CWS_PROTO_LOC}/*.proto
+  ${CWS_PROTO_LOC}/cwspb/*.proto
 )
 
 add_library(cws-proto ${PROTO_FILES})
 
-# only works without nesting
 
 custom_protobuf_generate(
   TARGET cws-proto
@@ -35,6 +34,7 @@ custom_protobuf_generate(
   PROTOC_OUT_DIR ${PROTOC_OUT_DIR}
 )
 
-target_include_directories(cws-proto PUBLIC
-  ${PROTOC_OUT_DIR}
-)
+target_include_directories(cws-proto PUBLIC ${PROTOC_OUT_DIR})
+
+unset(CWS_PROTO_LOC)
+unset(PROTOC_OUT_DIR)

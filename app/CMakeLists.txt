@@ -11,6 +11,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
   cws-map
+  cws-proto
 )
 
 target_compile_options(${PROJECT_NAME} PUBLIC
