@@ -5,9 +5,6 @@
 #include "map_layer/subject.hpp"
 #include "map_layer/temperature.hpp"
 
-/*
- * Changes every call for the next state
- */
 class Layers {
   MapLayerTemperature temperatureLayer;
   MapLayerSubject subjectLayer;
@@ -22,9 +19,6 @@ public:
   void nextState();
 };
 
-/*
- * Non-concurrent map
- */
 class Map {
   Layers layers;
   Dimension dimension;

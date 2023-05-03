@@ -3,17 +3,9 @@
 #include <cstddef>
 #include <queue>
 
+#include "cws/simulation/general.hpp"
+#include "cws/simulation/map_query.hpp"
 #include "cws/simulation/simulation.hpp"
-
-struct MapUpdateQuery {
-  // some fields to update map
-};
-
-template<typename T>
-struct ModifCheck {
-  T value;
-  bool modified = false;
-};
 
 class SimulationInterface {
   friend SimulationMaster;
@@ -24,7 +16,10 @@ private:
   ModifCheck<SimulationState> currentState;
   mutable std::shared_mutex state_mutex;
 
-  std::queue<std::unique_ptr<MapUpdateQuery>> queries;
+  template<class T>
+  using QueueUP = std::queue<std::unique_ptr<T>>;
+
+  QueueUP<SubjectQuery> queries;
   mutable std::mutex queue_mutex;
 
 public:
@@ -38,6 +33,11 @@ public:
     this->currentState.modified = true;
   }
 
+  void addUpdateQuery(std::unique_ptr<SubjectQuery> && query) {
+    std::unique_lock lock(queue_mutex);
+    queries.push(std::move(query));
+  }
+
 private:
   ModifCheck<SimulationState> masterGetSimulationState() {
     std::shared_lock lock(state_mutex);
@@ -46,6 +46,12 @@ private:
     currentState.modified = false;
 
     return prevCurrentState;
+  }
+
+  std::pair<std::unique_lock<std::mutex> &&, QueueUP<SubjectQuery> &>
+  masterAccessQueries() {
+    std::unique_lock lock(queue_mutex);
+    return std::make_pair(std::move(lock), std::ref(queries));
   }
 
 public:

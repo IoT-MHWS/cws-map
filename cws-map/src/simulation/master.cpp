@@ -64,9 +64,17 @@ void SimulationMaster::updateSimulationState() {
   }
 }
 
-// Read request change queue and apply it to this state (same)
 void SimulationMaster::updateSimulationMap() {
-  std::cout << "master: Simulation map updated." << std::endl;
+  auto [lock, queries] = interface.masterAccessQueries();
+#ifndef NDEBUG
+  if (!queries.empty()) {
+    std::cout << "master: Simulation map updated." << std::endl;
+  }
+#endif
+  while (!queries.empty()) {
+    updateSimulationMapEntry(std::move(queries.front()));
+    queries.pop();
+  }
 }
 
 void SimulationMaster::notifySlaveReady() {
@@ -94,4 +102,9 @@ void SimulationMaster::waitDurationExceeds(
   auto waitTime = std::max(taskMaxDuration - leadTime, std::chrono::nanoseconds(0));
 
   std::this_thread::sleep_for(waitTime);
+}
+
+void SimulationMaster::updateSimulationMapEntry(
+    std::unique_ptr<SubjectQuery> && query) {
+  mapQuery.updateMap(std::move(*query.get()));
 }

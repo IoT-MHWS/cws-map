@@ -2,6 +2,7 @@
 
 #include "cws/general.hpp"
 #include "cws/map.hpp"
+#include "cws/simulation/map_query.hpp"
 #include <condition_variable>
 #include <mutex>
 #include <shared_mutex>
@@ -41,7 +42,7 @@ private:
 class SimulationMaster {
   friend SimulationSlave;
 
-  Map map;
+  MapQuery mapQuery;
   std::shared_mutex map_mutex;
 
   SimulationState state;
@@ -61,7 +62,7 @@ class SimulationMaster {
 
 public:
   SimulationMaster(SimulationInterface & interface)
-      : map(Dimension{10, 10}), interface(interface), slave(*this) {}
+      : mapQuery(Dimension{10, 10}), interface(interface), slave(*this) {}
 
   void run();
   void wait();
@@ -93,4 +94,5 @@ private:
       const SimulationState & state,
       const std::chrono::time_point<std::chrono::high_resolution_clock> & start);
 
+  void updateSimulationMapEntry(std::unique_ptr<SubjectQuery> && query);
 };
