@@ -6,15 +6,16 @@ project(${PROJECT_NAME}
 )
 
 file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS
-  ./*.c
-  ./*.cpp
+  ./main.cpp
+  # ./*.c
+  # ./*.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
   cws-map
-  cws-proto
+  # cws-proto
 )
 
 target_compile_options(${PROJECT_NAME} PUBLIC
