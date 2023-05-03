@@ -11,19 +11,19 @@ void SimulationSlave::wait() { worker.join(); }
 // called by master
 void SimulationSlave::exit() {
   {
-    std::unique_lock lock(master.mutex);
-    master.doExit = true;
+    std::unique_lock lock(master.run_mutex);
+    master.runDoExit = true;
   }
   master.cv.notify_one();
   this->wait();
 }
 
 void SimulationSlave::execute() {
-  auto & mutex = master.mutex;
+  auto & mutex = master.run_mutex;
   auto & cv = master.cv;
   auto & runReady = master.runReady;
   auto & runProcessed = master.runProcessed;
-  auto & doExit = master.doExit;
+  auto & doExit = master.runDoExit;
 
   while (true) {
     std::unique_lock lock(mutex);

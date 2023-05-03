@@ -12,16 +12,25 @@ void simulation() {
 
   interface.run();
 
+  interface.setSimulationState(SimulationState{
+      .simulationType = SimulationType::LIMITED,
+      .currentTick = 0,
+      .lastTick = 10,
+      .taskFrequency = 5,
+  });
+
+  std::this_thread::sleep_for(std::chrono::seconds(4));
+
+  interface.setSimulationState(SimulationState{
+      .simulationType = SimulationType::LIMITED,
+      .currentTick = 50,
+      .lastTick = 100,
+      .taskFrequency = 10,
+  });
+
   std::this_thread::sleep_for(std::chrono::seconds(4));
 
   interface.exit();
-
-  // simulation.setSimulationState(SimulationState{
-  //     .simulationType = SimulationType::LIMITED,
-  //     .currentTick = 0,
-  //     .lastTick = 10,
-  //     .taskFrequency = 5,
-  // });
 }
 
 int main(int argc, char * argv[]) {

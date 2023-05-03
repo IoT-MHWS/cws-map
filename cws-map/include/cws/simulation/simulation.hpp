@@ -42,6 +42,8 @@ class SimulationMaster {
   friend SimulationSlave;
 
   Map map;
+  std::shared_mutex map_mutex;
+
   SimulationState state;
 
   SimulationInterface & interface;
@@ -51,10 +53,11 @@ class SimulationMaster {
   std::jthread worker;
 
   std::condition_variable cv;
-  std::mutex mutex;
+
+  std::mutex run_mutex;
   bool runReady = false;
   bool runProcessed = false;
-  bool doExit = false;
+  bool runDoExit = false;
 
 public:
   SimulationMaster(SimulationInterface & interface)
@@ -65,10 +68,17 @@ public:
   void exit();
 
 public:
-  // std::pair<std::unique_lock<std::shared_mutex> &&, Map &> workersGetMap() {
+  // /* Read and write */
+  // std::pair<std::unique_lock<std::shared_mutex> &&, Map &> accessMap() {
   //   std::unique_lock lock(map_mutex);
   //   return std::make_pair(std::move(lock), std::ref(map));
   // }
+
+  // std::pair<std::shared_lock<std::shared_mutex> &&, const Map &> getMap() {
+  //   std::shared_lock lock(map_mutex);
+  //   return std::make_pair(std::move(lock), map);
+  // }
+
 
 private:
   void execute(std::stop_token stoken);
@@ -82,4 +92,5 @@ private:
   void waitDurationExceeds(
       const SimulationState & state,
       const std::chrono::time_point<std::chrono::high_resolution_clock> & start);
+
 };

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <thread>
 
+#include <cws/simulation/interface.hpp>
 #include <cws/simulation/simulation.hpp>
 
 void SimulationMaster::run() {
@@ -55,11 +56,12 @@ bool SimulationMaster::processStopRequest(const std::stop_token & stoken) {
   return requested;
 }
 
-// Read request change queue and apply it to this state
 void SimulationMaster::updateSimulationState() {
-  // SimulationState simulationState = simulation.getSimulationState();
-  // simulation.setSimulationState(std::move(simulationState));
-  std::cout << "master: Simulation state updated." << std::endl;
+  auto stateWr = interface.masterGetSimulationState();
+  if (stateWr.modified) {
+    this->state = stateWr.value;
+    std::cout << "master: Simulation state updated." << std::endl;
+  }
 }
 
 // Read request change queue and apply it to this state (same)
@@ -69,14 +71,14 @@ void SimulationMaster::updateSimulationMap() {
 
 void SimulationMaster::notifySlaveReady() {
   {
-    std::unique_lock lock(mutex);
+    std::unique_lock lock(run_mutex);
     runReady = true;
   }
   cv.notify_one();
 }
 
 void SimulationMaster::waitSlaveProcess() {
-  std::unique_lock lock(mutex);
+  std::unique_lock lock(run_mutex);
   cv.wait(lock, [this] { return runProcessed; });
   runProcessed = false;
 }
