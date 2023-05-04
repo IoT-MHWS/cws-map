@@ -38,12 +38,14 @@ void SimulationMaster::execute(std::stop_token stoken) {
               << "(" << state.currentTick << "/" << state.lastTick << ")" << std::endl;
 #endif
 
-    if (state.currentTick < state.lastTick) {
+    if (state.currentTick < state.lastTick ||
+        state.simulationType == SimulationType::INFINITE) {
       state.currentTick += 1;
 
       notifySlaveReady();
       waitSlaveProcess();
     }
+
     waitDurationExceeds(state, clockStart);
   }
 }

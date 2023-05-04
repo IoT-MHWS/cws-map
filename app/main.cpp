@@ -30,6 +30,15 @@ void simulation() {
 
   std::this_thread::sleep_for(std::chrono::seconds(4));
 
+  interface.setSimulationState(SimulationState{
+      .simulationType = SimulationType::INFINITE,
+      .currentTick = 50,
+      .lastTick = 100,
+      .taskFrequency = 30,
+  });
+
+  std::this_thread::sleep_for(std::chrono::seconds(4));
+
   interface.exit();
 }
 
