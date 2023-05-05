@@ -1,13 +1,12 @@
 #include <iostream>
 
-#include "cws/simulation.hpp"
+#include "cws/simulation/simulation.hpp"
 #include "grpcpp/completion_queue.h"
 #include "grpcpp/security/server_credentials.h"
 #include "grpcpp/server_builder.h"
-#include "map_sensor.hpp"
 #include "map.hpp"
+#include "map_sensor.hpp"
 #include "simulation.hpp"
-
 
 void buildServer(grpc::ServerBuilder & builder, const std::string & address,
                  const int port) {
@@ -20,16 +19,33 @@ void registerService(grpc::ServerBuilder & builder, T & service) {
   builder.RegisterService(&service);
 }
 
+SimulationStateIn getDefaultState() {
+  SimulationStateIn state;
+  state.simType.set(SimulationType::INFINITE);
+  state.simStatus.set(SimulationStatus::STOPPED);
+  state.currentTick.set(0);
+  state.lastTick.set(0);
+  state.taskFrequency.set(1);
+  return state;
+}
 
 int main(int argc, char * argv[]) {
-  Simulation simulation;
+  SimulationInterface interface;
+  SimulationMaster master(interface);
+
+  interface.setSimulationMaster(&master);
+  auto state = getDefaultState();
+  interface.setState(state);
+
+  interface.run();
+
   grpc::ServerBuilder builder;
 
   buildServer(builder, "127.0.0.1", 8200);
 
-  SimulationService simulationService(simulation);
-  MapService mapService(simulation);
-  MapSensorService sensorService(simulation);
+  SimulationService simulationService(interface);
+  MapService mapService(interface);
+  MapSensorService sensorService(interface);
 
   registerService(builder, simulationService);
   registerService(builder, mapService);
@@ -38,9 +54,11 @@ int main(int argc, char * argv[]) {
   auto server(builder.BuildAndStart());
 
 #ifndef NDEBUG
-    std::cout << "server started" << std::endl;
+  std::cout << "server: started" << std::endl;
 #endif
 
   server->Wait();
+  interface.exit();
+
   return 0;
 }

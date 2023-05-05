@@ -51,6 +51,11 @@ void SimulationMaster::execute(std::stop_token stoken) {
       state.status = SimulationStatus::STOPPED;
     }
 
+    interface.masterSetState(state);
+#ifndef NDEBUG
+    std::cout << "master: " << "updated interface state"<< std::endl;
+#endif
+
     waitDurationExceeds(state, clockStart);
   };
 }
