@@ -47,6 +47,10 @@ void SimulationMaster::execute(std::stop_token stoken) {
       waitSlaveProcess();
     }
 
+    if (state.currentTick == state.lastTick) {
+      state.status = SimulationStatus::STOPPED;
+    }
+
     waitDurationExceeds(state, clockStart);
   };
 }
@@ -80,11 +84,13 @@ void SimulationMaster::updateSimulationState() {
 
 void SimulationMaster::updateSimulationMap() {
   auto [lock, queries] = interface.masterAccessQueries();
+
 #ifndef NDEBUG
   if (!queries.empty()) {
     std::cout << "master: Simulation map updated." << std::endl;
   }
 #endif
+
   while (!queries.empty()) {
     updateSimulationMapEntry(std::move(queries.front()));
     queries.pop();
