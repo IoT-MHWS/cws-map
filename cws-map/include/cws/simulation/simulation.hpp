@@ -3,6 +3,7 @@
 #include "cws/general.hpp"
 #include "cws/map.hpp"
 #include "cws/simulation/map_query.hpp"
+#include "cws/simulation/general.hpp"
 #include <condition_variable>
 #include <mutex>
 #include <shared_mutex>
@@ -10,14 +11,6 @@
 
 class SimulationMaster;
 class SimulationInterface;
-
-enum class SimulationType { LIMITED = 0, INFINITE = 1 };
-
-struct SimulationState {
-  SimulationType simulationType;
-  std::size_t currentTick, lastTick;
-  double taskFrequency;
-};
 
 class SimulationSlave {
   SimulationMaster & master;
@@ -79,7 +72,6 @@ public:
   //   std::shared_lock lock(map_mutex);
   //   return std::make_pair(std::move(lock), map);
   // }
-
 
 private:
   void execute(std::stop_token stoken);

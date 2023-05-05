@@ -10,49 +10,43 @@
 class SimulationInterface {
   friend SimulationMaster;
 
-private:
-  SimulationMaster * master;
-
-  ModifCheck<SimulationState> currentState;
-  mutable std::shared_mutex state_mutex;
-
   template<class T>
   using QueueUP = std::queue<std::unique_ptr<T>>;
 
-  QueueUP<SubjectQuery> queries;
-  mutable std::mutex queue_mutex;
+private:
+  SimulationMaster * master;
+
+  struct {
+    SimulationStateIn state;
+    mutable std::shared_mutex stateMutex;
+
+    QueueUP<SubjectQuery> queries;
+    mutable std::mutex queueMutex;
+  } in;
+
+  struct {
+    SimulationState state;
+    mutable std::shared_mutex mutex;
+  } out;
 
 public:
   SimulationInterface(){};
 
   void setSimulationMaster(SimulationMaster * master) { this->master = master; }
 
-  void setSimulationState(const SimulationState & newState) {
-    std::unique_lock lock(state_mutex);
-    this->currentState.value = newState;
-    this->currentState.modified = true;
-  }
+  void setState(const SimulationStateIn & newState);
 
-  void addUpdateQuery(std::unique_ptr<SubjectQuery> && query) {
-    std::unique_lock lock(queue_mutex);
-    queries.push(std::move(query));
-  }
+  SimulationState getState();
+
+  void addQuery(std::unique_ptr<SubjectQuery> && query);
 
 private:
-  ModifCheck<SimulationState> masterGetSimulationState() {
-    std::shared_lock lock(state_mutex);
+  SimulationStateIn masterGetState();
 
-    auto prevCurrentState = currentState;
-    currentState.modified = false;
-
-    return prevCurrentState;
-  }
+  void masterSetState(const SimulationState & state);
 
   std::pair<std::unique_lock<std::mutex> &&, QueueUP<SubjectQuery> &>
-  masterAccessQueries() {
-    std::unique_lock lock(queue_mutex);
-    return std::make_pair(std::move(lock), std::ref(queries));
-  }
+  masterAccessQueries();
 
 public:
   void run();

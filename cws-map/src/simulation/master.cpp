@@ -34,20 +34,21 @@ void SimulationMaster::execute(std::stop_token stoken) {
     updateSimulationMap();
 
 #ifndef NDEBUG
-    std::cout << "master: "
-              << "(" << state.currentTick << "/" << state.lastTick << ")" << std::endl;
+    std::cout << "master: " << state << std::endl;
 #endif
 
-    if (state.currentTick < state.lastTick ||
-        state.simulationType == SimulationType::INFINITE) {
-      state.currentTick += 1;
+    bool isStatusRunning = state.status == SimulationStatus::RUNNING;
+    bool isNotLastTick = state.currentTick < state.lastTick;
+    bool isSimTypeINF = state.type == SimulationType::INFINITE;
 
+    if (isStatusRunning && (isSimTypeINF || isNotLastTick)) {
+      state.currentTick += 1;
       notifySlaveReady();
       waitSlaveProcess();
     }
 
     waitDurationExceeds(state, clockStart);
-  }
+  };
 }
 
 bool SimulationMaster::processStopRequest(const std::stop_token & stoken) {
@@ -59,10 +60,21 @@ bool SimulationMaster::processStopRequest(const std::stop_token & stoken) {
 }
 
 void SimulationMaster::updateSimulationState() {
-  auto stateWr = interface.masterGetSimulationState();
-  if (stateWr.modified) {
-    this->state = stateWr.value;
-    std::cout << "master: Simulation state updated." << std::endl;
+  SimulationStateIn stateIn = interface.masterGetState();
+  if (stateIn.simType.isSet()) {
+    state.type = stateIn.simType.get();
+  }
+  if (stateIn.simStatus.isSet()) {
+    state.status = stateIn.simStatus.get();
+  }
+  if (stateIn.currentTick.isSet()) {
+    state.currentTick = stateIn.currentTick.get();
+  }
+  if (stateIn.lastTick.isSet()) {
+    state.lastTick = stateIn.lastTick.get();
+  }
+  if (stateIn.taskFrequency.isSet()) {
+    state.taskFrequency = stateIn.taskFrequency.get();
   }
 }
 

@@ -12,32 +12,39 @@ void simulation() {
 
   interface.run();
 
-  interface.setSimulationState(SimulationState{
-      .simulationType = SimulationType::LIMITED,
-      .currentTick = 0,
-      .lastTick = 10,
-      .taskFrequency = 5,
-  });
+  SimulationStateIn state;
+  state.simType.set(SimulationType::LIMITED);
+  state.simStatus.set(SimulationStatus::RUNNING);
+  state.currentTick.set(0);
+  state.lastTick.set(10);
+  state.taskFrequency.set(5);
 
-  std::this_thread::sleep_for(std::chrono::seconds(4));
+  interface.setState(state);
 
-  interface.setSimulationState(SimulationState{
-      .simulationType = SimulationType::LIMITED,
-      .currentTick = 50,
-      .lastTick = 100,
-      .taskFrequency = 10,
-  });
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
-  std::this_thread::sleep_for(std::chrono::seconds(4));
+  state.reset();
 
-  interface.setSimulationState(SimulationState{
-      .simulationType = SimulationType::INFINITE,
-      .currentTick = 50,
-      .lastTick = 100,
-      .taskFrequency = 30,
-  });
+  state.lastTick.set(100);
+  state.taskFrequency.set(10);
 
-  std::this_thread::sleep_for(std::chrono::seconds(4));
+  interface.setState(state);
+
+  std::this_thread::sleep_for(std::chrono::seconds(2));
+
+  state.reset();
+
+  state.simType.set(SimulationType::INFINITE);
+  state.taskFrequency.set(30);
+
+  std::this_thread::sleep_for(std::chrono::seconds(2));
+
+  state.reset();
+  state.simStatus.set(SimulationStatus::STOPPED);
+
+  interface.setState(state);
+
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   interface.exit();
 }
