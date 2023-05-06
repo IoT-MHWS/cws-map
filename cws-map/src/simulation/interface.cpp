@@ -19,12 +19,12 @@ void SimulationInterface::setDimension(const Dimension & dimension) {
   in.dimension.set(dimension);
 }
 
-std::shared_ptr<const Map> SimulationInterface::getMap() const {
+std::shared_ptr<const SimulationMap> SimulationInterface::getMap() const {
   std::shared_lock lock(out.mutex);
   return out.map;
 }
 
-void SimulationInterface::addQuery(std::unique_ptr<SubjectQuerySet> && query) {
+void SimulationInterface::addQuerySet(std::unique_ptr<SubjectQuerySet> && query) {
   std::unique_lock lock(in.queueMutex);
   in.queries.push(std::move(query));
 }
@@ -43,7 +43,8 @@ Optional<Dimension> SimulationInterface::masterGetDimension() {
   return prev;
 }
 
-void SimulationInterface::masterSet(SimulationState state, std::shared_ptr<Map> map) {
+void SimulationInterface::masterSet(SimulationState state,
+                                    std::shared_ptr<const SimulationMap> map) {
   std::unique_lock lock(out.mutex);
   this->out.state = state;
   this->out.map = map;

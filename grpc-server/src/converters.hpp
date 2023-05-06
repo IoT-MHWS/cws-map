@@ -38,11 +38,13 @@ void toLayerTemperature(cws::LayerTemperature & out,
 void toTemperature(cws::Temperature & out, const Temperature & temp);
 void toPercentage(cws::Percentage & out, const Percentage & percentage);
 
-void toSubjectDerived(cws::SubjectDerived & out, const Subject & subject);
-void toSubjectId(cws::SubjectId &out, const SubjectId & id);
+void toSubjectId(cws::SubjectId & out, const SubjectId & id);
+void fromSubjectId(SubjectId & out, const cws::SubjectId & id, cws::SubjectType type);
 cws::SubjectType toSubjectType(SubjectType in);
-void toSubject(cws::Subject & out, const Subject * subject);
+SubjectType fromSubjectType(cws::SubjectType in);
 
+void toSubjectDerived(cws::SubjectDerived & out, const Subject * subject);
+void toSubject(cws::Subject & out, const Subject * subject);
 void toSubjectInteractive(cws::SubjectInteractive & out,
                           const SubjectInteractive * subject);
 cws::InteractionStateType toInteractionStateType(const InteractionStateType type);

@@ -139,7 +139,26 @@ cws::SubjectType toSubjectType(SubjectType in) {
   }
 }
 
+SubjectType fromSubjectType(cws::SubjectType in) {
+  switch (in) {
+  case cws::SubjectType::SUBJECT_TYPE_PLAIN:
+    return SubjectType::PLAIN;
+  case cws::SubjectType::SUBJECT_TYPE_INTERACTIVE:
+    return SubjectType::INTERACTIVE;
+  case cws::SubjectType::SUBJECT_TYPE_SENSOR:
+    return SubjectType::SENSOR;
+  case cws::SubjectType::SUBJECT_TYPE_UNSPECIFIED:
+  default:
+    return SubjectType::UNSPECIFIED;
+  }
+}
+
 void toSubjectId(cws::SubjectId & out, const SubjectId & id) { out.set_id(id.idx); }
+
+void fromSubjectId(SubjectId & out, const cws::SubjectId & id, cws::SubjectType type) {
+  out.type = fromSubjectType(type);
+  out.idx = id.id();
+}
 
 void toSubject(cws::Subject & out, const Subject * subject) {
   toSubjectId(*out.mutable_id(), subject->getSubjectId());

@@ -2,6 +2,7 @@
 
 #include "converters.hpp"
 #include "cws/simulation/interface.hpp"
+#include "cwspb/service/general.pb.h"
 #include "cwspb/service/map.grpc.pb.h"
 #include "cwspb/service/map.pb.h"
 #include <grpcpp/support/status.h>
@@ -136,7 +137,24 @@ public:
       return grpc::Status::OK;
     }
 
-    // TODO: implement
+    SubjectId id;
+    fromSubjectId(id, request->id(), request->type());
+
+    SubjectQuerySelect query(coord, id);
+    auto res = map->getQuery(query);
+
+    if (res == nullptr) {
+      auto respBase = response->mutable_base();
+      auto status = respBase->mutable_status();
+      status->set_text("element doesn't exist");
+      status->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
+    } else {
+      auto subject = response->mutable_derived();
+      toSubjectDerived(*subject, res);
+      auto coordinates = response->mutable_coordinates();
+      toCoordinates(*coordinates, coord);
+    }
+
     return grpc::Status::OK;
   }
 

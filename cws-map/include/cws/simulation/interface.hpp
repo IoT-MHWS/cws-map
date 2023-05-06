@@ -29,7 +29,7 @@ private:
 
   struct {
     SimulationState state;
-    std::shared_ptr<Map> map;
+    std::shared_ptr<const SimulationMap> map;
     mutable std::shared_mutex mutex;
   } out;
 
@@ -43,9 +43,9 @@ public:
 
   void setDimension(const Dimension & dimension);
 
-  std::shared_ptr<const Map> getMap() const;
+  std::shared_ptr<const SimulationMap> getMap() const;
 
-  void addQuery(std::unique_ptr<SubjectQuerySet> && query);
+  void addQuerySet(std::unique_ptr<SubjectQuerySet> && query);
 
 private:
   SimulationStateIn masterGetState();
@@ -55,7 +55,7 @@ private:
   std::pair<std::unique_lock<std::mutex> &&, QueueUP<SubjectQuerySet> &>
   masterAccessQueries();
 
-  void masterSet(SimulationState state, std::shared_ptr<Map> atomicMap);
+  void masterSet(SimulationState state, std::shared_ptr<const SimulationMap> map);
 
 public:
   void run();
