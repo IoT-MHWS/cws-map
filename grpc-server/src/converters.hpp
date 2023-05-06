@@ -39,6 +39,8 @@ void toTemperature(cws::Temperature & out, const Temperature & temp);
 void toPercentage(cws::Percentage & out, const Percentage & percentage);
 
 void toSubjectDerived(cws::SubjectDerived & out, const Subject & subject);
+void toSubjectId(cws::SubjectId &out, const SubjectId & id);
+cws::SubjectType toSubjectType(SubjectType in);
 void toSubject(cws::Subject & out, const Subject * subject);
 
 void toSubjectInteractive(cws::SubjectInteractive & out,

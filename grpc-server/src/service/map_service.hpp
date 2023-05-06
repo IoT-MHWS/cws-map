@@ -136,12 +136,14 @@ public:
       return grpc::Status::OK;
     }
 
+    // TODO: implement
     return grpc::Status::OK;
   }
 
   ::grpc::Status SetSubject(::grpc::ServerContext * context,
                             const ::cws::RequestSetSubject * request,
                             ::cws::Response * response) override {
+    // TODO: implement
     return grpc::Status::OK;
   }
 

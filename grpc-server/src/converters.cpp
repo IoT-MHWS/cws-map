@@ -109,7 +109,7 @@ void toLayerTemperature(cws::LayerTemperature & out,
 }
 
 void toSubjectDerived(cws::SubjectDerived & out, const Subject * subject) {
-  switch (subject->getSubjectType()) {
+  switch (subject->getSubjectId().type) {
   case SubjectType::PLAIN:
     return toSubjectPlain(*out.mutable_plain(),
                           static_cast<const SubjectPlain *>(subject));
@@ -125,7 +125,25 @@ void toSubjectDerived(cws::SubjectDerived & out, const Subject * subject) {
   }
 }
 
+cws::SubjectType toSubjectType(SubjectType in) {
+  switch (in) {
+  case SubjectType::PLAIN:
+    return cws::SubjectType::SUBJECT_TYPE_PLAIN;
+  case SubjectType::INTERACTIVE:
+    return cws::SubjectType::SUBJECT_TYPE_INTERACTIVE;
+  case SubjectType::SENSOR:
+    return cws::SubjectType::SUBJECT_TYPE_SENSOR;
+  case SubjectType::UNSPECIFIED:
+  default:
+    return cws::SubjectType::SUBJECT_TYPE_UNSPECIFIED;
+  }
+}
+
+void toSubjectId(cws::SubjectId & out, const SubjectId & id) { out.set_id(id.idx); }
+
 void toSubject(cws::Subject & out, const Subject * subject) {
+  toSubjectId(*out.mutable_id(), subject->getSubjectId());
+
   auto params = subject->getSubjectParameters();
   out.set_weight(params.weight);
   out.set_heat_capacity(params.heatCapacity);
@@ -138,7 +156,6 @@ void toSubject(cws::Subject & out, const Subject * subject) {
 void toSubjectInteractive(cws::SubjectInteractive & out,
                           const SubjectInteractive * subject) {
   toSubject(*out.mutable_base(), subject);
-  out.set_id(subject->getId());
   out.set_interaction_state_type(
       toInteractionStateType(subject->getInteractionState().type));
 }
@@ -157,7 +174,6 @@ cws::InteractionStateType toInteractionStateType(const InteractionStateType type
 
 void toSubjectPlain(cws::SubjectPlain & out, const SubjectPlain * plain) {
   toSubject(*out.mutable_base(), plain);
-  out.set_id(plain->getId());
 }
 
 void toSubjectSensorDerived(cws::SubjectSensorDerived & out,
@@ -173,7 +189,6 @@ void toSubjectSensorDerived(cws::SubjectSensorDerived & out,
 
 void toSubjectSensor(cws::SubjectSensor & out, const SubjectSensor * subject) {
   toSubject(*out.mutable_base(), subject);
-  out.set_id(subject->getId());
 }
 
 void toSensorTemperature(cws::SensorTemperature & out,
