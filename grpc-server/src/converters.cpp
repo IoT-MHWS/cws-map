@@ -1,7 +1,10 @@
 #include "converters.hpp"
+#include "cws/general.hpp"
 #include "cws/layer/subject.hpp"
 #include "cws/layer/temperature.hpp"
+#include "cwspb/general.pb.h"
 #include "cwspb/layer/temperature.pb.h"
+#include "cwspb/subject/interactive.pb.h"
 
 void toSimulationState(cws::SimulationState & out, const struct SimulationState & in) {
   out.set_status(toSimulationStatus(in.status));
@@ -84,9 +87,18 @@ void fromCoordinates(Coordinates & out, const cws::Coordinates & coord) {
   out.y = coord.y();
 }
 
+void toTemperature(cws::Temperature & out, const Temperature & temp) {
+  out.set_value(temp.value);
+}
+
+void toPercentage(cws::Percentage & out, const Percentage & percentage) {
+  out.set_value(percentage.value);
+}
+
 void toLayer(cws::Layer & out, const Layer & layer) {}
 
 void toLayerSubject(cws::LayerSubject & out, const LayerSubject & layerSubject) {
+
   std::cout << "TODO: LayerSubject conversion is not defined" << std::endl;
 }
 
@@ -96,10 +108,76 @@ void toLayerTemperature(cws::LayerTemperature & out,
   toTemperature(*out.mutable_temperature(), layerTemperature.getTemperature());
 }
 
-void toTemperature(cws::Temperature & out, const Temperature & temp) {
-  out.set_value(temp.value);
+void toSubjectDerived(cws::SubjectDerived & out, const Subject * subject) {
+  switch (subject->getSubjectType()) {
+  case SubjectType::PLAIN:
+    return toSubjectPlain(*out.mutable_plain(),
+                          static_cast<const SubjectPlain *>(subject));
+  case SubjectType::SENSOR:
+    return toSubjectSensorDerived(*out.mutable_sensor(),
+                                  static_cast<const SubjectSensor *>(subject));
+  case SubjectType::INTERACTIVE:
+    return toSubjectInteractive(*out.mutable_interactive(),
+                                static_cast<const SubjectInteractive *>(subject));
+  case SubjectType::UNSPECIFIED:
+  default:
+    return toSubject(*out.mutable_base(), subject);
+  }
 }
 
-void toSubject(cws::SubjectDerived & out, const Subject & subject) {
-  std::cout << "TODO: Subject conversion is not defined" << std::endl;
+void toSubject(cws::Subject & out, const Subject * subject) {
+  auto params = subject->getSubjectParameters();
+  out.set_weight(params.weight);
+  out.set_heat_capacity(params.heatCapacity);
+  toPercentage(*out.mutable_heat_transmission(), params.heatTransmission);
+  toTemperature(*out.mutable_temperature(), params.temperature);
+  toPercentage(*out.mutable_light_transmission(), params.lightTransmission);
+  toPercentage(*out.mutable_humidity_transmission(), params.humidityTransmission);
+}
+
+void toSubjectInteractive(cws::SubjectInteractive & out,
+                          const SubjectInteractive * subject) {
+  toSubject(*out.mutable_base(), subject);
+  out.set_id(subject->getId());
+  out.set_interaction_state_type(
+      toInteractionStateType(subject->getInteractionState().type));
+}
+
+cws::InteractionStateType toInteractionStateType(const InteractionStateType type) {
+  switch (type) {
+  case InteractionStateType::OPENED:
+    return cws::InteractionStateType::INTERACTION_STATE_TYPE_OPENED;
+  case InteractionStateType::CLOSED:
+    return cws::InteractionStateType::INTERACTION_STATE_TYPE_CLOSED;
+  case InteractionStateType::UNSPECIFIED:
+  default:
+    return cws::InteractionStateType::INTERACTION_STATE_TYPE_UNSPECIFIED;
+  }
+}
+
+void toSubjectPlain(cws::SubjectPlain & out, const SubjectPlain * plain) {
+  toSubject(*out.mutable_base(), plain);
+  out.set_id(plain->getId());
+}
+
+void toSubjectSensorDerived(cws::SubjectSensorDerived & out,
+                            const SubjectSensor * subject) {
+  switch (subject->sensorType) {
+  case SensorType::TEMPERATURE:
+    return toSensorTemperature(*out.mutable_temperature(),
+                               static_cast<const SensorTemperature *>(subject));
+  default:
+    return toSubjectSensor(*out.mutable_base(), subject);
+  }
+}
+
+void toSubjectSensor(cws::SubjectSensor & out, const SubjectSensor * subject) {
+  toSubject(*out.mutable_base(), subject);
+  out.set_id(subject->getId());
+}
+
+void toSensorTemperature(cws::SensorTemperature & out,
+                         const SensorTemperature * sensor) {
+  toSubjectSensor(*out.mutable_base(), sensor);
+  toTemperature(*out.mutable_temperature(), sensor->sensorTemp);
 }

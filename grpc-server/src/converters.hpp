@@ -3,6 +3,9 @@
 #include "cws/general.hpp"
 #include "cws/simulation/general.hpp"
 #include "cws/simulation/interface.hpp"
+#include "cws/subject/interactive.hpp"
+#include "cws/subject/plain.hpp"
+#include "cws/subject/sensor.hpp"
 #include "cwspb/general.pb.h"
 #include "cwspb/service/map.grpc.pb.h"
 #include "cwspb/service/simulation.pb.h"
@@ -33,4 +36,18 @@ void toLayerTemperature(cws::LayerTemperature & out,
                         const LayerTemperature & layerTemperature);
 
 void toTemperature(cws::Temperature & out, const Temperature & temp);
-void toSubject(cws::SubjectDerived & out, const Subject & subject);
+void toPercentage(cws::Percentage & out, const Percentage & percentage);
+
+void toSubjectDerived(cws::SubjectDerived & out, const Subject & subject);
+void toSubject(cws::Subject & out, const Subject * subject);
+
+void toSubjectInteractive(cws::SubjectInteractive & out,
+                          const SubjectInteractive * subject);
+cws::InteractionStateType toInteractionStateType(const InteractionStateType type);
+
+void toSubjectPlain(cws::SubjectPlain & out, const SubjectPlain * plain);
+void toSubjectSensorDerived(cws::SubjectSensorDerived & out,
+                            const SubjectSensor * subject);
+void toSubjectSensor(cws::SubjectSensor & out, const SubjectSensor * subject);
+void toSensorTemperature(cws::SensorTemperature & out,
+                         const SensorTemperature * sensor);
