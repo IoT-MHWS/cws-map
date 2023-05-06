@@ -53,9 +53,9 @@ void SimulationMaster::execute(std::stop_token stoken) {
     }
 
 #ifndef NDEBUG
-    std::cout << "master: "
-              << "curMap: " << curMap.get() << std::endl
-              <<" newMap: " << newMap.get() << std::endl;
+    std::cout << "master: " << std::endl
+              << "    curMap: " << curMap.get() << std::endl
+              << "    newMap: " << newMap.get() << std::endl;
 #endif
 
     // Set current map as updated map

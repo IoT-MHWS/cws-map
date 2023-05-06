@@ -41,7 +41,6 @@ public:
   SimulationState getState() const;
   void setState(const SimulationStateIn & newState);
 
-  Optional<Dimension> getDimension() const;
   void setDimension(const Dimension & dimension);
 
   std::shared_ptr<const Map> getMap() const;

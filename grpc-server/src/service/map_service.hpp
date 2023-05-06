@@ -17,19 +17,17 @@ public:
   ::grpc::Status GetMapDimension(::grpc::ServerContext * context,
                                  const ::cws::Request * request,
                                  ::cws::ResponseDimension * response) override {
-    auto dimension = interface.getDimension();
+    auto map = interface.getMap();
 
-    if (!dimension.isSet()) {
-      auto res = response->mutable_base();
-      auto resStatus = res->mutable_status();
-      resStatus->set_text("map is not created");
-      resStatus->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
+    if (!verifyMapSet(map, *response->mutable_base())) {
       return grpc::Status::OK;
     }
 
+    auto dimension = map->getDimension();
+
     auto rDimension = response->mutable_dimension();
-    rDimension->set_width(dimension.get().width);
-    rDimension->set_height(dimension.get().height);
+    rDimension->set_width(dimension.width);
+    rDimension->set_height(dimension.height);
 
     return grpc::Status::OK;
   }
@@ -59,10 +57,7 @@ public:
                          ::cws::ResponseCell * response) override {
     auto map = interface.getMap();
 
-    if (!map) {
-      auto resStatus = response->mutable_status();
-      resStatus->set_text("map is not created");
-      resStatus->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
+    if (!verifyMapSet(map, *response->mutable_base())) {
       return grpc::Status::OK;
     }
 
@@ -71,11 +66,7 @@ public:
     Coordinates coord;
     fromCoordinates(coord, request->coordinates());
 
-    if (coord.x >= dimension.width || coord.x < 0 || coord.y >= dimension.height ||
-        coord.y < 0) {
-      auto resStatus = response->mutable_status();
-      resStatus->set_text("coordinates out of bounds");
-      resStatus->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
+    if (!verifyCoordinates(coord, dimension, *response->mutable_base())) {
       return grpc::Status::OK;
     }
 
@@ -97,12 +88,9 @@ public:
 
     auto map = interface.getMap();
 
-    if (!map) {
-      cws::ResponseCell response;
+    cws::ResponseCell response;
 
-      auto resStatus = response.mutable_status();
-      resStatus->set_text("map is not created");
-      resStatus->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
+    if (!verifyMapSet(map, *response.mutable_base())) {
       writer->WriteLast(response, options);
       return grpc::Status::OK;
     }
@@ -128,5 +116,57 @@ public:
       }
     }
     return grpc::Status::OK;
+  }
+
+  ::grpc::Status GetSubject(::grpc::ServerContext * context,
+                            const ::cws::RequestSelectSubject * request,
+                            ::cws::ResponseSelectSubject * response) override {
+    auto map = interface.getMap();
+
+    if (!verifyMapSet(map, *response->mutable_base())) {
+      return grpc::Status::OK;
+    }
+
+    auto dimension = map->getDimension();
+
+    Coordinates coord;
+    fromCoordinates(coord, request->coordinates());
+
+    if (!verifyCoordinates(coord, dimension, *response->mutable_base())) {
+      return grpc::Status::OK;
+    }
+
+    return grpc::Status::OK;
+  }
+
+  ::grpc::Status SetSubject(::grpc::ServerContext * context,
+                            const ::cws::RequestSetSubject * request,
+                            ::cws::Response * response) override {
+    return grpc::Status::OK;
+  }
+
+private:
+  bool verifyMapSet(const std::shared_ptr<const Map> & map, cws::Response & response) {
+    bool bad = !map;
+
+    if (bad) {
+      auto resStatus = response.mutable_status();
+      resStatus->set_text("map is not created");
+      resStatus->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
+    }
+    return !bad;
+  }
+
+  bool verifyCoordinates(const Coordinates & coord, const Dimension & dimension,
+                         cws::Response & response) {
+    bool bad = (coord.x >= dimension.width || coord.x < 0 ||
+                coord.y >= dimension.height || coord.y < 0);
+
+    if (bad) {
+      auto resStatus = response.mutable_status();
+      resStatus->set_text("coordinates out of bounds");
+      resStatus->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
+    }
+    return !bad;
   }
 };

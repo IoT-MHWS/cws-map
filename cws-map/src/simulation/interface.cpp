@@ -14,15 +14,6 @@ void SimulationInterface::setState(const SimulationStateIn & newState) {
   this->in.state.set(newState);
 }
 
-Optional<Dimension> SimulationInterface::getDimension() const {
-  Optional<Dimension> dimension;
-  std::shared_lock lock(out.mutex);
-  if (out.map) {
-    dimension.set(out.map->getDimension());
-  }
-  return dimension;
-}
-
 void SimulationInterface::setDimension(const Dimension & dimension) {
   std::unique_lock lock(in.dimensionMutex);
   in.dimension.set(dimension);
