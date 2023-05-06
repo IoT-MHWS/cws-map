@@ -4,9 +4,9 @@
 #include "grpcpp/completion_queue.h"
 #include "grpcpp/security/server_credentials.h"
 #include "grpcpp/server_builder.h"
-#include "map.hpp"
-#include "map_sensor.hpp"
-#include "simulation.hpp"
+#include "service/map_service.hpp"
+#include "service/map_sensor_service.hpp"
+#include "service/simulation_service.hpp"
 
 void buildServer(grpc::ServerBuilder & builder, const std::string & address,
                  const int port) {
