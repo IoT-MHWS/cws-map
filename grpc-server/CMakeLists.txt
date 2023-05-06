@@ -27,6 +27,11 @@ file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS
   ./*.cpp
 )
 
+file(GLOB_RECURSE HDRS CONFIGURE_DEPENDS
+  ./*.hpp
+  ./*.h
+)
+
 add_executable(${PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
