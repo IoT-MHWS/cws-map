@@ -16,7 +16,7 @@ struct SubjectQuery {
 };
 
 struct SubjectQuerySelect : public SubjectQuery {
-  SubjectId selectId;
+  SubjectId id;
 };
 
 struct SubjectQuerySet : public SubjectQuery {
@@ -31,10 +31,11 @@ class SimulationMap : public Map {
 public:
   explicit SimulationMap(Dimension dimension) : Map(dimension) {}
 
-  void update(SubjectQuerySet && query);
+  void setQuery(SubjectQuerySet && query);
+  const Subject * getQuery(const SubjectQuerySelect & query) const;
 
 private:
-  void updateInsert(SubjectQuerySet && query);
-  void updateUpdate(SubjectQuerySet && query);
-  void updateDelete(SubjectQuerySet && query);
+  void setQueryInsert(SubjectQuerySet && query);
+  void setQueryUpdate(SubjectQuerySet && query);
+  void setQueryDelete(SubjectQuerySet && query);
 };

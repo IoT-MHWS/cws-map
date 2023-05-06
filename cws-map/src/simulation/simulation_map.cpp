@@ -1,32 +1,47 @@
 #include "cws/simulation/simulation_map.hpp"
 
-void SimulationMap::update(SubjectQuerySet && query) {
+void SimulationMap::setQuery(SubjectQuerySet && query) {
   switch (query.queryType) {
   case SubjectQueryType::INSERT:
-    updateInsert(std::move(query));
+    setQueryInsert(std::move(query));
     break;
   case SubjectQueryType::UPDATE:
-    updateUpdate(std::move(query));
+    setQueryUpdate(std::move(query));
     break;
   case SubjectQueryType::DELETE:
-    updateDelete(std::move(query));
+    setQueryDelete(std::move(query));
     break;
   default:
     break;
   }
 }
 
-void SimulationMap::updateInsert(SubjectQuerySet && query) {
+const Subject * SimulationMap::getQuery(const SubjectQuerySelect & query) const {
+  if (query.queryType == SubjectQueryType::SELECT) {
+    auto subjectLayer = layers.getSubjectLayer();
+    auto cell = subjectLayer.getCell(query.coordinates);
+    auto & subjectList = cell.getElement().getSubjectList();
+
+    for (auto it = subjectList.begin(); it != subjectList.end(); ++it) {
+      if ((*it)->getSubjectId() == query.id) {
+        return it->get();
+      }
+    }
+  }
+  return nullptr;
+}
+
+void SimulationMap::setQueryInsert(SubjectQuerySet && query) {
   auto subjectLayer = layers.accessSubjectLayer();
   auto cell = subjectLayer.getCell(query.coordinates);
   cell.accessElement().accessSubjectList().push_back(std::move(query.subject));
 }
 
-void SimulationMap::updateUpdate(SubjectQuerySet && query) {
+void SimulationMap::setQueryUpdate(SubjectQuerySet && query) {
   auto subjectLayer = layers.accessSubjectLayer();
   auto cell = subjectLayer.getCell(query.coordinates);
-
   auto & subjectList = cell.accessElement().accessSubjectList();
+
   for (auto it = subjectList.begin(); it != subjectList.end(); ++it) {
     if (**it == *query.subject) {
       subjectList.erase(it);
@@ -35,11 +50,11 @@ void SimulationMap::updateUpdate(SubjectQuerySet && query) {
     }
   }
 }
-void SimulationMap::updateDelete(SubjectQuerySet && query) {
+void SimulationMap::setQueryDelete(SubjectQuerySet && query) {
   auto subjectLayer = layers.accessSubjectLayer();
   auto cell = subjectLayer.getCell(query.coordinates);
-
   auto & subjectList = cell.accessElement().accessSubjectList();
+
   for (auto it = subjectList.begin(); it != subjectList.end(); ++it) {
     if (**it == *query.subject) {
       subjectList.erase(it);

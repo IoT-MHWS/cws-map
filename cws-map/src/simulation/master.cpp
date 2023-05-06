@@ -128,9 +128,9 @@ void SimulationMaster::updateSimulationMap() {
       const auto & query = queries.front();
       // if current map exists then apply changes to new map else to current
       if (curMapExist) {
-        newMap->update(std::move(*query));
+        newMap->setQuery(std::move(*query));
       } else {
-        curMap->update(std::move(*query));
+        curMap->setQuery(std::move(*query));
       }
       queries.pop();
 

@@ -23,6 +23,8 @@ public:
     }
   }
 
-  const std::list<std::unique_ptr<Subject>> & getSubjectList() { return subjectList; }
+  const std::list<std::unique_ptr<Subject>> & getSubjectList() const {
+    return subjectList;
+  }
   std::list<std::unique_ptr<Subject>> & accessSubjectList() { return subjectList; }
 };
