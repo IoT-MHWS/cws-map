@@ -14,13 +14,16 @@ public:
       : temperatureLayer(dimension), subjectLayer(dimension) {}
 
   const MapLayerTemperature & getTemperatureLayer() const { return temperatureLayer; }
+  MapLayerTemperature & accessTemperatureLayer() { return temperatureLayer; }
 
   const MapLayerSubject & getSubjectLayer() const { return subjectLayer; }
+  MapLayerSubject & accessSubjectLayer() { return subjectLayer; }
 
   void nextState();
 };
 
 class Map {
+protected:
   Layers layers;
   Dimension dimension;
 
@@ -31,7 +34,7 @@ public:
 
   Dimension getDimension() const { return dimension; }
 
-  void nextState(const Map &cur);
+  void nextState(const Map & cur);
 
   friend std::ostream & operator<<(std::ostream & out, const Map * map);
 };

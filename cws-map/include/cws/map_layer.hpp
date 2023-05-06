@@ -29,8 +29,9 @@ public:
   }
 
   const T & getElement() const { return this->element; }
+  T & accessElement() { return this->element; }
 
-  T setElement(T && member) { return this->element; }
+  void setElement(T && member) { return this->element = std::move(element); }
 };
 
 /*

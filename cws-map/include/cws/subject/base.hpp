@@ -14,8 +14,11 @@ enum class SubjectType {
 };
 
 struct SubjectId {
-  Dimension dimension;
-  std::size_t idx;
+  SubjectType type;
+  int idx;
+
+protected:
+  friend bool operator==(const SubjectId &, const SubjectId &);
 };
 
 struct SubjectParameters {
@@ -32,19 +35,22 @@ struct SubjectParameters {
 
 class Subject {
 protected:
-  SubjectType type;
+  SubjectId id;
   SubjectParameters parameters;
 
 public:
-  Subject() : type(SubjectType::UNSPECIFIED) {}
+  Subject() : id({.type = SubjectType::UNSPECIFIED}) {}
 
-  Subject(SubjectType type, SubjectParameters parameters)
-      : type(type), parameters(parameters) {}
+  Subject(SubjectId id, SubjectParameters parameters)
+      : id(id), parameters(parameters) {}
 
   virtual Subject * clone() const { return new Subject(*this); }
 
-  SubjectType getSubjectType() const { return type; }
+  SubjectId getSubjectId() const { return id; }
   SubjectParameters getSubjectParameters() const { return parameters; }
 
   virtual void nextState(SubjectId subjectId, const Layers & layers);
+
+protected:
+  friend bool operator==(const Subject &, const Subject &);
 };

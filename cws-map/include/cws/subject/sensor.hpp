@@ -11,16 +11,15 @@ enum class SensorType {
 };
 
 struct SubjectSensor : public Subject {
-  int id;
   SensorType sensorType;
 
 public:
-  SubjectSensor(SensorType sensorType, int id, SubjectParameters parameters)
-      : Subject(SubjectType::SENSOR, parameters), sensorType(sensorType), id(id) {}
+  SubjectSensor(SensorType sensorType, int idx, SubjectParameters parameters)
+      : Subject(SubjectId{SubjectType::SENSOR, idx}, parameters),
+        sensorType(sensorType) {}
 
   SubjectSensor * clone() const override { return new SubjectSensor(*this); }
 
-  int getId() const { return id; }
   SensorType getSensorType() const { return sensorType; }
 };
 
@@ -31,8 +30,9 @@ struct SensorTemperature : public SubjectSensor {
   Temperature sensorTemp;
 
 public:
-  SensorTemperature(int id, SubjectParameters subjectParameters, Temperature sensorTemp)
-      : SubjectSensor(SensorType::TEMPERATURE, id, subjectParameters),
+  SensorTemperature(int idx, SubjectParameters subjectParameters,
+                    Temperature sensorTemp)
+      : SubjectSensor(SensorType::TEMPERATURE, idx, subjectParameters),
         sensorTemp(sensorTemp) {}
 
   SensorTemperature * clone() const override { return new SensorTemperature(*this); }

@@ -2,9 +2,25 @@
 
 #include "cws/map.hpp"
 
+enum SubjectQueryType {
+  UNSPECIFIED = 0,
+  INSERT = 1,
+  UPDATE = 2,
+  DELETE = 3,
+  SELECT = 4
+};
+
 struct SubjectQuery {
-  // some fields to update map
-public:
+  SubjectQueryType queryType;
+  Coordinates coordinates;
+};
+
+struct SubjectQuerySelect : public SubjectQuery {
+  SubjectId selectId;
+};
+
+struct SubjectQuerySet : public SubjectQuery {
+  std::unique_ptr<Subject> subject;
 };
 
 /*
@@ -15,5 +31,10 @@ class SimulationMap : public Map {
 public:
   explicit SimulationMap(Dimension dimension) : Map(dimension) {}
 
-  void update(SubjectQuery && query);
+  void update(SubjectQuerySet && query);
+
+private:
+  void updateInsert(SubjectQuerySet && query);
+  void updateUpdate(SubjectQuerySet && query);
+  void updateDelete(SubjectQuerySet && query);
 };

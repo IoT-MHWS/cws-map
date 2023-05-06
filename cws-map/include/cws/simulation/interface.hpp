@@ -20,7 +20,7 @@ private:
     SimulationStateIn state;
     mutable std::mutex stateMutex;
 
-    QueueUP<SubjectQuery> queries;
+    QueueUP<SubjectQuerySet> queries;
     mutable std::mutex queueMutex;
 
     Optional<Dimension> dimension;// if set then new map creation request
@@ -45,14 +45,14 @@ public:
 
   std::shared_ptr<const Map> getMap() const;
 
-  void addQuery(std::unique_ptr<SubjectQuery> && query);
+  void addQuery(std::unique_ptr<SubjectQuerySet> && query);
 
 private:
   SimulationStateIn masterGetState();
 
   Optional<Dimension> masterGetDimension();
 
-  std::pair<std::unique_lock<std::mutex> &&, QueueUP<SubjectQuery> &>
+  std::pair<std::unique_lock<std::mutex> &&, QueueUP<SubjectQuerySet> &>
   masterAccessQueries();
 
   void masterSet(SimulationState state, std::shared_ptr<Map> atomicMap);

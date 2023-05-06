@@ -18,12 +18,11 @@ public:
 
   LayerSubject(const LayerSubject & obj) noexcept : Layer(obj) {
     subjectList.clear();
-    for (const auto & e: obj.subjectList) {
+    for (const auto & e : obj.subjectList) {
       subjectList.push_back(std::unique_ptr<Subject>(e->clone()));
     }
   }
 
-  const std::list<std::unique_ptr<Subject>> & getSubjectList() {
-    return subjectList;
-  }
+  const std::list<std::unique_ptr<Subject>> & getSubjectList() { return subjectList; }
+  std::list<std::unique_ptr<Subject>> & accessSubjectList() { return subjectList; }
 };

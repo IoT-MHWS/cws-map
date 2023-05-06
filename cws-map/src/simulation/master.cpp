@@ -124,8 +124,6 @@ void SimulationMaster::updateSimulationMap() {
   {
     auto [qlock, queries] = interface.masterAccessQueries();
 
-    bool queriesExist = !queries.empty();
-
     while (!queries.empty()) {
       const auto & query = queries.front();
       // if current map exists then apply changes to new map else to current
@@ -135,12 +133,11 @@ void SimulationMaster::updateSimulationMap() {
         curMap->update(std::move(*query));
       }
       queries.pop();
-    }
+
 #ifndef NDEBUG
-    if (queriesExist) {
-      std::cout << "master: Simulation map updated." << std::endl;
-    }
+      std::cout << "master: Update query processed." << std::endl;
 #endif
+    }
   }
 }
 
