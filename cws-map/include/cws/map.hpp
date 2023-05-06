@@ -10,7 +10,8 @@ class Layers {
   MapLayerSubject subjectLayer;
 
 public:
-  explicit Layers(Dimension dimension) : temperatureLayer(dimension), subjectLayer(dimension) {}
+  explicit Layers(Dimension dimension)
+      : temperatureLayer(dimension), subjectLayer(dimension) {}
 
   const MapLayerTemperature & getTemperatureLayer() const { return temperatureLayer; }
 
@@ -30,5 +31,5 @@ public:
 
   Dimension getDimension() const { return dimension; }
 
-  void nextState();
+  void nextState(const Map &cur);
 };

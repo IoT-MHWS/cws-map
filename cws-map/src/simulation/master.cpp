@@ -4,6 +4,7 @@
 #include <iostream>
 #include <thread>
 
+#include "cws/simulation/simulation_map.hpp"
 #include <cws/simulation/interface.hpp>
 #include <cws/simulation/simulation.hpp>
 
@@ -47,13 +48,21 @@ void SimulationMaster::execute(std::stop_token stoken) {
       waitSlaveProcess();
     }
 
-    if (state.currentTick == state.lastTick) {
+    if (state.type != SimulationType::INFINITE && state.currentTick == state.lastTick) {
       state.status = SimulationStatus::STOPPED;
     }
 
-    interface.masterSetState(state);
+    // Set current map as updated map
+    if (mapExisted()) {
+      auto newMapR = newMap.release();
+      curMap = std::make_shared<SimulationMap>(*newMapR);
+    }
+
+    interface.masterSet(state, curMap);
+
 #ifndef NDEBUG
-    std::cout << "master: " << "updated interface state"<< std::endl;
+    std::cout << "master: "
+              << "updated interface state" << std::endl;
 #endif
 
     waitDurationExceeds(state, clockStart);
@@ -88,30 +97,53 @@ void SimulationMaster::updateSimulationState() {
 }
 
 void SimulationMaster::updateSimulationMap() {
-  auto [lock, queries] = interface.masterAccessQueries();
+  // to be synced with slave when slave uses mutex
+  std::scoped_lock<std::mutex> lock(msMutex);
 
-#ifndef NDEBUG
-  if (!queries.empty()) {
-    std::cout << "master: Simulation map updated." << std::endl;
+  Optional<Dimension> dimension = interface.masterGetDimension();
+
+  bool mapExisted = !!curMap;
+
+  if (dimension.isSet()) {
+    if (mapExisted) {
+      newMap.reset(new SimulationMap(*curMap));
+    } else {
+      curMap.reset(new SimulationMap(dimension.get()));
+    }
   }
-#endif
 
-  while (!queries.empty()) {
-    updateSimulationMapEntry(std::move(queries.front()));
-    queries.pop();
+  {
+    auto [qlock, queries] = interface.masterAccessQueries();
+
+    bool queriesExist = !queries.empty();
+
+    while (!queries.empty()) {
+      const auto & query = queries.front();
+      if (mapExisted) {
+        newMap->update(std::move(*query));
+      } else {
+        curMap->update(std::move(*query));
+      }
+      queries.pop();
+    }
+#ifndef NDEBUG
+    if (queriesExist) {
+      std::cout << "master: Simulation map updated." << std::endl;
+    }
+#endif
   }
 }
 
 void SimulationMaster::notifySlaveReady() {
   {
-    std::unique_lock lock(run_mutex);
+    std::unique_lock lock(msMutex);
     runReady = true;
   }
   cv.notify_one();
 }
 
 void SimulationMaster::waitSlaveProcess() {
-  std::unique_lock lock(run_mutex);
+  std::unique_lock lock(msMutex);
   cv.wait(lock, [this] { return runProcessed; });
   runProcessed = false;
 }
@@ -129,7 +161,4 @@ void SimulationMaster::waitDurationExceeds(
   std::this_thread::sleep_for(waitTime);
 }
 
-void SimulationMaster::updateSimulationMapEntry(
-    std::unique_ptr<SubjectQuery> && query) {
-  mapQuery.updateMap(std::move(*query.get()));
-}
+bool SimulationMaster::mapExisted() { return !!newMap; }

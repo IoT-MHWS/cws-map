@@ -3,4 +3,4 @@
 void Layers::nextState() { }
 
 
-void Map::nextState() { layers.nextState(); }
+void Map::nextState(const Map &cur) { layers.nextState(); }

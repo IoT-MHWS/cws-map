@@ -11,7 +11,7 @@ void SimulationSlave::wait() { worker.join(); }
 // called by master
 void SimulationSlave::exit() {
   {
-    std::unique_lock lock(master.run_mutex);
+    std::unique_lock lock(master.msMutex);
     master.runDoExit = true;
   }
   master.cv.notify_one();
@@ -19,14 +19,14 @@ void SimulationSlave::exit() {
 }
 
 void SimulationSlave::execute() {
-  auto & mutex = master.run_mutex;
+  auto & msMutex = master.msMutex;
   auto & cv = master.cv;
   auto & runReady = master.runReady;
   auto & runProcessed = master.runProcessed;
   auto & doExit = master.runDoExit;
 
   while (true) {
-    std::unique_lock lock(mutex);
+    std::unique_lock lock(msMutex);
 
     cv.wait(lock, [&runReady, &doExit] { return runReady || doExit; });
 
@@ -46,6 +46,8 @@ void SimulationSlave::execute() {
 }
 
 void SimulationSlave::updateSimulationMap() {
-  // const auto &[lock, map] = 
-  std::cout << "slave: Simulation map next state generated." << std::endl;
+  if (master.mapExisted()) {
+    master.newMap->nextState(*master.curMap);
+    std::cout << "slave: " << "map updated" << std::endl;
+  }
 }

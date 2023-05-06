@@ -36,3 +36,4 @@ cmake --build build
 ### Might
 
 * [ ] Add spdlog for the project
+* [ ] Replace `std::mutex` with atomic read-modify-write
