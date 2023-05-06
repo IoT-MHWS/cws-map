@@ -52,10 +52,16 @@ void SimulationMaster::execute(std::stop_token stoken) {
       state.status = SimulationStatus::STOPPED;
     }
 
+#ifndef NDEBUG
+    std::cout << "master: "
+              << "curMap: " << curMap.get() << std::endl
+              <<" newMap: " << newMap.get() << std::endl;
+#endif
+
     // Set current map as updated map
     if (mapExisted()) {
       auto newMapR = newMap.release();
-      curMap = std::make_shared<SimulationMap>(*newMapR);
+      curMap = std::shared_ptr<SimulationMap>(newMapR);
     }
 
     interface.masterSet(state, curMap);
@@ -97,18 +103,21 @@ void SimulationMaster::updateSimulationState() {
 }
 
 void SimulationMaster::updateSimulationMap() {
-  // to be synced with slave when slave uses mutex
+  // to be synced with slave
   std::scoped_lock<std::mutex> lock(msMutex);
 
   Optional<Dimension> dimension = interface.masterGetDimension();
 
-  bool mapExisted = !!curMap;
+  bool curMapExist = !!curMap;
 
+  /* If request on new map then create new currentMap
+   * else if current map exists then just create newMap to store create next state*/
   if (dimension.isSet()) {
-    if (mapExisted) {
+    curMap.reset(new SimulationMap(dimension.get()));
+    newMap.reset();
+  } else {
+    if (curMapExist) {
       newMap.reset(new SimulationMap(*curMap));
-    } else {
-      curMap.reset(new SimulationMap(dimension.get()));
     }
   }
 
@@ -119,7 +128,8 @@ void SimulationMaster::updateSimulationMap() {
 
     while (!queries.empty()) {
       const auto & query = queries.front();
-      if (mapExisted) {
+      // if current map exists then apply changes to new map else to current
+      if (curMapExist) {
         newMap->update(std::move(*query));
       } else {
         curMap->update(std::move(*query));

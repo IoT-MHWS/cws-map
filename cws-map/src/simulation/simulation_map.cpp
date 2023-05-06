@@ -3,3 +3,4 @@
 void SimulationMap::update(SubjectQuery && query) {
   std::cout << "Query processed" << std::endl;
 }
+

@@ -32,4 +32,6 @@ public:
   Dimension getDimension() const { return dimension; }
 
   void nextState(const Map &cur);
+
+  friend std::ostream & operator<<(std::ostream & out, const Map * map);
 };
