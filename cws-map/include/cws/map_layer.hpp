@@ -14,7 +14,7 @@
 /*
  * Just a normal cell that contains element in it
  */
-template<Derived<BaseLayer> T>
+template<Derived<Layer> T>
 class CellLayer {
   T element;
 
@@ -22,9 +22,9 @@ public:
   CellLayer(){};
 
   CellLayer(T && element) {
-    #ifndef NDEBUG
+#ifndef NDEBUG
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    #endif
+#endif
     this->element = std::move(element);
   }
 
@@ -36,7 +36,7 @@ public:
 /*
  * Is a 2-d array of cells of type T
  */
-template<Derived<BaseLayer> T>
+template<Derived<Layer> T>
 class MapLayer {
 private:
   std::vector<std::vector<CellLayer<T>>> field;

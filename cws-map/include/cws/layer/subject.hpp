@@ -6,24 +6,24 @@
 #include <list>
 #include <memory>
 
-class LayerSubject : public BaseLayer {
-  std::list<std::unique_ptr<BaseSubject>> subjectList;
+class LayerSubject : public Layer {
+  std::list<std::unique_ptr<Subject>> subjectList;
 
 public:
-  LayerSubject() : BaseLayer() {}
+  LayerSubject() : Layer() {}
 
-  LayerSubject(LayerSubject && obj) noexcept : BaseLayer(std::move(obj)) {
+  LayerSubject(LayerSubject && obj) noexcept : Layer(std::move(obj)) {
     std::swap(this->subjectList, obj.subjectList);
   }
 
-  LayerSubject(const LayerSubject & obj) noexcept : BaseLayer(obj) {
+  LayerSubject(const LayerSubject & obj) noexcept : Layer(obj) {
     subjectList.clear();
     for (const auto & e: obj.subjectList) {
-      subjectList.push_back(std::unique_ptr<BaseSubject>(e->clone()));
+      subjectList.push_back(std::unique_ptr<Subject>(e->clone()));
     }
   }
 
-  const std::list<std::unique_ptr<BaseSubject>> & getSubjectList() {
+  const std::list<std::unique_ptr<Subject>> & getSubjectList() {
     return subjectList;
   }
 };

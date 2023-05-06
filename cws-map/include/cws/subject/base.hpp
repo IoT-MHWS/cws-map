@@ -30,18 +30,18 @@ struct SubjectParameters {
   Percentage humidityTransmission;
 };
 
-class BaseSubject {
+class Subject {
 protected:
   SubjectType type;
   SubjectParameters parameters;
 
 public:
-  BaseSubject() : type(SubjectType::UNSPECIFIED) {}
+  Subject() : type(SubjectType::UNSPECIFIED) {}
 
-  BaseSubject(SubjectType type, SubjectParameters parameters)
+  Subject(SubjectType type, SubjectParameters parameters)
       : type(type), parameters(parameters) {}
 
-  virtual BaseSubject * clone() const { return new BaseSubject(*this); }
+  virtual Subject * clone() const { return new Subject(*this); }
 
   SubjectType getSubjectType() const { return type; }
   SubjectParameters getSubjectParameters() const { return parameters; }

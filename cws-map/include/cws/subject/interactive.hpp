@@ -12,13 +12,13 @@ struct InteractiveState {
   InteractionStateType type;
 };
 
-struct SubjectInteractive : public BaseSubject {
+struct SubjectInteractive : public Subject {
   int id;
   InteractiveState interactionState;
 
 public:
   SubjectInteractive(int id, SubjectParameters parameters, InteractiveState state)
-      : BaseSubject(SubjectType::INTERACTIVE, parameters), id(id),
+      : Subject(SubjectType::INTERACTIVE, parameters), id(id),
         interactionState(state) {}
 
   SubjectInteractive * clone() const override { return new SubjectInteractive(*this); }

@@ -7,7 +7,7 @@
 class Layers;
 class Structures;
 
-template<Derived<BaseLayer> T>
+template<Derived<Layer> T>
 class MapLayerBase : public MapLayer<T> {
 public:
   MapLayerBase(Dimension dimension) : MapLayer<T>(dimension) {}

@@ -2,12 +2,12 @@
 
 #include "cws/subject/base.hpp"
 
-struct SubjectPlain : public BaseSubject {
+struct SubjectPlain : public Subject {
   int id;
 
 public:
   SubjectPlain(int id, SubjectParameters parameters)
-      : BaseSubject(SubjectType::PLAIN, parameters), id(id) {}
+      : Subject(SubjectType::PLAIN, parameters), id(id) {}
 
   SubjectPlain * clone() const override { return new SubjectPlain(*this); }
 

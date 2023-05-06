@@ -3,7 +3,7 @@
 #include "cws/general.hpp"
 #include "cws/layer/base.hpp"
 
-class LayerTemperature : public BaseLayer {
+class LayerTemperature : public Layer {
   Temperature temperature;
 
 public:
@@ -11,5 +11,5 @@ public:
 
   explicit LayerTemperature(Temperature t) : temperature(t) {}
 
-  Temperature getTemperature() { return temperature; }
+  Temperature getTemperature() const { return temperature; }
 };

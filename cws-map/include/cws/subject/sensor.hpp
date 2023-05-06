@@ -10,13 +10,13 @@ enum class SensorType {
   LUMINOSITY = 3,
 };
 
-struct SubjectSensor : public BaseSubject {
+struct SubjectSensor : public Subject {
   int id;
   SensorType sensorType;
 
 public:
   SubjectSensor(SensorType sensorType, int id, SubjectParameters parameters)
-      : BaseSubject(SubjectType::SENSOR, parameters), sensorType(sensorType), id(id) {}
+      : Subject(SubjectType::SENSOR, parameters), sensorType(sensorType), id(id) {}
 
   SubjectSensor * clone() const override { return new SubjectSensor(*this); }
 
