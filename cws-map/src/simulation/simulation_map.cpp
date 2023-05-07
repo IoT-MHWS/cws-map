@@ -44,8 +44,7 @@ void SimulationMap::setQueryUpdate(SubjectQuery && query) {
 
   for (auto it = subjectList.begin(); it != subjectList.end(); ++it) {
     if (**it == *query.subject) {
-      subjectList.erase(it);
-      subjectList.insert(it, std::move(query.subject));
+      *it = std::move(query.subject);
       break;
     }
   }
