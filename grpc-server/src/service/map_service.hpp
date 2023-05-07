@@ -166,6 +166,11 @@ public:
 
     SubjectQueryType queryType = fromSubjectQueryType(request->query_type());
     Coordinates coordinates = fromCoordinates(request->coordinates());
+
+    if (!verifyCoordinates(coordinates, map->getDimension(), *response)) {
+      return grpc::Status::OK;
+    }
+
     auto subject = fromSubjectDerived(request->subject());
 
     interface.addQuerySet(
