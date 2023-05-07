@@ -13,9 +13,9 @@ private:
 public:
   SimulationService(SimulationInterface & simulation) : interface(simulation) {}
 
-  ::grpc::Status
-  GetSimulationState(::grpc::ServerContext * context, const ::cws::Request * request,
-                     ::cws::ResponseSimulationState * response) override {
+  grpc::Status GetSimulationState(::grpc::ServerContext * context,
+                                  const cws::Request * request,
+                                  cws::ResponseSimulationState * response) override {
     auto stateI = interface.getState();
 
     auto state = response->mutable_state();
@@ -28,13 +28,12 @@ public:
     return grpc::Status::OK;
   }
 
-  ::grpc::Status SetSimulationState(::grpc::ServerContext * context,
-                                    const ::cws::RequestSimulationState * request,
-                                    ::cws::Response * response) override {
+  grpc::Status SetSimulationState(::grpc::ServerContext * context,
+                                  const cws::RequestSimulationState * request,
+                                  cws::Response * response) override {
     const auto & stateI = request->state();
 
-    SimulationStateIn state;
-    fromSimulationState(state, stateI);
+    SimulationStateIn state = fromSimulationState(stateI);
 
     interface.setState(state);
 

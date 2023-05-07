@@ -15,9 +15,9 @@ private:
 public:
   MapService(SimulationInterface & interface) : interface(interface) {}
 
-  ::grpc::Status GetMapDimension(::grpc::ServerContext * context,
-                                 const ::cws::Request * request,
-                                 ::cws::ResponseDimension * response) override {
+  grpc::Status GetMapDimension(::grpc::ServerContext * context,
+                               const cws::Request * request,
+                               cws::ResponseDimension * response) override {
     auto map = interface.getMap();
 
     if (!verifyMapSet(map, *response->mutable_base())) {
@@ -33,9 +33,9 @@ public:
     return grpc::Status::OK;
   }
 
-  ::grpc::Status CreateMap(::grpc::ServerContext * context,
-                           const ::cws::RequestDimension * request,
-                           ::cws::Response * response) override {
+  grpc::Status CreateMap(::grpc::ServerContext * context,
+                         const cws::RequestDimension * request,
+                         cws::Response * response) override {
 
     if (!request->has_dimension()) {
       auto rStatus = response->mutable_status();
@@ -53,9 +53,9 @@ public:
     return grpc::Status::OK;
   }
 
-  ::grpc::Status GetCell(::grpc::ServerContext * context,
-                         const ::cws::RequestCell * request,
-                         ::cws::ResponseCell * response) override {
+  grpc::Status GetCell(::grpc::ServerContext * context,
+                       const cws::RequestCell * request,
+                       cws::ResponseCell * response) override {
     auto map = interface.getMap();
 
     if (!verifyMapSet(map, *response->mutable_base())) {
@@ -64,8 +64,7 @@ public:
 
     auto dimension = map->getDimension();
 
-    Coordinates coord;
-    fromCoordinates(coord, request->coordinates());
+    Coordinates coord = fromCoordinates(request->coordinates());
 
     if (!verifyCoordinates(coord, dimension, *response->mutable_base())) {
       return grpc::Status::OK;
@@ -83,8 +82,8 @@ public:
     return grpc::Status::OK;
   }
 
-  ::grpc::Status GetMap(::grpc::ServerContext * context, const ::cws::Request * request,
-                        ::grpc::ServerWriter<::cws::ResponseCell> * writer) override {
+  grpc::Status GetMap(::grpc::ServerContext * context, const cws::Request * request,
+                      grpc::ServerWriter<::cws::ResponseCell> * writer) override {
     grpc::WriteOptions options;
 
     auto map = interface.getMap();
@@ -119,9 +118,9 @@ public:
     return grpc::Status::OK;
   }
 
-  ::grpc::Status GetSubject(::grpc::ServerContext * context,
-                            const ::cws::RequestSelectSubject * request,
-                            ::cws::ResponseSelectSubject * response) override {
+  grpc::Status GetSubject(::grpc::ServerContext * context,
+                          const cws::RequestSelectSubject * request,
+                          cws::ResponseSelectSubject * response) override {
     auto map = interface.getMap();
 
     if (!verifyMapSet(map, *response->mutable_base())) {
@@ -130,16 +129,13 @@ public:
 
     auto dimension = map->getDimension();
 
-    Coordinates coord;
-    fromCoordinates(coord, request->coordinates());
+    Coordinates coord = fromCoordinates(request->coordinates());
 
     if (!verifyCoordinates(coord, dimension, *response->mutable_base())) {
       return grpc::Status::OK;
     }
 
-    SubjectId id;
-    fromSubjectId(id, request->id(), request->type());
-
+    SubjectId id = fromSubjectId(request->id(), request->type());
     SubjectQuerySelect query(coord, id);
     auto res = map->getQuery(query);
 
@@ -158,10 +154,23 @@ public:
     return grpc::Status::OK;
   }
 
-  ::grpc::Status SetSubject(::grpc::ServerContext * context,
-                            const ::cws::RequestSetSubject * request,
-                            ::cws::Response * response) override {
-    // TODO: implement
+  grpc::Status SetSubject(::grpc::ServerContext * context,
+                          const cws::RequestSetSubject * request,
+                          cws::Response * response) override {
+
+    auto map = interface.getMap();
+
+    if (!verifyMapSet(map, *response)) {
+      return grpc::Status::OK;
+    }
+
+    SubjectQueryType queryType = fromSubjectQueryType(request->query_type());
+    Coordinates coordinates = fromCoordinates(request->coordinates());
+    auto subject = fromSubjectDerived(request->subject());
+
+    interface.addQuerySet(
+        std::make_unique<SubjectQuerySet>(queryType, coordinates, std::move(subject)));
+
     return grpc::Status::OK;
   }
 
