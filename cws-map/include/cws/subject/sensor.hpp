@@ -35,6 +35,8 @@ public:
       : SubjectSensor(SensorType::TEMPERATURE, idx, subjectParameters),
         sensorTemp(sensorTemp) {}
 
+  SensorTemperature(int idx) : SensorTemperature(idx, {}, {}) {}
+
   SensorTemperature * clone() const override { return new SensorTemperature(*this); }
 
   Temperature getTemperature() const { return sensorTemp; }

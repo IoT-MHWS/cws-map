@@ -20,6 +20,8 @@ public:
   MapLayerSubject & accessSubjectLayer() { return subjectLayer; }
 
   void nextState();
+
+  friend std::ostream & operator<<(std::ostream & out, const Layers * map);
 };
 
 class Map {

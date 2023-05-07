@@ -13,22 +13,11 @@ enum SubjectQueryType {
 struct SubjectQuery {
   SubjectQueryType queryType;
   Coordinates coordinates;
-
-  SubjectQuery(SubjectQueryType type, Coordinates coordinates)
-      : queryType(type), coordinates(coordinates) {}
-};
-
-struct SubjectQuerySelect : public SubjectQuery {
-  SubjectId id;
-  SubjectQuerySelect(Coordinates coordinates, SubjectId id)
-      : SubjectQuery(SubjectQueryType::SELECT, coordinates), id(id) {}
-};
-
-struct SubjectQuerySet : public SubjectQuery {
   std::unique_ptr<Subject> subject;
-  SubjectQuerySet(SubjectQueryType type, Coordinates coordinates,
-                  std::unique_ptr<Subject> && subject)
-      : SubjectQuery(type, coordinates), subject(std::move(subject)) {}
+
+  SubjectQuery(SubjectQueryType type, Coordinates coordinates,
+               std::unique_ptr<Subject> && subject)
+      : queryType(type), coordinates(coordinates), subject(std::move(subject)) {}
 };
 
 /*
@@ -39,11 +28,11 @@ class SimulationMap : public Map {
 public:
   explicit SimulationMap(Dimension dimension) : Map(dimension) {}
 
-  void setQuery(SubjectQuerySet && query);
-  const Subject * getQuery(const SubjectQuerySelect & query) const;
+  void setQuery(SubjectQuery && query);
+  const Subject * getQuery(const SubjectQuery & query) const;
 
 private:
-  void setQueryInsert(SubjectQuerySet && query);
-  void setQueryUpdate(SubjectQuerySet && query);
-  void setQueryDelete(SubjectQuerySet && query);
+  void setQueryInsert(SubjectQuery && query);
+  void setQueryUpdate(SubjectQuery && query);
+  void setQueryDelete(SubjectQuery && query);
 };

@@ -52,6 +52,10 @@ public:
     return field[coordinates.x][coordinates.y];
   }
 
+  CellLayer<T> & accessCell(Coordinates coordinates) {
+    return field[coordinates.x][coordinates.y];
+  }
+
   void setCell(CellLayer<T> cell, Coordinates coordinates) {
     field[coordinates.x][coordinates.y] = cell;
   }

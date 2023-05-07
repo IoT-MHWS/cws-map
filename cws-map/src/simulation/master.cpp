@@ -39,6 +39,31 @@ void SimulationMaster::execute(std::stop_token stoken) {
     updateSimulationMap();
 
 #ifndef NDEBUG
+    // if (curMap.get()) {
+    //   std::cout << "curMap: "
+    //             << curMap.get()
+    //                    ->getLayers()
+    //                    .getSubjectLayer()
+    //                    .getCell({.x = 0, .y = 0})
+    //                    .getElement()
+    //                    .getSubjectList()
+    //                    .size()
+    //             << std::endl;
+    // }
+    // if (newMap.get()) {
+    //   std::cout << "newMap: "
+    //             << newMap.get()
+    //                    ->getLayers()
+    //                    .getSubjectLayer()
+    //                    .getCell({.x = 0, .y = 0})
+    //                    .getElement()
+    //                    .getSubjectList()
+    //                    .size()
+    //             << std::endl;
+    // }
+#endif
+
+#ifndef NDEBUG
     std::cout << "master: " << state << std::endl;
 #endif
 

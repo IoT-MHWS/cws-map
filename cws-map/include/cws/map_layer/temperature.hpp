@@ -12,4 +12,7 @@ public:
       : MapLayerBase<LayerTemperature>(dimension) {}
 
   void nextState(const Layers & state) override;
+
+  // friend std::ostream & operator<<(std::ostream & out,
+  //                                  const MapLayerTemperature * layer);
 };

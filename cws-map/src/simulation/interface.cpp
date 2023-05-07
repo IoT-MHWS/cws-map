@@ -24,7 +24,7 @@ std::shared_ptr<const SimulationMap> SimulationInterface::getMap() const {
   return out.map;
 }
 
-void SimulationInterface::addQuerySet(std::unique_ptr<SubjectQuerySet> && query) {
+void SimulationInterface::addQuerySet(std::unique_ptr<SubjectQuery> && query) {
   std::unique_lock lock(in.queueMutex);
   in.queries.push(std::move(query));
 }
@@ -51,7 +51,7 @@ void SimulationInterface::masterSet(SimulationState state,
 }
 
 std::pair<std::unique_lock<std::mutex> &&,
-          SimulationInterface::QueueUP<SubjectQuerySet> &>
+          SimulationInterface::QueueUP<SubjectQuery> &>
 SimulationInterface::masterAccessQueries() {
   std::unique_lock lock(in.queueMutex);
   return std::make_pair(std::move(lock), std::ref(in.queries));
