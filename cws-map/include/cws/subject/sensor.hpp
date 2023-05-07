@@ -10,7 +10,7 @@ enum class SensorType {
   LUMINOSITY = 3,
 };
 
-struct SubjectSensor : public Subject {
+class SubjectSensor : public Subject {
   SensorType sensorType;
 
 public:
@@ -26,7 +26,7 @@ public:
 /*
  * Temperature sensor
  */
-struct SensorTemperature : public SubjectSensor {
+class SensorTemperature : public SubjectSensor {
   Temperature sensorTemp;
 
 public:
@@ -36,6 +36,8 @@ public:
         sensorTemp(sensorTemp) {}
 
   SensorTemperature * clone() const override { return new SensorTemperature(*this); }
+
+  Temperature getTemperature() const { return sensorTemp; }
 
   void nextState(SubjectId subjectId, const Layers & layers) override;
 };

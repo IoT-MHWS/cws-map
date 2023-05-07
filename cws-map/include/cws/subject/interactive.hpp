@@ -12,7 +12,7 @@ struct InteractiveState {
   InteractionStateType type;
 };
 
-struct SubjectInteractive : public Subject {
+class SubjectInteractive : public Subject {
   InteractiveState interactionState;
 
 public:

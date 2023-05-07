@@ -31,6 +31,10 @@ void SimulationMaster::execute(std::stop_token stoken) {
       return;
     }
 
+#ifndef NDEBUG
+    std::cout << "------------------------------------------" << std::endl;
+#endif
+
     updateSimulationState();
     updateSimulationMap();
 
@@ -54,8 +58,8 @@ void SimulationMaster::execute(std::stop_token stoken) {
 
 #ifndef NDEBUG
     std::cout << "master: " << std::endl
-              << "    curMap: " << curMap.get() << std::endl
-              << "    newMap: " << newMap.get() << std::endl;
+              << "  curMap: " << curMap.get() << std::endl
+              << "  newMap: " << newMap.get() << std::endl;
 #endif
 
     // Set current map as updated map
@@ -135,7 +139,7 @@ void SimulationMaster::updateSimulationMap() {
       queries.pop();
 
 #ifndef NDEBUG
-      std::cout << "master: Update query processed." << std::endl;
+      std::cout << "master: update query processed." << std::endl;
 #endif
     }
   }

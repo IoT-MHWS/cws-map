@@ -2,7 +2,7 @@
 
 #include "cws/subject/base.hpp"
 
-struct SubjectPlain : public Subject {
+class SubjectPlain : public Subject {
 public:
   SubjectPlain(int idx, SubjectParameters parameters)
       : Subject(SubjectId{SubjectType::PLAIN, idx}, parameters) {}
