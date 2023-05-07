@@ -24,8 +24,11 @@ public:
     }
 
     auto coordinates = fromCoordinates(request->coordinates());
-    auto subjectId = fromSubjectId(request->id(), toSubjectType(SubjectType::SENSOR));
-    SubjectQuerySelect query(coordinates, subjectId);
+
+    auto idx = request->id().id();
+
+    SubjectQuery query(SubjectQueryType::SELECT, coordinates,
+                       std::make_unique<SensorTemperature>(idx));
 
     auto subject = map->getQuery(std::move(query));
 

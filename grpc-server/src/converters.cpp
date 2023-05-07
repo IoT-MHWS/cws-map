@@ -55,6 +55,7 @@ void toLayer(cws::Layer & out, const Layer & layer) {}
 void toLayerSubject(cws::LayerSubject & out, const LayerSubject & layerSubject) {
   toLayer(*out.mutable_base(), static_cast<const Layer &>(layerSubject));
   for (const auto & subject : layerSubject.getSubjectList()) {
+    std::cout << "HERE" << std::endl;
     auto outSubject = out.add_subjects();
     toSubjectDerived(*outSubject, subject.get());
   }
@@ -355,6 +356,8 @@ SubjectQueryType fromSubjectQueryType(cws::SubjectQueryType type) {
   case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_UPDATE:
     return SubjectQueryType::UPDATE;
   case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_UNSPECIFIED:
+  case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_SELECT:
+    return SubjectQueryType::SELECT;
   default:
     return SubjectQueryType::UNSPECIFIED;
   }

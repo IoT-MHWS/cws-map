@@ -119,13 +119,15 @@ public:
   }
 
   grpc::Status GetSubject(::grpc::ServerContext * context,
-                          const cws::RequestSelectSubject * request,
+                          const cws::RequestQuerySubject * request,
                           cws::ResponseSelectSubject * response) override {
     auto map = interface.getMap();
 
     if (!verifyMapSet(map, *response->mutable_base())) {
       return grpc::Status::OK;
     }
+
+    auto queryType = fromSubjectQueryType(request->query_type());
 
     auto dimension = map->getDimension();
 
@@ -135,9 +137,8 @@ public:
       return grpc::Status::OK;
     }
 
-    SubjectId id = fromSubjectId(request->id(), request->type());
-    SubjectQuerySelect query(coord, id);
-    auto res = map->getQuery(query);
+    SubjectQuery query(queryType, coord, fromSubjectDerived(request->subject()));
+    auto res = map->getQuery(std::move(query));
 
     if (res == nullptr) {
       auto respBase = response->mutable_base();
@@ -155,7 +156,7 @@ public:
   }
 
   grpc::Status SetSubject(::grpc::ServerContext * context,
-                          const cws::RequestSetSubject * request,
+                          const cws::RequestQuerySubject * request,
                           cws::Response * response) override {
 
     auto map = interface.getMap();
@@ -174,7 +175,7 @@ public:
     auto subject = fromSubjectDerived(request->subject());
 
     interface.addQuerySet(
-        std::make_unique<SubjectQuerySet>(queryType, coordinates, std::move(subject)));
+        std::make_unique<SubjectQuery>(queryType, coordinates, std::move(subject)));
 
     return grpc::Status::OK;
   }
