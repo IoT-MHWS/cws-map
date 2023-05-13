@@ -1,5 +1,8 @@
 #include "cws/simulation/simulation.hpp"
 
+
+// #include <sys/prctl.h>
+
 /* ExecutorSlave */
 void SimulationSlave::run() {
   std::thread worker2(&SimulationSlave::execute, this);
@@ -19,6 +22,8 @@ void SimulationSlave::exit() {
 }
 
 void SimulationSlave::execute() {
+  // prctl(PR_SET_NAME, "sim-slave", 0, 0, 0);
+
   auto & msMutex = master.msMutex;
   auto & cv = master.cv;
   auto & runReady = master.runReady;
@@ -48,6 +53,7 @@ void SimulationSlave::execute() {
 void SimulationSlave::updateSimulationMap() {
   if (master.mapExisted()) {
     master.newMap->update(*master.curMap);
-    std::cout << "slave: " << "map updated" << std::endl;
+    std::cout << "slave: "
+              << "map updated" << std::endl;
   }
 }
