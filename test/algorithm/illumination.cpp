@@ -104,7 +104,7 @@ std::pair<int, int> get_dimension(const std::vector<std::vector<T>> & map) {
   return std::make_pair(map.size(), map.empty() ? 0 : map[0].size());
 }
 
-int get_next_brightness(int n_brightness, double n_absorption) {
+int get_brightness(int n_brightness, double n_absorption) {
   return static_cast<double>(n_brightness) * (1 - n_absorption);
 }
 
@@ -114,7 +114,7 @@ void calc_cell_illum(const std::pair<int, int> & dim,
                      const illum_source_xy & src_s, std::pair<int, int> p) {
 
   // if already counted
- if (layer[p.first][p.second] != -1) {
+  if (layer[p.first][p.second] != -1) {
     return;
   }
 
@@ -140,14 +140,14 @@ void calc_cell_illum(const std::pair<int, int> & dim,
     }
   }
 
-  auto &n_brightness = layer[max_n.first][max_n.second];
+  auto & n_brightness = layer[max_n.first][max_n.second];
 
   if (n_brightness == -1) {
     calc_cell_illum(dim, absorptions, layer, src_s, max_n);
   }
 
   layer[p.first][p.second] =
-      get_next_brightness(n_brightness, absorptions[max_n.first][max_n.second]);
+      get_brightness(n_brightness, absorptions[p.first][p.second]);
 }
 
 std::vector<std::vector<int>>
@@ -156,7 +156,7 @@ calc_illumination_src(const std::vector<std::vector<double>> & absorptions,
   auto dim = get_dimension(absorptions);
   auto res = std::vector<std::vector<int>>(dim.first, std::vector<int>(dim.second, -1));
 
-  res[src.x][src.y] = src.brightness;
+  res[src.x][src.y] = get_brightness(src.brightness, absorptions[src.x][src.y]);
 
   for (int x = 0; x < dim.first; ++x) {
     for (int y = 0; y < dim.second; ++y) {
@@ -199,10 +199,10 @@ int main() {
   };
 
   std::vector<illum_source_xy> srcs;
-  srcs.push_back((illum_source_xy){.x = 0, .y = 0, .brightness = 350});
+  // srcs.push_back((illum_source_xy){.x = 0, .y = 0, .brightness = 350});
   srcs.push_back((illum_source_xy){.x = 1, .y = 1, .brightness = 200});
-  srcs.push_back((illum_source_xy){.x = 2, .y = 2, .brightness = 200});
-  srcs.push_back((illum_source_xy){.x = 3, .y = 3, .brightness = 400});
+  // srcs.push_back((illum_source_xy){.x = 2, .y = 2, .brightness = 200});
+  // srcs.push_back((illum_source_xy){.x = 3, .y = 3, .brightness = 400});
 
   auto res = calc_illumination(abs_layer, srcs);
 

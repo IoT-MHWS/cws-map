@@ -15,12 +15,13 @@ class Turnable : virtual public Subject::Extensiable {
 public:
   Turnable() : status_(TurnableStatus::OFF) {}
 
+  Turnable(TurnableStatus status) { status_ = status; }
+
   TurnableStatus getStatus() const { return status_; }
 
   void setStatus(TurnableStatus status) { status_ = status; }
 
   bool isTurnable() const final override { return true; }
-
 };
 
 }// namespace Subject
