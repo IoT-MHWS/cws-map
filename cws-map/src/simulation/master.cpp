@@ -188,7 +188,7 @@ void SimulationMaster::waitDurationExceeds(
     const SimulationState & state,
     const std::chrono::time_point<std::chrono::high_resolution_clock> & start) {
 
-  auto duration = static_cast<int>(1'000'000'000 / state.taskFrequency);
+  auto duration = static_cast<long>((long)1'000'000'000 / state.taskFrequency);
   std::chrono::nanoseconds taskMaxDuration(duration);
 
   auto leadTime = std::chrono::high_resolution_clock::now() - start;
