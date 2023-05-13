@@ -17,11 +17,12 @@ public:
 
   Turnable(TurnableStatus status) { status_ = status; }
 
+  bool isTurnable() const final override { return true; }
+
+public:
   TurnableStatus getStatus() const { return status_; }
 
   void setStatus(TurnableStatus status) { status_ = status; }
-
-  bool isTurnable() const final override { return true; }
 };
 
 }// namespace Subject

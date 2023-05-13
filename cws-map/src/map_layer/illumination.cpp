@@ -3,129 +3,120 @@
 #include <list>
 #include <vector>
 
-struct illum_source_xy {
-  int x, y;
-  int brightness;
-};
+static Illumination ILLUMINATION_DEFAULT = {.value = -1};
 
-std::pair<int, int> vector(std::pair<int, int> p1, std::pair<int, int> p2) {
-  return std::make_pair(p2.first - p1.first, p2.second - p1.second);
+using PII = std::pair<int, int>;
+
+PII getVector(Coordinates p1, Coordinates p2) {
+  return std::make_pair(p2.x - p1.x, p2.y - p1.y);
 }
 
-int scalar_multiplication(std::pair<int, int> v1, std::pair<int, int> v2) {
+int getScalarMultiplication(PII v1, PII v2) {
   return v1.first * v2.first + v1.second * v2.second;
 }
 
-std::list<std::pair<int, int>> get_neighbours(std::pair<int, int> dim,
-                                              std::pair<int, int> p) {
+int getDistanceSquare(PII v) { return v.first * v.first + v.second * v.second; }
 
-  std::list<std::pair<int, int>> n;
+std::list<Coordinates> getNeighbours(Dimension dim, Coordinates p) {
 
-  for (int x = p.first - 1; x <= p.first + 1; ++x) {
-    for (int y = p.second - 1; y <= p.second + 1; ++y) {
-      if (x < 0 || x >= dim.first || y < 0 || y >= dim.second ||
-          (x == p.first && y == p.second)) {
+  std::list<Coordinates> n;
+
+  for (int x = p.x - 1; x <= p.x + 1; ++x) {
+    for (int y = p.y - 1; y <= p.y + 1; ++y) {
+      if (x < 0 || x >= dim.width || y < 0 || y >= dim.height ||
+          (x == p.x && y == p.x)) {
         continue;
       }
       n.emplace_back(x, y);
     }
   }
-
   return n;
 }
 
-int get_distance_square(std::pair<int, int> v) {
-  return v.first * v.first + v.second * v.second;
-}
+void calcForCell(MapLayerIllumination & layer, const MapLayerAbsorption & absorptions,
+                 Coordinates & src, Coordinates p) {
 
-template<typename T>
-std::pair<int, int> get_dimension(const std::vector<std::vector<T>> & map) {
-  return std::make_pair(map.size(), map.empty() ? 0 : map[0].size());
-}
-
-int get_next_brightness(int n_brightness, double n_absorption) {
-  return static_cast<double>(n_brightness) * (1 - n_absorption);
-}
-
-void calc_cell_illum(const std::pair<int, int> & dim,
-                     const std::vector<std::vector<double>> & absorptions,
-                     std::vector<std::vector<int>> & layer,
-                     const illum_source_xy & src_s, std::pair<int, int> p) {
-
-  // if already counted
-  if (layer[p.first][p.second] != -1) {
+  // already calculated
+  if (layer.getIllumination(p) != ILLUMINATION_DEFAULT) {
     return;
   }
 
-  auto src = std::make_pair(src_s.x, src_s.y);
+  const auto dim = layer.getDimension();
 
-  auto neighs = get_neighbours(dim, p);
+  auto neighs = getNeighbours(dim, p);
 
-  std::pair<int, int> max_n;
-  auto max_sc_pn = -1;
-  auto max_d_pn = 0;
+  Coordinates best_n;
+  auto best_sm_pn = -1;
+  auto best_d_pn = 0;
 
-  auto v_psrc = vector(p, src);
+  auto v_psrc = getVector(p, src);
   // get closest element to the src or src
   for (const auto & n : neighs) {
-    auto v_pn = vector(p, n);
-    auto sc_pn = scalar_multiplication(v_psrc, v_pn);
-    auto d_pn = get_distance_square(v_pn);
+    auto v_pn = getVector(p, n);
+    auto sc_pn = getScalarMultiplication(v_psrc, v_pn);
+    auto d_pn = getDistanceSquare(v_pn);
     // find closest point if choosing between diagonal and adjacent
-    if (sc_pn > max_sc_pn || (sc_pn == max_sc_pn && d_pn < max_d_pn)) {
-      max_n = n;
-      max_sc_pn = sc_pn;
-      max_d_pn = d_pn;
+    if (sc_pn > best_sm_pn || (sc_pn == best_sm_pn && d_pn < best_d_pn)) {
+      best_n = n;
+      best_sm_pn = sc_pn;
+      best_d_pn = d_pn;
     }
   }
 
-  auto & n_brightness = layer[max_n.first][max_n.second];
+  Illumination max_n_illum;
+  {
+    max_n_illum = layer.getIllumination(best_n);
 
-  if (n_brightness == -1) {
-    calc_cell_illum(dim, absorptions, layer, src_s, max_n);
+    if (max_n_illum == ILLUMINATION_DEFAULT) {
+      calcForCell(layer, absorptions, src, best_n);
+    }
+
+    max_n_illum = layer.getIllumination(best_n);
   }
 
-  layer[p.first][p.second] =
-      get_next_brightness(n_brightness, absorptions[max_n.first][max_n.second]);
+  layer.setIllumination(
+      p, max_n_illum.getActualIllumination(absorptions.getAbsorption(p)));
 }
 
-std::vector<std::vector<int>>
-calc_illumination_src(const std::vector<std::vector<double>> & absorptions,
-                      const illum_source_xy & src) {
-  auto dim = get_dimension(absorptions);
-  auto res = std::vector<std::vector<int>>(dim.first, std::vector<int>(dim.second, -1));
+MapLayerIllumination
+calcForLightSrc(Dimension dim, const MapLayerAbsorption & absorptionLayer,
+                std::pair<Coordinates, const Subject::LightSource *> src) {
 
-  res[src.x][src.y] = src.brightness;
+  // to check whether calculated for this cell
+  MapLayerIllumination res(dim, ILLUMINATION_DEFAULT);
 
-  for (int x = 0; x < dim.first; ++x) {
-    for (int y = 0; y < dim.second; ++y) {
-      calc_cell_illum(dim, absorptions, res, src, std::make_pair(x, y));
+  {
+    auto abs = absorptionLayer.getAbsorption(src.first);
+    auto illum =
+        src.second->getParams().emittedRawIllumination.getActualIllumination(abs);
+    res.setIllumination(src.first, illum);
+  }
+
+  Coordinates p;
+  for (p.x = 0; p.x < dim.width; ++p.x) {
+    for (p.y = 0; p.y < dim.height; ++p.x) {
+      calcForCell(res, absorptionLayer, src.first, p);
     }
   }
 
   return res;
 }
 
-std::vector<std::vector<int>>
-calc_illumination(const std::vector<std::vector<double>> & absorptions,
-                  const std::vector<illum_source_xy> & sources) {
+void MapLayerIllumination::update(const MapLayerAbsorption & absorptionLayer,
+                                  const MapLayerSubject & subjectLayer) {
 
-  auto dim = get_dimension(absorptions);
-  auto res = std::vector<std::vector<int>>(dim.first, std::vector<int>(dim.second, 0));
+  const auto & srcs = subjectLayer.getActiveLightSources();
+  auto dim = getDimension();
 
-  for (const auto & src : sources) {
-    auto res_src = calc_illumination_src(absorptions, src);
-    for (int x = 0; x < dim.first; ++x) {
-      for (int y = 0; y < dim.second; ++y) {
-        res[x][y] += res_src[x][y];
+  for (const auto & src : srcs) {
+    auto res = calcForLightSrc(dim, absorptionLayer, src);
+
+    // illumination for each source is managed like simple addition
+    Coordinates c;
+    for (c.x = 0; c.x < dim.width; ++c.x) {
+      for (c.y = 0; c.y < dim.height; ++c.y) {
+        setIllumination(c, getIllumination(c) + res.getIllumination(c));
       }
     }
   }
-
-  return res;
-}
-
-void MapLayerIllumination::setState(const MapLayerAbsorption & absorptionLayer,
-                                    const MapLayerSubject & subjectLayer) {
-
 }

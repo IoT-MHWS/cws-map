@@ -12,7 +12,15 @@ public:
   /*
    * Sync AbsorptionLayer with LayerSubject
    */
-  void setState(const MapLayerSubject & layerSubject);
+  void update(const MapLayerSubject & layerSubject);
+
+  Absorption getAbsorption(Coordinates c) const {
+    return getCell(c).getElement().getAbsorption();
+  }
+
+  void setAbsorption(Coordinates c, Absorption abs) {
+    accessCell(c).accessElement().setAbsorption(abs);
+  }
 };
 
 class MapLayerIllumination : public MapLayerBase<LayerIllumination> {
@@ -21,6 +29,17 @@ public:
   MapLayerIllumination(Dimension dimension)
       : MapLayerBase<LayerIllumination>(dimension) {}
 
-  void setState(const MapLayerAbsorption & absorptionLayer,
-                const MapLayerSubject & subjectLayer);
+  MapLayerIllumination(Dimension dimension, Illumination base)
+      : MapLayerBase<LayerIllumination>(dimension, base) {}
+
+  void update(const MapLayerAbsorption & absorptionLayer,
+              const MapLayerSubject & subjectLayer);
+
+  void setIllumination(Coordinates coord, Illumination illum) {
+    accessCell(coord).accessElement().setIllumination(illum);
+  }
+
+  Illumination getIllumination(Coordinates coord) const {
+    return getCell(coord).getElement().getIllumination();
+  }
 };

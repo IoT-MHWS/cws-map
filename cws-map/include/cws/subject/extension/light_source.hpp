@@ -1,11 +1,12 @@
 #pragma once
 
+#include "cws/general.hpp"
 #include "cws/subject/extension/base.hpp"
 
 namespace Subject {
 
 struct LightSourceParams {
-  double emittedLight_;
+  Illumination emittedRawIllumination;
 };
 
 class LightSource : virtual public Subject::Extensiable {
@@ -14,11 +15,12 @@ class LightSource : virtual public Subject::Extensiable {
 public:
   LightSource(LightSourceParams params) : params_(params) {}
 
+  bool isLightSource() const final override { return true; }
+
+public:
   LightSourceParams getParams() const { return params_; }
 
   void setParams(LightSourceParams params) { params_ = params; }
-
-  bool isLightSource() const final override { return true; }
 };
 
 }// namespace Subject

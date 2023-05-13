@@ -16,11 +16,12 @@ class TempSource : virtual public Subject::Extensiable {
 public:
   TempSource(TempSourceParams params) : params_(params) {}
 
+  bool isTempSource() const final override { return true; }
+
+public:
   TempSourceParams getParams() const { return params_; }
 
   void setParams(TempSourceParams params) { params_ = params; }
-
-  bool isTempSource() const final override { return true; }
 };
 
 }// namespace Subject

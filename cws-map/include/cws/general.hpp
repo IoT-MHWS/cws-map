@@ -25,10 +25,6 @@ struct Temperature {
   double value;
 };
 
-struct Illumination {
-  int value;
-};
-
 struct Absorption {
   double value;
 
@@ -37,4 +33,14 @@ struct Absorption {
   friend Absorption operator+(const Absorption &lhs, const Absorption &rhs);
   friend Absorption operator-(const Absorption &lhs, const Absorption &rhs);
   friend Absorption operator*(const Absorption &lhs, const Absorption &rhs);
+};
+
+
+struct Illumination {
+  int value;
+
+  friend Illumination operator+(const Illumination &lhs, const Illumination &rhs);
+  friend bool operator==(const Illumination& lhs, const Illumination& rhs);
+
+  Illumination getActualIllumination(const Absorption &abs);
 };

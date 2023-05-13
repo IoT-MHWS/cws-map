@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cws/layer/base.hpp"
+#include "cws/subject/extension/light_source.hpp"
 #include "cws/subject/plain.hpp"
 
 #include <list>
@@ -26,5 +27,9 @@ public:
   const std::list<std::unique_ptr<Subject::Plain>> & getSubjectList() const {
     return subjectList;
   }
-  std::list<std::unique_ptr<Subject::Plain>> & accessSubjectList() { return subjectList; }
+  std::list<std::unique_ptr<Subject::Plain>> & accessSubjectList() {
+    return subjectList;
+  }
+
+  const std::list<const Subject::LightSource *> getActiveLightSources() const;
 };
