@@ -103,12 +103,12 @@ void toSubject(cws::Subject & out, const Subject * subject) {
   toSubjectId(*out.mutable_id(), subject->getSubjectId());
 
   auto params = subject->getSubjectParameters();
-  out.set_weight(params.weight);
-  out.set_heat_capacity(params.heatCapacity);
-  toPercentage(*out.mutable_heat_transmission(), params.heatTransmission);
-  toTemperature(*out.mutable_temperature(), params.temperature);
-  toPercentage(*out.mutable_light_transmission(), params.lightTransmission);
-  toPercentage(*out.mutable_humidity_transmission(), params.humidityTransmission);
+  // out.set_weight(params.weight);
+  // out.set_heat_capacity(params.heatCapacity);
+  // toPercentage(*out.mutable_heat_transmission(), params.heatTransmission);
+  // toTemperature(*out.mutable_temperature(), params.temperature);
+  // toPercentage(*out.mutable_light_transmission(), params.lightTransmission);
+  // toPercentage(*out.mutable_humidity_transmission(), params.humidityTransmission);
 }
 
 void toSubjectSensorDerived(cws::SubjectSensorDerived & out,
@@ -246,12 +246,12 @@ SubjectId fromSubjectId(const cws::SubjectId & id, cws::SubjectType type) {
 
 SubjectParameters fromSubjectParameters(const cws::Subject & in) {
   return {
-      .weight = in.weight(),
-      .heatCapacity = in.heat_capacity(),
-      .heatTransmission = fromPercentage(in.heat_transmission()),
-      .temperature = fromTemperature(in.temperature()),
-      .lightTransmission = fromPercentage(in.light_transmission()),
-      .humidityTransmission = fromPercentage(in.humidity_transmission()),
+      // .weight = in.weight(),
+      // .heatCapacity = in.heat_capacity(),
+      // .heatTransmission = fromPercentage(in.heat_transmission()),
+      // .temperature = fromTemperature(in.temperature()),
+      // .lightTransmission = fromPercentage(in.light_transmission()),
+      // .humidityTransmission = fromPercentage(in.humidity_transmission()),
   };
 }
 

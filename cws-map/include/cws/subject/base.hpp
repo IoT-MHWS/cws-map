@@ -22,15 +22,7 @@ protected:
 };
 
 struct SubjectParameters {
-  double weight;
-
-  double heatCapacity;
-  Percentage heatTransmission;
-  Temperature temperature;
-
-  Percentage lightTransmission;
-
-  Percentage humidityTransmission;
+  Percentage lightAbsorption;
 };
 
 class Subject {
