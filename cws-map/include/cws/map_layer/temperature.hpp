@@ -10,9 +10,4 @@ class MapLayerTemperature : public MapLayerBase<LayerTemperature> {
 public:
   MapLayerTemperature(Dimension dimension)
       : MapLayerBase<LayerTemperature>(dimension) {}
-
-  void nextState(const Layers & state) override;
-
-  // friend std::ostream & operator<<(std::ostream & out,
-  //                                  const MapLayerTemperature * layer);
 };

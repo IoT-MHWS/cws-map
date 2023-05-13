@@ -1,4 +1,5 @@
 #include "cws/simulation/simulation_map.hpp"
+#include "cws/subject/plain.hpp"
 
 void SimulationMap::setQuery(SubjectQuery && query) {
   switch (query.queryType) {
@@ -16,7 +17,7 @@ void SimulationMap::setQuery(SubjectQuery && query) {
   }
 }
 
-const Subject * SimulationMap::getQuery(const SubjectQuery & query) const {
+const Subject::Plain * SimulationMap::getQuery(const SubjectQuery & query) const {
   if (query.queryType == SubjectQueryType::SELECT) {
     auto & subjectLayer = layers.getSubjectLayer();
     auto & cell = subjectLayer.getCell(query.coordinates);

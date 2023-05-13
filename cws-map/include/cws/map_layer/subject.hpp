@@ -9,6 +9,4 @@
 class MapLayerSubject : public MapLayerBase<LayerSubject> {
 public:
   MapLayerSubject(Dimension dimension) : MapLayerBase<LayerSubject>(dimension) {}
-
-  void nextState(const Layers & state) override;
 };

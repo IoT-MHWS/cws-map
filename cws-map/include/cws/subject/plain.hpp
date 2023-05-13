@@ -1,13 +1,56 @@
 #pragma once
 
-#include "cws/subject/base.hpp"
+#include "cws/general.hpp"
+#include "cws/layer/temperature.hpp"
+#include "cws/subject/extension/base.hpp"
+#include "cws/subject/type.hpp"
+#include <cstddef>
 
-class SubjectPlain : public Subject {
-public:
-  SubjectPlain(int idx, SubjectParameters parameters)
-      : Subject(SubjectId{SubjectType::PLAIN, idx}, parameters) {}
+class Layers;
 
-  SubjectPlain * clone() const override { return new SubjectPlain(*this); }
+namespace Subject {
 
-  void nextState(SubjectId subjectId, const Layers & layers) override;
+/*
+ * Identifier of subject
+ */
+struct Id {
+  SubjectType type;
+  int idx;
+
+protected:
+  friend bool operator==(const Id &, const Id &);
 };
+
+/*
+ * Params for all subjects
+ */
+struct PlainParams {
+  Absorption lightAbsorption;
+};
+
+/*
+ * Plain subject
+ */
+class Plain : virtual public Subject::Extensiable {
+protected:
+  Id id_;
+  PlainParams params_;
+
+public:
+  Plain() : id_({.type = SubjectType::UNSPECIFIED}) {}
+
+  Plain(Id id, PlainParams parameters) : id_(id), params_(parameters) {}
+
+  virtual ~Plain() {}
+
+  virtual Plain * clone() const { return new Plain(*this); }
+
+public:
+  Id getSubjectId() const { return id_; }
+  PlainParams getSubjectParameters() const { return params_; }
+
+public:
+  friend bool operator==(const Plain &, const Plain &);
+};
+
+}// namespace Subject

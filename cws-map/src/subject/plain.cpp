@@ -1,5 +1,11 @@
-#include <cws/subject/plain.hpp>
+#include "cws/subject/plain.hpp"
 
-#include <cws/map.hpp>
+namespace Subject {
 
-void SubjectPlain::nextState(SubjectId subjectId, const Layers &layers) {}
+bool operator==(const Id & lsv, const Id & rsv) {
+  return lsv.idx == rsv.idx && lsv.type == rsv.type;
+}
+
+bool operator==(const Plain & lhs, const Plain & rhs) { return lhs.id_ == rhs.id_; }
+
+}// namespace Subject

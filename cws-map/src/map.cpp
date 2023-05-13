@@ -1,8 +1,8 @@
 #include <cws/map.hpp>
 
-void Layers::nextState() {}
-
-void Map::nextState(const Map & cur) { layers.nextState(); }
+void Map::nextState(const Map & cur) { 
+  // auto &layers.(); 
+}
 
 std::ostream & operator<<(std::ostream & out, const Layers * layers) {
   out << "(" << (void *)layers << ")";

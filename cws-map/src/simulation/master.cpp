@@ -5,8 +5,8 @@
 #include <thread>
 
 #include "cws/simulation/simulation_map.hpp"
-#include <cws/simulation/interface.hpp>
-#include <cws/simulation/simulation.hpp>
+#include "cws/simulation/interface.hpp"
+#include "cws/simulation/simulation.hpp"
 
 void SimulationMaster::run() {
   std::jthread worker2(std::bind_front(&SimulationMaster::execute, this));

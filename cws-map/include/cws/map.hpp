@@ -2,24 +2,25 @@
 
 #include <memory>
 
-#include "map_layer/subject.hpp"
-#include "map_layer/temperature.hpp"
+#include "cws/map_layer/illumination.hpp"
+#include "cws/map_layer/subject.hpp"
+#include "cws/map_layer/temperature.hpp"
 
 class Layers {
   MapLayerTemperature temperatureLayer;
+  MapLayerIllumination illuminationLayer;
   MapLayerSubject subjectLayer;
 
 public:
   explicit Layers(Dimension dimension)
-      : temperatureLayer(dimension), subjectLayer(dimension) {}
+      : temperatureLayer(dimension), illuminationLayer(dimension),
+        subjectLayer(dimension) {}
 
   const MapLayerTemperature & getTemperatureLayer() const { return temperatureLayer; }
   MapLayerTemperature & accessTemperatureLayer() { return temperatureLayer; }
 
   const MapLayerSubject & getSubjectLayer() const { return subjectLayer; }
   MapLayerSubject & accessSubjectLayer() { return subjectLayer; }
-
-  void nextState();
 
   friend std::ostream & operator<<(std::ostream & out, const Layers * map);
 };

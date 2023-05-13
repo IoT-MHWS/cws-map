@@ -13,10 +13,10 @@ enum SubjectQueryType {
 struct SubjectQuery {
   SubjectQueryType queryType;
   Coordinates coordinates;
-  std::unique_ptr<Subject> subject;
+  std::unique_ptr<Subject::Plain> subject;
 
   SubjectQuery(SubjectQueryType type, Coordinates coordinates,
-               std::unique_ptr<Subject> && subject)
+               std::unique_ptr<Subject::Plain> && subject)
       : queryType(type), coordinates(coordinates), subject(std::move(subject)) {}
 };
 
@@ -29,7 +29,7 @@ public:
   explicit SimulationMap(Dimension dimension) : Map(dimension) {}
 
   void setQuery(SubjectQuery && query);
-  const Subject * getQuery(const SubjectQuery & query) const;
+  const Subject::Plain * getQuery(const SubjectQuery & query) const;
 
 private:
   void setQueryInsert(SubjectQuery && query);

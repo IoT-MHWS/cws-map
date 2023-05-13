@@ -40,23 +40,28 @@ public:
 template<Derived<Layer> T>
 class MapLayer {
 private:
-  std::vector<std::vector<CellLayer<T>>> field;
+  Dimension dimension_;
+  std::vector<std::vector<CellLayer<T>>> field_;
 
 public:
-  MapLayer(Dimension dimension) {
-    field = std::vector<std::vector<CellLayer<T>>>(
-        dimension.width, std::vector<CellLayer<T>>(dimension.height));
-  }
+  MapLayer(Dimension dimension)
+      : dimension_(dimension),
+        field_(std::vector<std::vector<CellLayer<T>>>(
+            dimension.width, std::vector<CellLayer<T>>(dimension.height))) {}
 
   const CellLayer<T> & getCell(Coordinates coordinates) const {
-    return field[coordinates.x][coordinates.y];
+    return field_[coordinates.x][coordinates.y];
   }
 
   CellLayer<T> & accessCell(Coordinates coordinates) {
-    return field[coordinates.x][coordinates.y];
+    return field_[coordinates.x][coordinates.y];
   }
 
   void setCell(CellLayer<T> cell, Coordinates coordinates) {
-    field[coordinates.x][coordinates.y] = cell;
+    field_[coordinates.x][coordinates.y] = cell;
+  }
+
+  Dimension getDimension() const {
+    return dimension_;
   }
 };
