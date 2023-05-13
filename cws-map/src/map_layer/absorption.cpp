@@ -3,15 +3,20 @@
 #include <algorithm>
 #include <cassert>
 
+static Absorption FULL_ABSORPTION{.value = 1};
+
 Absorption calcCellAbsorption(std::vector<Absorption> & absVector) {
   std::sort(
       absVector.begin(), absVector.end(),
       [](const Absorption & lsv, const Absorption & rsv) -> bool { return lsv > rsv; });
-  Absorption res{.value = 1};
+
+  Absorption res = FULL_ABSORPTION;
+
   for (const auto & abs : absVector) {
     res = res - res * abs;
   }
-  return Absorption{.value = 1} - res;
+
+  return FULL_ABSORPTION - res;
 }
 
 void MapLayerAbsorption::update(const MapLayerSubject & layerSubject) {

@@ -2,8 +2,8 @@
 
 std::list<std::pair<Coordinates, const Subject::LightSource *>>
 MapLayerSubject::getActiveLightSources() const {
-  Dimension dim = getDimension();
 
+  Dimension dim = getDimension();
   std::list<std::pair<Coordinates, const Subject::LightSource *>> srcs;
 
   Coordinates c;
