@@ -9,9 +9,6 @@ class MapLayerAbsorption : public MapLayerBase<LayerAbsorption> {
 public:
   MapLayerAbsorption(Dimension dimension) : MapLayerBase<LayerAbsorption>(dimension) {}
 
-  /*
-   * Sync AbsorptionLayer with LayerSubject
-   */
   void update(const MapLayerSubject & layerSubject);
 
   Absorption getAbsorption(Coordinates c) const {

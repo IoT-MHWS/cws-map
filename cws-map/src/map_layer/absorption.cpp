@@ -29,7 +29,7 @@ void MapLayerAbsorption::update(const MapLayerSubject & layerSubject) {
     for (c.y = 0; c.y < dimension.height; ++c.y) {
       auto & absCell = getCell(c);
 
-      auto & subList = layerSubject[c].getElement().getSubjectList();
+      auto & subList = layerSubject.getSubjectList(c);
       std::vector<Absorption> absVector(subList.size());
 
       for (auto & sub : subList) {

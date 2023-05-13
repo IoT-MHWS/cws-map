@@ -1,7 +1,16 @@
 #include <cws/map.hpp>
 
-void Map::nextState(const Map & cur) { 
-  // auto &layers.(); 
+/*
+ * 1) Update temperature layer
+ * 1.1) Update in-cell temperature
+ * 1.2) Update between-cell temperature
+ * 2) Update absorption layer == done
+ * 3) Update illumination == done
+ *
+ */
+void Map::update(const Map & cur) {
+  layers.absorptionLayer.update(layers.subjectLayer);
+  layers.illuminationLayer.update(layers.absorptionLayer, layers.subjectLayer);
 }
 
 std::ostream & operator<<(std::ostream & out, const Layers * layers) {

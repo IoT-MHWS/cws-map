@@ -71,8 +71,8 @@ public:
     }
 
     const auto & layers = map->getLayers();
-    const auto & tempLayer = layers.getTemperatureLayer();
-    const auto & subjectLayer = layers.getSubjectLayer();
+    const auto & tempLayer = layers.temperatureLayer;
+    const auto & subjectLayer = layers.subjectLayer;
 
     const auto cell = Cell{.coordinates = coord,
                            .temp = tempLayer.getCell(coord).getElement(),
@@ -98,8 +98,8 @@ public:
     auto dimension = map->getDimension();
 
     const auto & layers = map->getLayers();
-    const auto & tempLayer = layers.getTemperatureLayer();
-    const auto & subjectLayer = layers.getSubjectLayer();
+    const auto & tempLayer = layers.temperatureLayer;
+    const auto & subjectLayer = layers.subjectLayer;
 
     for (int x = 0; x < dimension.width; ++x) {
       for (int y = 0; y < dimension.height; ++y) {
