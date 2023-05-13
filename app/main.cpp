@@ -1,5 +1,6 @@
 #include "cws/simulation/interface.hpp"
 #include "cws/simulation/simulation.hpp"
+#include "cws/subject/light_emitter.hpp"
 #include <cws/general.hpp>
 #include <cws/map.hpp>
 #include <thread>
@@ -52,7 +53,16 @@ void simulation() {
   interface.exit();
 }
 
+void decoration() {
+  using namespace Subject;
+
+  TurnableLightEmitter emitter(LightEmitter(Plain(Id{.idx = 1}, {}), {}, {}), {});
+  std::cout << (int)emitter.getSubjectId().type << std::endl;
+}
+
 int main(int argc, char * argv[]) {
-  simulation();
+  // simulation();
+  decoration();
+
   return 0;
 }

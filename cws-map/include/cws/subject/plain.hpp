@@ -36,10 +36,15 @@ protected:
   Id id_;
   PlainParams params_;
 
-public:
-  Plain() : id_({.type = SubjectType::UNSPECIFIED}) {}
+protected:
+  void setType(SubjectType type) { id_.type = type; }
 
-  Plain(Id id, PlainParams parameters) : id_(id), params_(parameters) {}
+public:
+  Plain() : id_({.type = SubjectType::PLAIN}) {}
+
+  Plain(Id id, PlainParams parameters) : id_(id), params_(parameters) {
+    setType(SubjectType::PLAIN);
+  }
 
   virtual ~Plain() {}
 

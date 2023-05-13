@@ -15,8 +15,11 @@ using namespace Subject;
 class LightEmitter : public Plain, public LightSource, public TempSource {
 
 public:
-  LightEmitter(Id id, PlainParams plain, LightSourceParams light, TempSourceParams temp)
-      : Plain(id, plain), LightSource(light), TempSource(temp) {}
+  LightEmitter(Plain && plain, LightSourceParams light, TempSourceParams temp)
+      : Plain(std::move(plain)), LightSource(light), TempSource(temp) {
+
+    setType(SubjectType::LIGHT_EMITTER);
+  }
 
   virtual Plain * clone() const { return new LightEmitter(*this); }
 };
@@ -26,11 +29,11 @@ public:
  */
 class TurnableLightEmitter : public LightEmitter, public Turnable {
 public:
-  TurnableLightEmitter(LightEmitter lightEmitter, TurnableStatus status)
-      : LightEmitter(lightEmitter), Turnable(status) {}
+  TurnableLightEmitter(LightEmitter && lightEmitter, TurnableStatus status)
+      : LightEmitter(std::move(lightEmitter)), Turnable(status) {
 
-  TurnableLightEmitter(LightEmitter lightEmitter)
-      : LightEmitter(std::move(lightEmitter)) {}
+    setType(SubjectType::TURNABLE_LIGHT_EMITTER);
+  }
 
   virtual Plain * clone() const { return new TurnableLightEmitter(*this); }
 };
