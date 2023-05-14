@@ -12,30 +12,41 @@ using namespace Subject;
 /*
  * Always turned on light emitted
  */
-class LightEmitter : public Plain, public LightSource, public TempSource {
-
+class LightEmitter : public Plain, public LightSourceAlt, public TempSourceAlt {
 public:
-  LightEmitter(Plain && plain, LightSourceParams light, TempSourceParams temp)
-      : Plain(std::move(plain)), LightSource(light), TempSource(temp) {
+  LightEmitter(Plain &&plain, LightSourceParams &&light, TempSourceParams &&temp)
+      : Plain(std::move(plain)), LightSourceAlt(std::move(light)),
+        TempSourceAlt(std::move(temp)) {
 
     setType(SubjectType::LIGHT_EMITTER);
   }
 
-  virtual Plain * clone() const { return new LightEmitter(*this); }
+  LightEmitter *clone() const override { return new LightEmitter(*this); }
 };
 
 /*
  * Light emitter that can be switched off
  */
 class TurnableLightEmitter : public LightEmitter, public Turnable {
+  LightSourceParams offLightParams_;
+  TempSourceParams offTempParams_;
+
 public:
-  TurnableLightEmitter(LightEmitter && lightEmitter, TurnableStatus status)
-      : LightEmitter(std::move(lightEmitter)), Turnable(status) {
+  TurnableLightEmitter(LightEmitter &&lightEmitter, TurnableStatus status,
+                       LightSourceParams offLightParams,
+                       TempSourceParams offTempParams)
+      : LightEmitter(std::move(lightEmitter)), Turnable(status),
+        offLightParams_(offLightParams), offTempParams_(offTempParams) {
 
     setType(SubjectType::TURNABLE_LIGHT_EMITTER);
   }
 
-  virtual Plain * clone() const { return new TurnableLightEmitter(*this); }
+  TurnableLightEmitter *clone() const override {
+    return new TurnableLightEmitter(*this);
+  }
+
+  LightSourceParams getCurLightParams() const override;
+  TempSourceParams getCurTempParams() const override;
 };
 
-}// namespace Subject
+} // namespace Subject

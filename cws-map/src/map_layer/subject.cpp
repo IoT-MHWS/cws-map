@@ -1,10 +1,10 @@
 #include "cws/map_layer/subject.hpp"
 
-std::list<std::pair<Coordinates, const Subject::LightSource *>>
+std::list<std::pair<Coordinates, const Subject::LightSourceAlt *>>
 MapLayerSubject::getActiveLightSources() const {
 
   Dimension dim = getDimension();
-  std::list<std::pair<Coordinates, const Subject::LightSource *>> srcs;
+  std::list<std::pair<Coordinates, const Subject::LightSourceAlt *>> srcs;
 
   Coordinates c;
   for (c.x = 0; c.x < dim.width; ++c.x) {

@@ -1,12 +1,8 @@
 #pragma once
 
-#include "cws/general.hpp"
-#include "cws/layer/temperature.hpp"
+#include "cws/physical.hpp"
 #include "cws/subject/extension/base.hpp"
 #include "cws/subject/type.hpp"
-#include <cstddef>
-
-class Layers;
 
 namespace Subject {
 
@@ -21,41 +17,33 @@ protected:
   friend bool operator==(const Id &, const Id &);
 };
 
-/*
- * Params for all subjects
- */
-struct PlainParams {
-  Absorption lightAbsorption;
-};
-
-/*
- * Plain subject
- */
-class Plain : virtual public Subject::Extensiable {
-protected:
+class Plain : public Physical, virtual public Extensiable {
   Id id_;
-  PlainParams params_;
+  double surfaceArea_;
+
+  double defAirConduction_;
+
+public:
+  Plain(Physical &&params, Id id, double surfaceArea)
+      : Physical(std::move(params)), id_(id), surfaceArea_(surfaceArea) {
+
+    setType(SubjectType::PLAIN);
+  }
+
+  virtual Plain *clone() const { return new Plain(*this); }
+
+public:
+  Id getSubjectId() const { return id_; }
+  double getSurfaceArea() const { return surfaceArea_; }
+
+  double getDefAirConduction() const { return defAirConduction_; }
+  virtual double getCurAirConduction() const { return defAirConduction_; }
 
 protected:
   void setType(SubjectType type) { id_.type = type; }
 
 public:
-  Plain() : id_({.type = SubjectType::PLAIN}) {}
-
-  Plain(Id id, PlainParams parameters) : id_(id), params_(parameters) {
-    setType(SubjectType::PLAIN);
-  }
-
-  virtual ~Plain() {}
-
-  virtual Plain * clone() const { return new Plain(*this); }
-
-public:
-  Id getSubjectId() const { return id_; }
-  PlainParams getSubjectParameters() const { return params_; }
-
-public:
-  friend bool operator==(const Plain &, const Plain &);
+  friend bool operator==(const Plain &lhs, const Plain &rhs);
 };
 
-}// namespace Subject
+} // namespace Subject

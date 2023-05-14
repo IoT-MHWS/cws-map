@@ -6,21 +6,22 @@
 namespace Subject {
 
 struct LightSourceParams {
-  Illumination emittedRawIllumination;
+  Illumination rawIllumination;
 };
 
-class LightSource : virtual public Subject::Extensiable {
-  LightSourceParams params_;
+class LightSourceAlt : virtual public Subject::Extensiable {
+  LightSourceParams defParams_;
 
 public:
-  LightSource(LightSourceParams params) : params_(params) {}
+  LightSourceAlt(LightSourceParams params) : defParams_(params) {}
 
   bool isLightSource() const final override { return true; }
 
 public:
-  LightSourceParams getParams() const { return params_; }
-
-  void setParams(LightSourceParams params) { params_ = params; }
+  LightSourceParams getDefLightParams() const { return defParams_; }
+  virtual LightSourceParams getCurLightParams() const {
+    return defParams_;
+  }
 };
 
-}// namespace Subject
+} // namespace Subject

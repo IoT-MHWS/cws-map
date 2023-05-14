@@ -56,11 +56,17 @@ void simulation() {
 void decoration() {
   using namespace Subject;
 
-  TurnableLightEmitter emitter(LightEmitter(Plain(Id{.idx = 1}, {}), {}, {}), {});
+  Plain plain({}, Id{.idx = 2}, 0);
+
+  TurnableLightEmitter emitter(LightEmitter(Plain({}, Id{.idx = 1}, 0), {}, {}),
+                               TurnableStatus::OFF, {}, {});
+
   std::cout << (int)emitter.getSubjectId().type << std::endl;
+  std::cout << emitter.isTempSource() << std::endl;
+  std::cout << plain.isTempSource() << std::endl;
 }
 
-int main(int argc, char * argv[]) {
+int main(int argc, char *argv[]) {
   // simulation();
   decoration();
 

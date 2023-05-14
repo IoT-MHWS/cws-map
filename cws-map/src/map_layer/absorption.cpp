@@ -33,7 +33,7 @@ void MapLayerAbsorption::update(const MapLayerSubject & layerSubject) {
       std::vector<Absorption> absVector(subList.size());
 
       for (auto & sub : subList) {
-        absVector.push_back(sub->getSubjectParameters().lightAbsorption);
+        absVector.push_back(sub->getCurLightAbsorption());
       }
 
       setAbsorption(c, calcCellAbsorption(absVector));

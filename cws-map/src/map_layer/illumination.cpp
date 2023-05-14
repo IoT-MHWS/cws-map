@@ -33,8 +33,9 @@ std::list<Coordinates> getNeighbours(Dimension dim, Coordinates p) {
   return n;
 }
 
-void calcForCell(MapLayerIllumination & layer, const MapLayerAbsorption & absorptions,
-                 Coordinates & src, Coordinates p) {
+void calcForCell(MapLayerIllumination &layer,
+                 const MapLayerAbsorption &absorptions, Coordinates &src,
+                 Coordinates p) {
 
   // already calculated
   if (layer.getIllumination(p) != ILLUMINATION_DEFAULT) {
@@ -51,7 +52,7 @@ void calcForCell(MapLayerIllumination & layer, const MapLayerAbsorption & absorp
 
   auto v_psrc = getVector(p, src);
   // get closest element to the src or src
-  for (const auto & n : neighs) {
+  for (const auto &n : neighs) {
     auto v_pn = getVector(p, n);
     auto sc_pn = getScalarMultiplication(v_psrc, v_pn);
     auto d_pn = getDistanceSquare(v_pn);
@@ -79,16 +80,16 @@ void calcForCell(MapLayerIllumination & layer, const MapLayerAbsorption & absorp
 }
 
 MapLayerIllumination
-calcForLightSrc(Dimension dim, const MapLayerAbsorption & absorptionLayer,
-                std::pair<Coordinates, const Subject::LightSource *> src) {
+calcForLightSrc(Dimension dim, const MapLayerAbsorption &absorptionLayer,
+                std::pair<Coordinates, const Subject::LightSourceAlt *> src) {
 
   // to check whether calculated for this cell
   MapLayerIllumination res(dim, ILLUMINATION_DEFAULT);
 
   {
     auto abs = absorptionLayer.getAbsorption(src.first);
-    auto illum =
-        src.second->getParams().emittedRawIllumination.getActualIllumination(abs);
+    auto illum = src.second->getCurLightParams()
+                     .rawIllumination.getActualIllumination(abs);
     res.setIllumination(src.first, illum);
   }
 
@@ -102,13 +103,13 @@ calcForLightSrc(Dimension dim, const MapLayerAbsorption & absorptionLayer,
   return res;
 }
 
-void MapLayerIllumination::update(const MapLayerAbsorption & absorptionLayer,
-                                  const MapLayerSubject & subjectLayer) {
+void MapLayerIllumination::update(const MapLayerAbsorption &absorptionLayer,
+                                  const MapLayerSubject &subjectLayer) {
 
-  const auto & srcs = subjectLayer.getActiveLightSources();
+  const auto &srcs = subjectLayer.getActiveLightSources();
   auto dim = getDimension();
 
-  for (const auto & src : srcs) {
+  for (const auto &src : srcs) {
     auto res = calcForLightSrc(dim, absorptionLayer, src);
 
     // illumination for each source is managed like simple addition
