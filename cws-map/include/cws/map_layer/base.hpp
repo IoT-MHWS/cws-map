@@ -1,8 +1,8 @@
 #pragma once
 
 #include "cws/layer/base.hpp"
-#include "cws/util.hpp"
 #include "cws/map_layer.hpp"
+#include "cws/util.hpp"
 
 template<Derived<Layer> T>
 class MapLayerBase : public MapLayer<T> {

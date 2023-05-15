@@ -18,6 +18,8 @@ public:
 public:
   TempSourceParams getDefTempParams() const { return defParams_; }
   virtual TempSourceParams getCurTempParams() const { return defParams_; }
+
+  virtual void nextTemperature() = 0;
 };
 
-} // namespace Subject
+}// namespace Subject

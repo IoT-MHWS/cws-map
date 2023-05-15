@@ -2,6 +2,10 @@
 
 namespace Subject {
 
+void TempEmitter::nextTemperature() {
+  updateTemperature(getCurTempParams().heatProduction);
+}
+
 TempSourceParams TurnableTempEmitter::getCurTempParams() const {
   if (getStatus() == TurnableStatus::ON) {
     return getDefTempParams();
@@ -10,4 +14,4 @@ TempSourceParams TurnableTempEmitter::getCurTempParams() const {
   }
 }
 
-} // namespace Subject
+}// namespace Subject

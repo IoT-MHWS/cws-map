@@ -9,8 +9,11 @@
  *
  */
 void Map::update(const Map & cur) {
-  layers.absorptionLayer.update(layers.subjectLayer);
-  layers.illuminationLayer.update(layers.absorptionLayer, layers.subjectLayer);
+  layers.subjectLayer.nextTemperature();
+
+  layers.absorptionLayer.updateAbsorption(layers.subjectLayer);
+  layers.illuminationLayer.updateIllumination(layers.absorptionLayer,
+                                              layers.subjectLayer);
 }
 
 std::ostream & operator<<(std::ostream & out, const Layers * layers) {

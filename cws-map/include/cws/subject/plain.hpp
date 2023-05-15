@@ -24,13 +24,13 @@ class Plain : public Physical, virtual public Extensiable {
   double defAirConduction_;
 
 public:
-  Plain(Physical &&params, Id id, double surfaceArea)
+  Plain(Physical && params, Id id, double surfaceArea)
       : Physical(std::move(params)), id_(id), surfaceArea_(surfaceArea) {
 
     setType(Type::PLAIN);
   }
 
-  virtual Plain *clone() const { return new Plain(*this); }
+  virtual Plain * clone() const { return new Plain(*this); }
 
 public:
   Id getSubjectId() const { return id_; }
@@ -43,7 +43,7 @@ protected:
   void setType(Type type) { id_.type = type; }
 
 public:
-  friend bool operator==(const Plain &lhs, const Plain &rhs);
+  friend bool operator==(const Plain & lhs, const Plain & rhs);
 };
 
-} // namespace Subject
+}// namespace Subject

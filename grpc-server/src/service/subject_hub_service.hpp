@@ -15,7 +15,8 @@ public:
 
   // ::grpc::Status GetTemperature(::grpc::ServerContext * context,
   //                               const ::cws::RequestSensorTemperature * request,
-  //                               ::cws::ResponseSensorTemperature * response) override {
+  //                               ::cws::ResponseSensorTemperature * response) override
+  //                               {
 
   //   auto map = interface.getMap();
 

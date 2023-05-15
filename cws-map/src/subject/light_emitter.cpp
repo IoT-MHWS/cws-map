@@ -17,4 +17,4 @@ TempSourceParams TurnableLightEmitter::getCurTempParams() const {
   }
 }
 
-} // namespace Subject
+}// namespace Subject

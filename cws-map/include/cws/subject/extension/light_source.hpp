@@ -19,9 +19,7 @@ public:
 
 public:
   LightSourceParams getDefLightParams() const { return defParams_; }
-  virtual LightSourceParams getCurLightParams() const {
-    return defParams_;
-  }
+  virtual LightSourceParams getCurLightParams() const { return defParams_; }
 };
 
-} // namespace Subject
+}// namespace Subject

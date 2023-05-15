@@ -22,10 +22,6 @@ public:
     }
   }
 
-  const std::list<std::unique_ptr<Air::Plain>> & getAirList() const {
-    return airList;
-  }
-  std::list<std::unique_ptr<Air::Plain>> & accessAirList() {
-    return airList;
-  }
+  const std::list<std::unique_ptr<Air::Plain>> & getAirList() const { return airList; }
+  std::list<std::unique_ptr<Air::Plain>> & accessAirList() { return airList; }
 };

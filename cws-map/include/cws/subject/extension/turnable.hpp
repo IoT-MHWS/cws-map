@@ -23,4 +23,4 @@ public:
   void setStatus(TurnableStatus status) { status_ = status; }
 };
 
-} // namespace Subject
+}// namespace Subject

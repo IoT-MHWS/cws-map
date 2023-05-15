@@ -21,7 +21,8 @@ public:
   Temperature getTemperature() const { return temperature_; }
 
   Absorption getDefLightAbsorption() const { return defLightAbsorption_; }
-  virtual Absorption getCurLightAbsorption() const {
-    return defLightAbsorption_;
-  }
+  virtual Absorption getCurLightAbsorption() const { return defLightAbsorption_; }
+
+public:
+  void updateTemperature(double heatProd);
 };

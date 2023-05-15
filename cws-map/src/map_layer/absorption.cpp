@@ -19,7 +19,7 @@ Absorption calcCellAbsorption(std::vector<Absorption> & absVector) {
   return FULL_ABSORPTION - res;
 }
 
-void MapLayerAbsorption::update(const MapLayerSubject & layerSubject) {
+void MapLayerAbsorption::updateAbsorption(const MapLayerSubject & layerSubject) {
   auto dimension = getDimension();
   assert(dimension == layerSubject.getDimension());
 

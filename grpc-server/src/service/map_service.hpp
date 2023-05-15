@@ -73,8 +73,8 @@ public:
     const auto & layers = map->getLayers();
     const auto & subjectLayer = layers.subjectLayer;
 
-    const auto cell = Cell{.coordinates = coord,
-                           .subject = subjectLayer.getCell(coord).getElement()};
+    const auto cell =
+        Cell{.coordinates = coord, .subject = subjectLayer.getCell(coord).getElement()};
 
     toCell(*response->mutable_cell(), cell);
     return grpc::Status::OK;

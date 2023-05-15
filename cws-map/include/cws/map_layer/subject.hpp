@@ -17,4 +17,6 @@ public:
   getSubjectList(Coordinates c) const {
     return getCell(c).getElement().getSubjectList();
   }
+
+  void nextTemperature();
 };

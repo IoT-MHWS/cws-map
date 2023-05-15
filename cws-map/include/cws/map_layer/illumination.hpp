@@ -9,7 +9,7 @@ class MapLayerAbsorption : public MapLayerBase<LayerAbsorption> {
 public:
   MapLayerAbsorption(Dimension dimension) : MapLayerBase<LayerAbsorption>(dimension) {}
 
-  void update(const MapLayerSubject & layerSubject);
+  void updateAbsorption(const MapLayerSubject & layerSubject);
 
   Absorption getAbsorption(Coordinates c) const {
     return getCell(c).getElement().getAbsorption();
@@ -29,8 +29,8 @@ public:
   MapLayerIllumination(Dimension dimension, Illumination base)
       : MapLayerBase<LayerIllumination>(dimension, base) {}
 
-  void update(const MapLayerAbsorption & absorptionLayer,
-              const MapLayerSubject & subjectLayer);
+  void updateIllumination(const MapLayerAbsorption & absorptionLayer,
+                          const MapLayerSubject & subjectLayer);
 
   void setIllumination(Coordinates coord, Illumination illum) {
     accessCell(coord).accessElement().setIllumination(illum);

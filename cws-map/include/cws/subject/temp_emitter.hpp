@@ -13,13 +13,15 @@ using namespace Subject;
  */
 class TempEmitter : public Plain, public TempSourceAlt {
 public:
-  TempEmitter(Plain &&plain, TempSourceParams &&temp)
+  TempEmitter(Plain && plain, TempSourceParams && temp)
       : Plain(std::move(plain)), TempSourceAlt(std::move(temp)) {
 
     setType(Type::TEMP_EMITTER);
   }
 
-  TempEmitter *clone() const override { return new TempEmitter(*this); }
+  void nextTemperature() override;
+
+  TempEmitter * clone() const override { return new TempEmitter(*this); }
 };
 
 /*
@@ -29,7 +31,7 @@ class TurnableTempEmitter : public TempEmitter, public Turnable {
   TempSourceParams offTempParams_;
 
 public:
-  TurnableTempEmitter(TempEmitter &&emitter, TurnableStatus status,
+  TurnableTempEmitter(TempEmitter && emitter, TurnableStatus status,
                       TempSourceParams offTempParams)
       : TempEmitter(std::move(emitter)), Turnable(status),
         offTempParams_(offTempParams) {
@@ -37,11 +39,11 @@ public:
     setType(Type::TURNABLE_TEMP_EMITTER);
   }
 
-  TurnableTempEmitter *clone() const override {
+  TurnableTempEmitter * clone() const override {
     return new TurnableTempEmitter(*this);
   }
 
   TempSourceParams getCurTempParams() const override;
 };
 
-} // namespace Subject
+}// namespace Subject
