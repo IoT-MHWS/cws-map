@@ -4,9 +4,7 @@ AlwaysBreakTemplateDeclarations: Yes
 PointerAlignment: Middle
 SortIncludes: CaseInsensitive
 SpacesBeforeTrailingComments: 0
-SpacesBeforeCppDeclaration: 1
 TabWidth: 2
 # UseTab: Always
 SpaceAfterTemplateKeyword: false
 Standard: Latest
-...

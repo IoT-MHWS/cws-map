@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.25)
 
 project(cws)
 
+include(cmake/CPM.cmake)
+CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
+
 
 # set(CMAKE_CXX_STANDARD 23) NOTE: not supported by lsp
 set(CMAKE_CXX_FLAGS "-std=c++2b ${CMAKE_CXX_FLAGS}")
