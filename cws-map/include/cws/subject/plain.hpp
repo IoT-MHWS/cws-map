@@ -10,7 +10,7 @@ namespace Subject {
  * Identifier of subject
  */
 struct Id {
-  SubjectType type;
+  Type type;
   int idx;
 
 protected:
@@ -27,7 +27,7 @@ public:
   Plain(Physical &&params, Id id, double surfaceArea)
       : Physical(std::move(params)), id_(id), surfaceArea_(surfaceArea) {
 
-    setType(SubjectType::PLAIN);
+    setType(Type::PLAIN);
   }
 
   virtual Plain *clone() const { return new Plain(*this); }
@@ -40,7 +40,7 @@ public:
   virtual double getCurAirConduction() const { return defAirConduction_; }
 
 protected:
-  void setType(SubjectType type) { id_.type = type; }
+  void setType(Type type) { id_.type = type; }
 
 public:
   friend bool operator==(const Plain &lhs, const Plain &rhs);

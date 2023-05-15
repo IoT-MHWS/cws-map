@@ -4,6 +4,7 @@
 #include "cws/subject/extension/temp_source.hpp"
 #include "cws/subject/extension/turnable.hpp"
 #include "cws/subject/plain.hpp"
+#include "cws/subject/temp_emitter.hpp"
 
 namespace Subject {
 
@@ -12,13 +13,14 @@ using namespace Subject;
 /*
  * Always turned on light emitted
  */
-class LightEmitter : public Plain, public LightSourceAlt, public TempSourceAlt {
+class LightEmitter : public TempEmitter, public LightSourceAlt {
 public:
-  LightEmitter(Plain &&plain, LightSourceParams &&light, TempSourceParams &&temp)
-      : Plain(std::move(plain)), LightSourceAlt(std::move(light)),
-        TempSourceAlt(std::move(temp)) {
+  LightEmitter(Plain &&plain, LightSourceParams &&light,
+               TempSourceParams &&temp)
+      : TempEmitter(std::move(plain), std::move(temp)),
+        LightSourceAlt(std::move(light)) {
 
-    setType(SubjectType::LIGHT_EMITTER);
+    setType(Type::LIGHT_EMITTER);
   }
 
   LightEmitter *clone() const override { return new LightEmitter(*this); }
@@ -38,7 +40,7 @@ public:
       : LightEmitter(std::move(lightEmitter)), Turnable(status),
         offLightParams_(offLightParams), offTempParams_(offTempParams) {
 
-    setType(SubjectType::TURNABLE_LIGHT_EMITTER);
+    setType(Type::TURNABLE_LIGHT_EMITTER);
   }
 
   TurnableLightEmitter *clone() const override {

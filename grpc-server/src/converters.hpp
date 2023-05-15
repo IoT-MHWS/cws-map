@@ -12,7 +12,6 @@
 
 struct Cell {
   const Coordinates & coordinates;
-  const LayerTemperature & temp;
   const LayerSubject & subject;
 };
 
@@ -28,10 +27,8 @@ void toTemperature(cws::Temperature & out, const Temperature & temp);
 
 void toLayer(cws::Layer & out, const Layer & layer);
 // void toLayerSubject(cws::LayerSubject & out, const LayerSubject & layerSubject);
-void toLayerTemperature(cws::LayerTemperature & out,
-                        const LayerTemperature & layerTemperature);
 
-cws::SubjectType toSubjectType(SubjectType in);
+cws::SubjectType toSubjectType(Subject::Type in);
 // void toSubjectId(cws::SubjectId & out, const Id & id);
 // void toSubjectDerived(cws::SubjectDerived & out, const Subject * subject);
 // void toSubject(cws::Subject & out, const Subject * subject);
@@ -56,8 +53,8 @@ SimulationStateIn fromSimulationState(const cws::SimulationState & in);
 Coordinates fromCoordinates(const cws::Coordinates & coord);
 Temperature fromTemperature(const cws::Temperature & in);
 
-SubjectType fromSubjectType(cws::SubjectType in);
-SubjectType fromSubjectType(const cws::SubjectDerived & in);
+Subject::Type fromSubjectType(cws::SubjectType in);
+Subject::Type fromSubjectType(const cws::SubjectDerived & in);
 // Id fromSubjectId(const cws::SubjectId & id, cws::SubjectType type);
 // PlainParams fromSubjectParameters(const cws::Subject & in);
 // std::unique_ptr<Subject> fromSubjectDerived(const cws::SubjectDerived & in);

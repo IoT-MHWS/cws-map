@@ -1,6 +1,8 @@
 #pragma once
 
-enum class SubjectType {
+namespace Subject {
+
+enum class Type {
   UNSPECIFIED = 0,
   PLAIN = 1,
   LIGHT_EMITTER = 2,
@@ -9,3 +11,4 @@ enum class SubjectType {
   TURNABLE_TEMP_EMITTER = 5,
 };
 
+}

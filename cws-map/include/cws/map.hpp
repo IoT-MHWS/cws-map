@@ -2,9 +2,9 @@
 
 #include <memory>
 
+#include "cws/map_layer/air.hpp"
 #include "cws/map_layer/illumination.hpp"
 #include "cws/map_layer/subject.hpp"
-#include "cws/map_layer/temperature.hpp"
 
 struct Layers {
 public:
@@ -13,12 +13,12 @@ public:
   MapLayerAbsorption absorptionLayer;
   MapLayerIllumination illuminationLayer;
 
-  MapLayerTemperature temperatureLayer;
+  MapLayerAir airLayer;
 
 public:
   explicit Layers(Dimension dimension)
       : subjectLayer(dimension), absorptionLayer(dimension),
-        illuminationLayer(dimension), temperatureLayer(dimension) {}
+        illuminationLayer(dimension), airLayer(dimension) {}
 
 public:
   friend std::ostream & operator<<(std::ostream & out, const Layers * map);

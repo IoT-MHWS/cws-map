@@ -34,7 +34,6 @@ void toSimulationState(cws::SimulationState & out, const struct SimulationState 
 void toCell(cws::Cell & out, const Cell & cell) {
   toCoordinates(*out.mutable_coordinates(), cell.coordinates);
   // toLayerSubject(*out.mutable_subject(), cell.subject);
-  toLayerTemperature(*out.mutable_temperature(), cell.temp);
 }
 
 void toCoordinates(cws::Coordinates & out, const Coordinates & coord) {
@@ -55,12 +54,6 @@ void toLayer(cws::Layer & out, const Layer & layer) {}
 //     toSubjectDerived(*outSubject, subject.get());
 //   }
 // }
-
-void toLayerTemperature(cws::LayerTemperature & out,
-                        const LayerTemperature & layerTemperature) {
-  toLayer(*out.mutable_base(), static_cast<const Layer &>(layerTemperature));
-  toTemperature(*out.mutable_temperature(), layerTemperature.getTemperature());
-}
 
 // cws::SubjectType toSubjectType(SubjectType in) {
 //   switch (in) {

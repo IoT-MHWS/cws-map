@@ -71,11 +71,9 @@ public:
     }
 
     const auto & layers = map->getLayers();
-    const auto & tempLayer = layers.temperatureLayer;
     const auto & subjectLayer = layers.subjectLayer;
 
     const auto cell = Cell{.coordinates = coord,
-                           .temp = tempLayer.getCell(coord).getElement(),
                            .subject = subjectLayer.getCell(coord).getElement()};
 
     toCell(*response->mutable_cell(), cell);
@@ -98,7 +96,6 @@ public:
     auto dimension = map->getDimension();
 
     const auto & layers = map->getLayers();
-    const auto & tempLayer = layers.temperatureLayer;
     const auto & subjectLayer = layers.subjectLayer;
 
     for (int x = 0; x < dimension.width; ++x) {
@@ -108,7 +105,6 @@ public:
         Coordinates coord{.x = x, .y = y};
 
         const auto cell = Cell{.coordinates = coord,
-                               .temp = tempLayer.getCell(coord).getElement(),
                                .subject = subjectLayer.getCell(coord).getElement()};
 
         toCell(*response.mutable_cell(), cell);

@@ -16,7 +16,7 @@ public:
   TempEmitter(Plain &&plain, TempSourceParams &&temp)
       : Plain(std::move(plain)), TempSourceAlt(std::move(temp)) {
 
-    setType(SubjectType::TEMP_EMITTER);
+    setType(Type::TEMP_EMITTER);
   }
 
   TempEmitter *clone() const override { return new TempEmitter(*this); }
@@ -33,7 +33,8 @@ public:
                       TempSourceParams offTempParams)
       : TempEmitter(std::move(emitter)), Turnable(status),
         offTempParams_(offTempParams) {
-    setType(SubjectType::TURNABLE_TEMP_EMITTER);
+
+    setType(Type::TURNABLE_TEMP_EMITTER);
   }
 
   TurnableTempEmitter *clone() const override {
