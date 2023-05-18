@@ -12,4 +12,5 @@ public:
   MapLayerAir(Dimension dimension) : MapLayerBase<LayerAir>(dimension) {}
 
   void nextConvection(MapLayerSubject & subjectLayer);
+  void nextConvection(MapLayerSubject & subjectLayer, Coordinates c);
 };

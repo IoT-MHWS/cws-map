@@ -28,6 +28,7 @@ public:
 
   bool hasAir() const;
   double getHeatTransferCoef() const;
+  Temperature getTemperature() const;
   void updateTemperature(double heatAirTransfer);
 
 private:

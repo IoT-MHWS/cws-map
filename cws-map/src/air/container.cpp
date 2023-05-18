@@ -12,6 +12,11 @@ double Container::getHeatTransferCoef() const {
   return transferCoef;
 }
 
+// temperature of all air is normalized
+Temperature Container::getTemperature() const {
+  return airList.front()->getTemperature();
+}
+
 // maintain temperature of all air is the same
 void Container::updateTemperature(double heatAirTransfer) {
   double totalWeight;

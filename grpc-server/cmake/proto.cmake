@@ -1,4 +1,5 @@
 find_package(Protobuf REQUIRED)
+find_package(gRPC REQUIRED)
 find_program(_GRPC_CPP_PLUGIN_LOCATION grpc_cpp_plugin)
 
 
@@ -37,9 +38,9 @@ custom_protobuf_generate(
 target_include_directories(cws-proto PUBLIC ${PROTOC_OUT_DIR})
 
 target_link_libraries(cws-proto PUBLIC
-  libprotobuf
-  grpc
-  grpc++
+  protobuf::libprotobuf
+  gRPC::grpc
+  gRPC::grpc++
 )
 
 unset(CWS_PROTO_LOC)

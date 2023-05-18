@@ -8,16 +8,6 @@ if (NOT DEFINED PROTO_LOC)
 endif (NOT DEFINED PROTO_LOC)
 
 
-if (FETCH_GRPC)
-  FetchContent_Declare(
-    gRPC
-    GIT_REPOSITORY https://github.com/grpc/grpc
-    GIT_TAG v1.54.0
-  )
-  FetchContent_MakeAvailable(gRPC)
-endif (FETCH_GRPC)
-
-
 include(cmake/custom-protobuf-generate.cmake)
 include(cmake/proto.cmake)
 

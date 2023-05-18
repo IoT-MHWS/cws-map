@@ -1,10 +1,25 @@
 # cws-map
 Coworking space map
 
+## Install dependencies
+
+Create conan profile
+
+```bash
+conan profile detect
+```
+
+Install dependencies
+
+```bash
+conan install . --output-folder=build --build=missing
+```
+
 ## Generate cmake
 
-```
-cmake -S . -B build -DCMAKE_BUILD_TYPE=debug -DGRPC_SERVER=y -DFETCH_GRPC=y
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=debug -DGRPC_SERVER=y
 ```
 
 * `GRPC_SERVER` - whether compile grpc-server
