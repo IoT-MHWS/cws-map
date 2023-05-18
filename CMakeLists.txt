@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.25)
 
-
 project(cws)
+
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(FETCHCONTENT_QUIET OFF)
+
+include(FetchContent)
+
 
 include(cmake/CPM.cmake)
 CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
@@ -13,10 +19,7 @@ set(CMAKE_CXX_FLAGS "-std=c++2b ${CMAKE_CXX_FLAGS}")
 set(CMAKE_C_STANDARD 17)
 
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-set(FETCHCONTENT_QUIET OFF)
-include(FetchContent)
+enable_testing()
 
 
 if (NOT DEFINED PROTO_LOC)
@@ -25,13 +28,12 @@ else()
   get_filename_component(PROTO_LOC "${PROTO_LOC}" ABSOLUTE)
 endif()
 
-
-if (APP)
-  add_subdirectory(app)
-endif (APP)
-
 add_subdirectory(cws-map)
 
 if (GRPC_SERVER)
   add_subdirectory(grpc-server)
 endif (GRPC_SERVER)
+
+if (TEST)
+  add_subdirectory(test)
+endif()

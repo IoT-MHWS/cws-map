@@ -1,17 +1,17 @@
-set(PROJECT_NAME cws-map)
-
-project(${PROJECT_NAME}
+project(cws-map
   DESCRIPTION "Coworking space map"
   LANGUAGES C CXX
-)
+  )
 
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+  set(CMAKE_CONFIGURATION_TYPES Debug Release Sanitized)
 
+  set(FETCHCONTENT_QUIET OFF)
+  include(FetchContent)
 
-file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS
-  ./*.c
-  ./*.cpp
-)
+  include(CTest)
+  add_subdirectory(test)
+endif()
 
-add_library(${PROJECT_NAME} STATIC ${SRCS})
-
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+add_subdirectory(src)

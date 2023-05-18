@@ -24,6 +24,8 @@ struct Dimension {
 struct Temperature {
   double value;
   friend Temperature operator+(const Temperature & lhs, const Temperature & rhs);
+
+  double get() const { return value; }
 };
 
 struct Absorption {
@@ -34,6 +36,8 @@ struct Absorption {
   friend Absorption operator+(const Absorption & lhs, const Absorption & rhs);
   friend Absorption operator-(const Absorption & lhs, const Absorption & rhs);
   friend Absorption operator*(const Absorption & lhs, const Absorption & rhs);
+
+  double get() const { return value; }
 };
 
 struct Illumination {
@@ -43,4 +47,6 @@ struct Illumination {
   friend bool operator==(const Illumination & lhs, const Illumination & rhs);
 
   Illumination getActualIllumination(const Absorption & abs);
+
+  int get() const { return value; }
 };
