@@ -2,24 +2,16 @@ cmake_minimum_required(VERSION 3.25)
 
 project(cws)
 
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(FETCHCONTENT_QUIET OFF)
 
-include(FetchContent)
-
-
-include(cmake/CPM.cmake)
-CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
-
+include(./cmake/dependencies.cmake)
 
 # set(CMAKE_CXX_STANDARD 23) NOTE: not supported by lsp
 set(CMAKE_CXX_FLAGS "-std=c++2b ${CMAKE_CXX_FLAGS}")
 set(CMAKE_C_STANDARD 17)
 
-
 enable_testing()
-
 
 if (NOT DEFINED PROTO_LOC)
   set(PROTO_LOC ${CMAKE_CURRENT_SOURCE_DIR}/proto)

@@ -1,7 +1,4 @@
-find_package(Protobuf REQUIRED)
-find_package(gRPC REQUIRED)
 find_program(_GRPC_CPP_PLUGIN_LOCATION grpc_cpp_plugin)
-
 
 set(PROTOC_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto)
 file(MAKE_DIRECTORY ${PROTOC_OUT_DIR})
@@ -36,12 +33,6 @@ custom_protobuf_generate(
 )
 
 target_include_directories(cws-proto PUBLIC ${PROTOC_OUT_DIR})
-
-target_link_libraries(cws-proto PUBLIC
-  protobuf::libprotobuf
-  gRPC::grpc
-  gRPC::grpc++
-)
 
 unset(CWS_PROTO_LOC)
 unset(PROTOC_OUT_DIR)

@@ -1,12 +1,12 @@
 #include <iostream>
 
-#include "cws/simulation/simulation.hpp"
-#include "grpcpp/completion_queue.h"
-#include "grpcpp/security/server_credentials.h"
-#include "grpcpp/server_builder.h"
-#include "service/map_service.hpp"
-#include "service/simulation_service.hpp"
-#include "service/subject_hub_service.hpp"
+#include <cws/simulation/simulation.hpp>
+#include <grpcpp/completion_queue.h>
+#include <grpcpp/security/server_credentials.h>
+#include <grpcpp/server_builder.h>
+#include <service/map_service.hpp>
+#include <service/simulation_service.hpp>
+#include <service/subject_hub_service.hpp>
 
 void buildServer(grpc::ServerBuilder & builder, const std::string & address,
                  const int port) {

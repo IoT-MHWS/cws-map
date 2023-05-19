@@ -5,6 +5,8 @@ project(cws-map
   LANGUAGES C CXX
   )
 
+add_subdirectory(src)
+
 if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -12,4 +14,3 @@ if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   add_subdirectory(test)
 endif()
 
-add_subdirectory(src)

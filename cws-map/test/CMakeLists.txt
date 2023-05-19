@@ -1,8 +1,5 @@
 set(PROJECT_TEST_NAME ${PROJECT_NAME}-test)
 
-find_package(GTest REQUIRED)
-
-
 file(GLOB_RECURSE TSTS CONFIGURE_DEPENDS ./*.cpp ./*.c)
 
 add_executable(${PROJECT_TEST_NAME} ${TSTS})
