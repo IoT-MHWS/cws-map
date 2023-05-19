@@ -18,9 +18,6 @@ add_executable(${PROJECT_NAME} ${SRCS})
 target_link_libraries(${PROJECT_NAME} PRIVATE
   cws-map
   cws-proto
-  protobuf::libprotobuf
-  grpc
-  grpc++
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE

@@ -34,5 +34,11 @@ custom_protobuf_generate(
 
 target_include_directories(cws-proto PUBLIC ${PROTOC_OUT_DIR})
 
+target_link_libraries(cws-proto PUBLIC
+  protobuf::libprotobuf
+  grpc
+  grpc++
+)
+
 unset(CWS_PROTO_LOC)
 unset(PROTOC_OUT_DIR)

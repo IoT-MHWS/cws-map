@@ -12,6 +12,7 @@ set(CMAKE_CXX_FLAGS "-std=c++2b ${CMAKE_CXX_FLAGS}")
 set(CMAKE_C_STANDARD 17)
 
 enable_testing()
+include(CTest)
 
 if (NOT DEFINED PROTO_LOC)
   set(PROTO_LOC ${CMAKE_CURRENT_SOURCE_DIR}/proto)
@@ -24,7 +25,3 @@ add_subdirectory(cws-map)
 if (GRPC_SERVER)
   add_subdirectory(grpc-server)
 endif (GRPC_SERVER)
-
-if (TEST)
-  add_subdirectory(test)
-endif()

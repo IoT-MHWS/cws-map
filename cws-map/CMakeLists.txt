@@ -7,10 +7,7 @@ project(cws-map
 
 add_subdirectory(src)
 
-if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-  include(CTest)
+if (CWS_MAP_TEST)
   add_subdirectory(test)
 endif()
 
