@@ -1,3 +1,5 @@
+#include "gtest/gtest.h"
+
 #include "cws/simulation/interface.hpp"
 #include "cws/simulation/simulation.hpp"
 #include "cws/subject/light_emitter.hpp"
@@ -5,7 +7,7 @@
 #include <cws/map.hpp>
 #include <thread>
 
-void simulation() {
+TEST(interface, simulation) {
   SimulationInterface interface;
 
   SimulationMaster master(interface);
@@ -53,7 +55,7 @@ void simulation() {
   interface.exit();
 }
 
-void decoration() {
+TEST(interface, decoration) {
   using namespace Subject;
 
   Plain plain({}, Id{.idx = 2}, 0);
@@ -64,11 +66,4 @@ void decoration() {
   std::cout << (int)emitter.getSubjectId().type << std::endl;
   std::cout << emitter.isTempSource() << std::endl;
   std::cout << plain.isTempSource() << std::endl;
-}
-
-int main(int argc, char * argv[]) {
-  // simulation();
-  decoration();
-
-  return 0;
 }
