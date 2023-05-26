@@ -1,20 +1,33 @@
+cmake_minimum_required(VERSION 3.25)
+
+set(PROJECT_NAME cws_proto)
+
+project(${PROJECT_NAME}
+  DESCRIPTION "Proto files for grpc communication"
+  LANGUAGES CXX
+)
+
+find_package(Protobuf CONFIG REQUIRED)
+find_package(gRPC CONFIG REQUIRED)
+
+include(./cmake/custom-protobuf-generate.cmake)
+
 find_program(_GRPC_CPP_PLUGIN_LOCATION grpc_cpp_plugin)
 
 set(PROTOC_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto)
 file(MAKE_DIRECTORY ${PROTOC_OUT_DIR})
 
 # root of protobuf project
-set(CWS_PROTO_LOC ${PROTO_LOC})
+set(CWS_PROTO_LOC ${CMAKE_CURRENT_SOURCE_DIR}/../common/proto)
 
 file(GLOB_RECURSE PROTO_FILES CONFIGURE_DEPENDS
   ${CWS_PROTO_LOC}/cwspb/*.proto
 )
 
-add_library(cws-proto ${PROTO_FILES})
-
+add_library(${PROJECT_NAME} ${PROTO_FILES})
 
 custom_protobuf_generate(
-  TARGET cws-proto
+  TARGET ${PROJECT_NAME}
   LANGUAGE cpp
   GENERATE_EXTENSIONS .pb.h .pb.cc
   IMPORT_DIRS ${CWS_PROTO_LOC} ${Protobuf_INCLUDE_DIR} 
@@ -23,7 +36,7 @@ custom_protobuf_generate(
 )
 
 custom_protobuf_generate(
-  TARGET cws-proto
+  TARGET ${PROJECT_NAME}
   LANGUAGE grpc
   GENERATE_EXTENSIONS .grpc.pb.h .grpc.pb.cc
   PLUGIN "protoc-gen-grpc=${_GRPC_CPP_PLUGIN_LOCATION}"
@@ -32,13 +45,13 @@ custom_protobuf_generate(
   PROTOC_OUT_DIR ${PROTOC_OUT_DIR}
 )
 
-target_include_directories(cws-proto PUBLIC ${PROTOC_OUT_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROTOC_OUT_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ./include) # for conan
 
-target_link_libraries(cws-proto PUBLIC
+target_link_libraries(${PROJECT_NAME} PRIVATE
   protobuf::libprotobuf
-  grpc
-  grpc++
+  gRPC::grpc++
+  gRPC::grpc
 )
 
-unset(CWS_PROTO_LOC)
-unset(PROTOC_OUT_DIR)
+install(TARGETS ${PROJECT_NAME})

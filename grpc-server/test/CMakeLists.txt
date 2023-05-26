@@ -1,13 +1,17 @@
 set(PROJECT_TEST_NAME ${PROJECT_NAME}-test)
 
+find_package(GTest)
+find_package(cws_map CONFIG REQUIRED)
+find_package(cws_proto CONFIG REQUIRED)
+
 file(GLOB_RECURSE TSTS CONFIGURE_DEPENDS ./*.cpp ./*.c)
 
 add_executable(${PROJECT_TEST_NAME} ${TSTS})
 
-target_link_libraries(${PROJECT_TEST_NAME} 
+target_link_libraries(${PROJECT_TEST_NAME} PUBLIC
   GTest::gtest_main
-  cws-map
-  cws-proto
+  cws_map::cws_map
+  cws_proto::cws_proto
 )
 
 add_test(NAME ${PROJECT_TEST_NAME} 
