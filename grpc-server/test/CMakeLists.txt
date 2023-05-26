@@ -1,8 +1,8 @@
 set(PROJECT_TEST_NAME ${PROJECT_NAME}-test)
 
-find_package(GTest)
-find_package(cws_map CONFIG REQUIRED)
-find_package(cws_proto CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
+find_package(cws_map REQUIRED)
+find_package(cws_proto REQUIRED)
 
 file(GLOB_RECURSE TSTS CONFIGURE_DEPENDS ./*.cpp ./*.c)
 
