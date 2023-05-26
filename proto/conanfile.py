@@ -26,7 +26,6 @@ class cws_proto(ConanFile):
         pass
 
     def requirements(self):
-        self.requires("protobuf/3.21.9")
         self.requires("grpc/1.50.1")
 
     def layout(self):

@@ -42,8 +42,6 @@ class hello(ConanFile):
     def build(self):
         # copy everything from folder with different name
         cmake = CMake(self)
-        while(1):
-            pass
         cmake.configure()
         cmake.build(["--verbose"])
 

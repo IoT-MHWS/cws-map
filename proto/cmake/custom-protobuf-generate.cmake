@@ -1,5 +1,7 @@
 function(custom_protobuf_generate)
 
+  # find_program(protobuf::protoc)
+
   set(_options)
   set(_singleargs LANGUAGE PROTOC_OUT_DIR PLUGIN PROTO_ROOT)
   set(_multiargs IMPORT_DIRS GENERATE_EXTENSIONS)

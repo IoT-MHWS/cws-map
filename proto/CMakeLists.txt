@@ -12,7 +12,9 @@ find_package(gRPC CONFIG REQUIRED)
 
 include(./cmake/custom-protobuf-generate.cmake)
 
-find_program(_GRPC_CPP_PLUGIN_LOCATION grpc_cpp_plugin)
+get_target_property(GRPC_CPP_PLUGIN_LOCATION gRPC::grpc_cpp_plugin LOCATION)
+
+message("HJEFKLAKLF ${GRPC_CPP_PLUGIN_LOCATION}")
 
 set(PROTOC_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto)
 file(MAKE_DIRECTORY ${PROTOC_OUT_DIR})
@@ -39,7 +41,7 @@ custom_protobuf_generate(
   TARGET ${PROJECT_NAME}
   LANGUAGE grpc
   GENERATE_EXTENSIONS .grpc.pb.h .grpc.pb.cc
-  PLUGIN "protoc-gen-grpc=${_GRPC_CPP_PLUGIN_LOCATION}"
+  PLUGIN "protoc-gen-grpc=${GRPC_CPP_PLUGIN_LOCATION}"
   IMPORT_DIRS ${CWS_PROTO_LOC} ${Protobuf_INCLUDE_DIR} 
   PROTO_ROOT ${CWS_PROTO_LOC}
   PROTOC_OUT_DIR ${PROTOC_OUT_DIR}

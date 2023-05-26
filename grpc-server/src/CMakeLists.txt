@@ -10,7 +10,7 @@ add_executable(${PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
   cws_map::cws_map
-  cws_map::cws_proto
+  cws_proto::cws_proto
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE .)
