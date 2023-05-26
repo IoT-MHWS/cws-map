@@ -6,20 +6,22 @@ from conan.tools.cmake import cmake_layout, CMake
 from conan.tools.files import copy
 
 
-class hello(ConanFile):
+class cws_grpc_server(ConanFile):
     name = "cws_grpc_server"
     version = "1.0"
 
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeDeps"
 
+    _folders_rel_root = ".."
+    _folders_rel_sub = "grpc-server"
+
     def export_sources(self):
-        es_proto_cpp_folder = os.path.join(self.export_sources_folder, self.name)
-        copy(self, "conanfile.py", self.recipe_folder, es_proto_cpp_folder)
-        copy(self, "CMakeLists.txt", self.recipe_folder, es_proto_cpp_folder)
-        # sources
-        copy(self, "src/*", self.recipe_folder, es_proto_cpp_folder)
-        copy(self, "test/*", self.recipe_folder, es_proto_cpp_folder)
+        es_sub = os.path.join(self.export_sources_folder, self._folders_rel_sub)
+
+        copy(self, "CMakeLists.txt", self.recipe_folder, es_sub)
+        copy(self, "src/*", self.recipe_folder, es_sub)
+        copy(self, "test/*", self.recipe_folder, es_sub)
 
     def source(self):
         pass
@@ -31,8 +33,8 @@ class hello(ConanFile):
         self.test_requires("gtest/cci.20210126")
 
     def layout(self):
-        self.folders.root = ".."
-        self.folders.subproject = self.name
+        self.folders.root = self._folders_rel_root
+        self.folders.subproject = self._folders_rel_sub
         cmake_layout(self)
 
     def generate(self):
