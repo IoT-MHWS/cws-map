@@ -14,7 +14,7 @@ conan profile detect [--force]
 Install dependencies:
 
 ```bash
-conan install . --build=missing
+conan install . --build=missing [--settings=build_type=Debug]
 ```
 
 If using `>=cmake-3.25`, that implements presets, run:
