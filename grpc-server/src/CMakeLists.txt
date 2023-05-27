@@ -3,8 +3,10 @@ file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS
   ./*.cpp
 )
 
-find_package(cws_map REQUIRED)
-find_package(cws_proto REQUIRED)
+if (_MODULE_STANDALONE STREQUAL ON)
+  find_package(cws_map REQUIRED)
+  find_package(cws_proto REQUIRED)
+endif()
 
 add_executable(${PROJECT_NAME} ${SRCS})
 

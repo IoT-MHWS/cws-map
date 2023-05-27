@@ -1,8 +1,11 @@
-set(PROJECT_TEST_NAME ${PROJECT_NAME}-test)
+set(PROJECT_TEST_NAME ${PROJECT_NAME}_test)
 
 find_package(GTest CONFIG REQUIRED)
-find_package(cws_map REQUIRED)
-find_package(cws_proto REQUIRED)
+
+if (_MODULE_STANDALONE STREQUAL ON)
+  find_package(cws_map REQUIRED)
+  find_package(cws_proto REQUIRED)
+endif()
 
 file(GLOB_RECURSE TSTS CONFIGURE_DEPENDS ./*.cpp ./*.c)
 

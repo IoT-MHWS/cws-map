@@ -1,0 +1,10 @@
+[requires]
+grpc/1.50.1
+rapidjson/cci.20220822
+
+[test_requires]
+gtest/cci.20210126
+
+[generators]
+CMakeDeps
+CMakeToolchain
