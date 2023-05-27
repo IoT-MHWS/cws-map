@@ -1,7 +1,7 @@
 FROM ubuntu:23.10
 
 RUN apt-get update
-RUN apt-get -y install gcc g++ bash cmake python3.11 python3-pip
+RUN apt-get -y install gcc g++ bash cmake python3.11 python3-pip git
 
 RUN pip install --break-system-packages conan
 

@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.25)
 
 project(root)
 
-include(./cmake/dependencies.cmake)
+# include(./cmake/dependencies.cmake)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
