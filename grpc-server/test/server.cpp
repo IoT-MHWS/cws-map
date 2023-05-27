@@ -1,13 +1,9 @@
 #include "gtest/gtest.h"
 #include <grpcpp/support/status.h>
 
-TEST(server, performRequest) {
+TEST(server, performRequest) {}
 
-}
-
-TEST(server, performResponse) {
-
-}
+TEST(server, performResponse) {}
 
 // grpc::Status performRequest(std::unique_ptr<cws::SimulationService::Stub> & stub,
 //                             const cws::Request & request,
@@ -21,7 +17,8 @@ TEST(server, performResponse) {
 
 // void processStatus(const grpc::Status & status) {
 //   if (!status.ok()) {
-//     std::cout << "ERROR(code=" << status.error_code() << "): " << status.error_message()
+//     std::cout << "ERROR(code=" << status.error_code() << "): " <<
+//     status.error_message()
 //               << std::endl;
 //   }
 // }

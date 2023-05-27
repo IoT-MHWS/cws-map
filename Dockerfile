@@ -1,21 +1,13 @@
 FROM ubuntu:23.10
 
 RUN apt-get update
-RUN apt-get -y install gcc g++ python3.11 bash
-RUN ln -s /usr/bin/python3.11 /usr/bin/python
-RUN apt-get -y install python3-pip python3.11-venv
+RUN apt-get -y install gcc g++ bash cmake python3.11 python3-pip
 
-
-RUN apt-get -y install pipx
 RUN pip install --break-system-packages conan
 
 RUN conan profile detect 
 
-WORKDIR /root
+RUN mkdir -p /app
+WORKDIR /app
 
-COPY cmake/ .
-COPY common/ .
-COPY cws-map/ .
-COPY grpc-server/ .
-COPY proto/ .
-COPY LICENSE ./
+# Mount project directory and run container

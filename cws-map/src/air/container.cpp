@@ -25,7 +25,7 @@ void Container::updateTemperature(double heatAirTransfer) {
 
   double sumHeatWeight = transferCoef * totalWeight;
   double partTransfer;
-  for (const auto & air: airList) {
+  for (const auto & air : airList) {
     partTransfer = air->getHeatTransferCoef() * air->getWeight() / sumHeatWeight;
     air->updateTemperature(partTransfer * heatAirTransfer);
   }

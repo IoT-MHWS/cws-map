@@ -338,7 +338,7 @@ SubjectQueryType fromSubjectQueryType(cws::SubjectQueryType type) {
   case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_UPDATE:
     return SubjectQueryType::UPDATE;
   case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_UNSPECIFIED:
-  // case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_SELECT:
+    // case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_SELECT:
     return SubjectQueryType::SELECT;
   default:
     return SubjectQueryType::UNSPECIFIED;

@@ -3,52 +3,62 @@ Coworking space map
 
 ## Install dependencies
 
-Create conan profile
+Install `>=conan-2.0.0`.
+
+Create conan profile:
 
 ```bash
-conan profile detect
+conan profile detect [--force]
 ```
 
-Install dependencies
+Install dependencies:
 
 ```bash
-conan install . --output-folder=build --build=missing
+conan install . --build=missing
 ```
 
-## Generate cmake
+To not use lock file `--lockfile=""`.
 
+To use different lock file `--lockfile=<path>`.
+
+## Build
+
+If using `>=cmake-3.25`, that implements presets, run:
 
 ```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=debug -DGRPC_SERVER=y
+cmake --preset conan-release
+cmake --build --preset conan-release
 ```
 
-* `GRPC_SERVER` - whether compile grpc-server
-* `FETCH_GRPC` - fetch gRPC library and compile using it or use installed (recommended be `True` because of dependencies that can be not present)
-* `PROTO_LOC` - location of proto module, relative to current `CMakeLists.txt` or absolute (default set for current repo structure)
+Or read logs of previous command.
 
-Others:
+>  Modules can be run as project root modules, but need to add dependencies: check `conanfile.py` and conan documentation.
 
-* `APP` - whether compile app (for tests)
+## Execute
 
+Check executables in `build` folder.
 
-### Possible values for variables
+## Docker
 
-* True: `y`, non-zero digit
-* False: `n`, `0`
-* Default: False
+Build and run container:
 
-## Building
-
-```
-cmake --build build
+```bash
+docker build -t <name> .
+docker run --rm -it <container-id> bash
 ```
 
-## TODO
+## CMake targets
 
-* [x] Refresh how to write in c++
-* [ ] Learn c++20 and multithreading (long journey)
+Clean:
 
-### Might
+```bash
+cmake --build --preset conan-release --target clean
+```
 
-* [ ] Add spdlog for the project
-* [ ] Replace `std::mutex` with atomic read-modify-write
+Format:
+
+```bash
+cmake --build --preset conan-release --target=clang-format
+cmake --build --preset conan-release --target=fix-clang-format
+```
+

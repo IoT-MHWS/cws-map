@@ -32,7 +32,7 @@ public:
   void updateTemperature(double heatAirTransfer);
 
 private:
-  void getHeatTransferAndTotalWeight(double *totalWeight, double *transferCoef) const;
+  void getHeatTransferAndTotalWeight(double * totalWeight, double * transferCoef) const;
   void normalizeTemperature();
 };
 
