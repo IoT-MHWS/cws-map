@@ -13,46 +13,47 @@ private:
 public:
   SubjectHubService(SimulationInterface & interface) : interface(interface) {}
 
-  ::grpc::Status GetTemperature(::grpc::ServerContext * context,
-                                const ::cws::RequestSensorTemperature * request,
-                                ::cws::ResponseSensorTemperature * response) override {
+  // ::grpc::Status GetTemperature(::grpc::ServerContext * context,
+  //                               const ::cws::RequestSensorTemperature * request,
+  //                               ::cws::ResponseSensorTemperature * response) override
+  //                               {
 
-    auto map = interface.getMap();
+  //   auto map = interface.getMap();
 
-    if (!verifyMapSet(map, *response->mutable_base())) {
-      return grpc::Status::OK;
-    }
+  //   if (!verifyMapSet(map, *response->mutable_base())) {
+  //     return grpc::Status::OK;
+  //   }
 
-    auto coordinates = fromCoordinates(request->coordinates());
+  //   auto coordinates = fromCoordinates(request->coordinates());
 
-    auto idx = request->id().id();
+  //   auto idx = request->id().id();
 
-    SubjectQuery query(SubjectQueryType::SELECT, coordinates,
-                       std::make_unique<SensorTemperature>(idx));
+  //   SubjectQuery query(SubjectQueryType::SELECT, coordinates,
+  //                      std::make_unique<SensorTemperature>(idx));
 
-    auto subject = map->getQuery(std::move(query));
+  //   auto subject = map->getQuery(std::move(query));
 
-    if (!verifySubjectExists(subject, *response->mutable_base())) {
-      return grpc::Status::OK;
-    }
+  //   if (!verifySubjectExists(subject, *response->mutable_base())) {
+  //     return grpc::Status::OK;
+  //   }
 
-    if (subject->getSubjectId().type != SubjectType::SENSOR) {
-      verifySubjectExists(nullptr, *response->mutable_base());
-      return grpc::Status::OK;
-    }
+  //   if (subject->getSubjectId().type != SubjectType::SENSOR) {
+  //     verifySubjectExists(nullptr, *response->mutable_base());
+  //     return grpc::Status::OK;
+  //   }
 
-    auto subjectSensor = static_cast<const SubjectSensor *>(subject);
+  //   auto subjectSensor = static_cast<const SubjectSensor *>(subject);
 
-    if (subjectSensor->getSensorType() != SensorType::TEMPERATURE) {
-      verifySubjectExists(nullptr, *response->mutable_base());
-      return grpc::Status::OK;
-    }
+  //   if (subjectSensor->getSensorType() != SensorType::TEMPERATURE) {
+  //     verifySubjectExists(nullptr, *response->mutable_base());
+  //     return grpc::Status::OK;
+  //   }
 
-    auto sensorTemperature = static_cast<const SensorTemperature *>(subjectSensor);
-    toTemperature(*response->mutable_temp(), sensorTemperature->getTemperature());
+  //   auto sensorTemperature = static_cast<const SensorTemperature *>(subjectSensor);
+  //   toTemperature(*response->mutable_temp(), sensorTemperature->getTemperature());
 
-    return grpc::Status::OK;
-  }
+  //   return grpc::Status::OK;
+  // }
 
 private:
   bool verifyMapSet(const std::shared_ptr<const Map> & map, cws::Response & response) {

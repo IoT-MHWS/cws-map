@@ -1,4 +1,5 @@
 #include "cws/simulation/simulation_map.hpp"
+#include "cws/subject/plain.hpp"
 
 void SimulationMap::setQuery(SubjectQuery && query) {
   switch (query.queryType) {
@@ -16,9 +17,9 @@ void SimulationMap::setQuery(SubjectQuery && query) {
   }
 }
 
-const Subject * SimulationMap::getQuery(const SubjectQuery & query) const {
+const Subject::Plain * SimulationMap::getQuery(const SubjectQuery & query) const {
   if (query.queryType == SubjectQueryType::SELECT) {
-    auto & subjectLayer = layers.getSubjectLayer();
+    auto & subjectLayer = layers.subjectLayer;
     auto & cell = subjectLayer.getCell(query.coordinates);
     auto & subjectList = cell.getElement().getSubjectList();
 
@@ -32,13 +33,13 @@ const Subject * SimulationMap::getQuery(const SubjectQuery & query) const {
 }
 
 void SimulationMap::setQueryInsert(SubjectQuery && query) {
-  auto & subjectLayer = layers.accessSubjectLayer();
+  auto & subjectLayer = layers.subjectLayer;
   auto & cell = subjectLayer.accessCell(query.coordinates);
   cell.accessElement().accessSubjectList().push_back(std::move(query.subject));
 }
 
 void SimulationMap::setQueryUpdate(SubjectQuery && query) {
-  auto & subjectLayer = layers.accessSubjectLayer();
+  auto & subjectLayer = layers.subjectLayer;
   auto & cell = subjectLayer.accessCell(query.coordinates);
   auto & subjectList = cell.accessElement().accessSubjectList();
 
@@ -50,7 +51,7 @@ void SimulationMap::setQueryUpdate(SubjectQuery && query) {
   }
 }
 void SimulationMap::setQueryDelete(SubjectQuery && query) {
-  auto & subjectLayer = layers.accessSubjectLayer();
+  auto & subjectLayer = layers.subjectLayer;
   auto & cell = subjectLayer.accessCell(query.coordinates);
   auto & subjectList = cell.accessElement().accessSubjectList();
 

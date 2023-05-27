@@ -1,39 +1,75 @@
 # cws-map
 Coworking space map
 
-## Generate cmake
+## Build and install dependencies
 
-```
-cmake -S . -B build -DCMAKE_BUILD_TYPE=debug -DGRPC_SERVER=y -DFETCH_GRPC=y
-```
+Install `>=conan-2.0.0`.
 
-* `GRPC_SERVER` - whether compile grpc-server
-* `FETCH_GRPC` - fetch gRPC library and compile using it or use installed (recommended be `True` because of dependencies that can be not present)
-* `PROTO_LOC` - location of proto module, relative to current `CMakeLists.txt` or absolute (default set for current repo structure)
+Create conan profile:
 
-Others:
-
-* `APP` - whether compile app (for tests)
-
-
-### Possible values for variables
-
-* True: `y`, non-zero digit
-* False: `n`, `0`
-* Default: False
-
-## Building
-
-```
-cmake --build build
+```bash
+conan profile detect [--force]
 ```
 
-## TODO
+Install dependencies:
 
-* [x] Refresh how to write in c++
-* [ ] Learn c++20 and multithreading (long journey)
+```bash
+conan install . --build=missing [--settings=build_type=Debug]
+```
 
-### Might
+If using `>=cmake-3.25`, that implements presets, run:
 
-* [ ] Add spdlog for the project
-* [ ] Replace `std::mutex` with atomic read-modify-write
+```bash
+cmake --preset conan-release
+cmake --build --preset conan-release
+```
+
+Or read logs of previous command.
+
+>  Modules can be also used as project root modules, but need to add dependencies: check `conanfile.py` and conan documentation.
+
+## Execute
+
+Check executables in `build` folder.
+
+## Docker
+
+Build image:
+
+```bash
+docker build -t cws-map-builder:latest .
+```
+
+Start container with bind-mounted directory:
+
+```bash
+docker run -d \
+    -it \
+    --name cws-map-dev \
+    --mount type=bind,source="$(pwd)",target=/app \
+    cws-map-builder:latest
+```
+
+Now you can attach to it:
+
+```bash
+docker exec -it cws-map-dev bash
+```
+
+Install dependencies and build program. I hope you won't accidentally remove container.
+
+## CMake targets
+
+Clean:
+
+```bash
+cmake --build --preset conan-release --target clean
+```
+
+Format:
+
+```bash
+cmake --build --preset conan-release --target=clang-format
+cmake --build --preset conan-release --target=fix-clang-format
+```
+

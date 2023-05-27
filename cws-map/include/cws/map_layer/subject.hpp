@@ -10,5 +10,13 @@ class MapLayerSubject : public MapLayerBase<LayerSubject> {
 public:
   MapLayerSubject(Dimension dimension) : MapLayerBase<LayerSubject>(dimension) {}
 
-  void nextState(const Layers & state) override;
+  std::list<std::pair<Coordinates, const Subject::LightSourceAlt *>>
+  getActiveLightSources() const;
+
+  const std::list<std::unique_ptr<Subject::Plain>> &
+  getSubjectList(Coordinates c) const {
+    return getCell(c).getElement().getSubjectList();
+  }
+
+  void nextTemperature();
 };

@@ -71,12 +71,10 @@ public:
     }
 
     const auto & layers = map->getLayers();
-    const auto & tempLayer = layers.getTemperatureLayer();
-    const auto & subjectLayer = layers.getSubjectLayer();
+    const auto & subjectLayer = layers.subjectLayer;
 
-    const auto cell = Cell{.coordinates = coord,
-                           .temp = tempLayer.getCell(coord).getElement(),
-                           .subject = subjectLayer.getCell(coord).getElement()};
+    const auto cell =
+        Cell{.coordinates = coord, .subject = subjectLayer.getCell(coord).getElement()};
 
     toCell(*response->mutable_cell(), cell);
     return grpc::Status::OK;
@@ -98,8 +96,7 @@ public:
     auto dimension = map->getDimension();
 
     const auto & layers = map->getLayers();
-    const auto & tempLayer = layers.getTemperatureLayer();
-    const auto & subjectLayer = layers.getSubjectLayer();
+    const auto & subjectLayer = layers.subjectLayer;
 
     for (int x = 0; x < dimension.width; ++x) {
       for (int y = 0; y < dimension.height; ++y) {
@@ -108,7 +105,6 @@ public:
         Coordinates coord{.x = x, .y = y};
 
         const auto cell = Cell{.coordinates = coord,
-                               .temp = tempLayer.getCell(coord).getElement(),
                                .subject = subjectLayer.getCell(coord).getElement()};
 
         toCell(*response.mutable_cell(), cell);
@@ -118,67 +114,67 @@ public:
     return grpc::Status::OK;
   }
 
-  grpc::Status GetSubject(::grpc::ServerContext * context,
-                          const cws::RequestQuerySubject * request,
-                          cws::ResponseSelectSubject * response) override {
-    auto map = interface.getMap();
+  // grpc::Status GetSubject(::grpc::ServerContext * context,
+  //                         const cws::RequestQuerySubject * request,
+  //                         cws::ResponseSelectSubject * response) override {
+  //   auto map = interface.getMap();
 
-    if (!verifyMapSet(map, *response->mutable_base())) {
-      return grpc::Status::OK;
-    }
+  //   if (!verifyMapSet(map, *response->mutable_base())) {
+  //     return grpc::Status::OK;
+  //   }
 
-    auto queryType = fromSubjectQueryType(request->query_type());
+  //   auto queryType = fromSubjectQueryType(request->query_type());
 
-    auto dimension = map->getDimension();
+  //   auto dimension = map->getDimension();
 
-    Coordinates coord = fromCoordinates(request->coordinates());
+  //   Coordinates coord = fromCoordinates(request->coordinates());
 
-    if (!verifyCoordinates(coord, dimension, *response->mutable_base())) {
-      return grpc::Status::OK;
-    }
+  //   if (!verifyCoordinates(coord, dimension, *response->mutable_base())) {
+  //     return grpc::Status::OK;
+  //   }
 
-    SubjectQuery query(queryType, coord, fromSubjectDerived(request->subject()));
-    auto res = map->getQuery(std::move(query));
+  //   SubjectQuery query(queryType, coord, fromSubjectDerived(request->subject()));
+  //   auto res = map->getQuery(std::move(query));
 
-    if (res == nullptr) {
-      auto respBase = response->mutable_base();
-      auto status = respBase->mutable_status();
-      status->set_text("element doesn't exist");
-      status->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
-    } else {
-      auto subject = response->mutable_derived();
-      toSubjectDerived(*subject, res);
-      auto coordinates = response->mutable_coordinates();
-      toCoordinates(*coordinates, coord);
-    }
+  //   if (res == nullptr) {
+  //     auto respBase = response->mutable_base();
+  //     auto status = respBase->mutable_status();
+  //     status->set_text("element doesn't exist");
+  //     status->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
+  //   } else {
+  //     auto subject = response->mutable_derived();
+  //     toSubjectDerived(*subject, res);
+  //     auto coordinates = response->mutable_coordinates();
+  //     toCoordinates(*coordinates, coord);
+  //   }
 
-    return grpc::Status::OK;
-  }
+  //   return grpc::Status::OK;
+  // }
 
-  grpc::Status SetSubject(::grpc::ServerContext * context,
-                          const cws::RequestQuerySubject * request,
-                          cws::Response * response) override {
+  // grpc::Status SetSubject(::grpc::ServerContext * context,
+  //                         const cws::RequestQuerySubject * request,
+  //                         cws::Response * response) override {
 
-    auto map = interface.getMap();
+  //   auto map = interface.getMap();
 
-    if (!verifyMapSet(map, *response)) {
-      return grpc::Status::OK;
-    }
+  //   if (!verifyMapSet(map, *response)) {
+  //     return grpc::Status::OK;
+  //   }
 
-    SubjectQueryType queryType = fromSubjectQueryType(request->query_type());
-    Coordinates coordinates = fromCoordinates(request->coordinates());
+  //   SubjectQueryType queryType = fromSubjectQueryType(request->query_type());
+  //   Coordinates coordinates = fromCoordinates(request->coordinates());
 
-    if (!verifyCoordinates(coordinates, map->getDimension(), *response)) {
-      return grpc::Status::OK;
-    }
+  //   if (!verifyCoordinates(coordinates, map->getDimension(), *response)) {
+  //     return grpc::Status::OK;
+  //   }
 
-    auto subject = fromSubjectDerived(request->subject());
+  //   auto subject = fromSubjectDerived(request->subject());
 
-    interface.addQuerySet(
-        std::make_unique<SubjectQuery>(queryType, coordinates, std::move(subject)));
+  //   interface.addQuerySet(
+  //       std::make_unique<SubjectQuery>(queryType, coordinates, std::move(subject)));
 
-    return grpc::Status::OK;
-  }
+  //   return grpc::Status::OK;
+  // }
 
 private:
   bool verifyMapSet(const std::shared_ptr<const Map> & map, cws::Response & response) {

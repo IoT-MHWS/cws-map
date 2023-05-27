@@ -1,13 +1,49 @@
 #pragma once
 
-#include "cws/subject/base.hpp"
+#include "cws/physical.hpp"
+#include "cws/subject/extension/base.hpp"
+#include "cws/subject/type.hpp"
 
-class SubjectPlain : public Subject {
-public:
-  SubjectPlain(int idx, SubjectParameters parameters)
-      : Subject(SubjectId{SubjectType::PLAIN, idx}, parameters) {}
+namespace Subject {
 
-  SubjectPlain * clone() const override { return new SubjectPlain(*this); }
+/*
+ * Identifier of subject
+ */
+struct Id {
+  Type type;
+  int idx;
 
-  void nextState(SubjectId subjectId, const Layers & layers) override;
+protected:
+  friend bool operator==(const Id &, const Id &);
 };
+
+class Plain : public Physical, virtual public Extensiable {
+  Id id_;
+  double surfaceArea_;
+
+  double defAirConduction_;
+
+public:
+  Plain(Physical && params, Id id, double surfaceArea)
+      : Physical(std::move(params)), id_(id), surfaceArea_(surfaceArea) {
+
+    setType(Type::PLAIN);
+  }
+
+  virtual Plain * clone() const { return new Plain(*this); }
+
+public:
+  Id getSubjectId() const { return id_; }
+  double getSurfaceArea() const { return surfaceArea_; }
+
+  double getDefAirConduction() const { return defAirConduction_; }
+  virtual double getCurAirConduction() const { return defAirConduction_; }
+
+protected:
+  void setType(Type type) { id_.type = type; }
+
+public:
+  friend bool operator==(const Plain & lhs, const Plain & rhs);
+};
+
+}// namespace Subject

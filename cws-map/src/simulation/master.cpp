@@ -2,11 +2,12 @@
 #include <chrono>
 #include <functional>
 #include <iostream>
+// #include <sys/prctl.h>
 #include <thread>
 
+#include "cws/simulation/interface.hpp"
+#include "cws/simulation/simulation.hpp"
 #include "cws/simulation/simulation_map.hpp"
-#include <cws/simulation/interface.hpp>
-#include <cws/simulation/simulation.hpp>
 
 void SimulationMaster::run() {
   std::jthread worker2(std::bind_front(&SimulationMaster::execute, this));
@@ -22,6 +23,8 @@ void SimulationMaster::exit() {
 }
 
 void SimulationMaster::execute(std::stop_token stoken) {
+  // prctl(PR_SET_NAME, "sim-master", 0, 0, 0);
+
   this->slave.run();
 
   while (true) {

@@ -1,34 +1,11 @@
 cmake_minimum_required(VERSION 3.25)
 
+project(root)
 
-project(cws)
-
-
-# set(CMAKE_CXX_STANDARD 23) NOTE: not supported by lsp
-set(CMAKE_CXX_FLAGS "-std=c++2b ${CMAKE_CXX_FLAGS}")
-
-set(CMAKE_C_STANDARD 17)
-
+# include(./cmake/dependencies.cmake)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(FETCHCONTENT_QUIET OFF)
-include(FetchContent)
-
-
-if (NOT DEFINED PROTO_LOC)
-  set(PROTO_LOC ${CMAKE_CURRENT_SOURCE_DIR}/proto)
-else()
-  get_filename_component(PROTO_LOC "${PROTO_LOC}" ABSOLUTE)
-endif()
-
-
-if (APP)
-  add_subdirectory(app)
-endif (APP)
-
 add_subdirectory(cws-map)
-
-if (GRPC_SERVER)
-  add_subdirectory(grpc-server)
-endif (GRPC_SERVER)
+add_subdirectory(grpc-server)
+add_subdirectory(proto)

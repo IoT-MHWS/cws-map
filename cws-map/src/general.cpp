@@ -2,7 +2,7 @@
 
 std::ostream & operator<<(std::ostream & out, const Coordinates * value) {
   if (value) {
-    out << "{x:" << value->x<< ",y:" << value->y << "}";
+    out << "{x:" << value->x << ",y:" << value->y << "}";
   }
   return out;
 }
@@ -12,4 +12,38 @@ std::ostream & operator<<(std::ostream & out, const Dimension * value) {
     out << "{width:" << value->width << ",height=" << value->height << "}";
   }
   return out;
+}
+
+bool operator==(const Dimension & lhs, const Dimension & rhs) {
+  return lhs.width == rhs.width && lhs.height == rhs.height;
+}
+
+Temperature operator+(const Temperature & lhs, const Temperature & rhs) {
+  return Temperature{.value = lhs.value + rhs.value};
+}
+
+bool operator>(const Absorption & lhs, const Absorption & rhs) {
+  return lhs.value > rhs.value;
+}
+
+Absorption operator+(const Absorption & lhs, const Absorption & rhs) {
+  return {.value = lhs.value + rhs.value};
+}
+Absorption operator-(const Absorption & lhs, const Absorption & rhs) {
+  return {.value = lhs.value - rhs.value};
+}
+Absorption operator*(const Absorption & lhs, const Absorption & rhs) {
+  return {.value = lhs.value * rhs.value};
+}
+
+Illumination operator+(const Illumination & lhs, const Illumination & rhs) {
+  return {.value = lhs.value + rhs.value};
+}
+
+bool operator==(const Illumination & lhs, const Illumination & rhs) {
+  return lhs.value == rhs.value;
+}
+
+Illumination Illumination::getActualIllumination(const Absorption & abs) {
+  return {.value = static_cast<int>(this->value * (1 - abs.value))};
 }
