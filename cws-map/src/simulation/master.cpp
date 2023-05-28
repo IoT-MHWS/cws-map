@@ -115,36 +115,35 @@ void SimulationMaster::updateSimulationMap() {
 
   Optional<Dimension> dimension = interface.masterGetDimension();
 
-  bool curMapExist = !!curMap;
-
-  /* If request on new map then create new currentMap
-   * else if current map exists then just create newMap to store create next state*/
   if (dimension.isSet()) {
     curMap.reset(new SimulationMap(dimension.get()));
     newMap.reset();
   } else {
-    if (curMapExist) {
+    if (curMap) {
       newMap.reset(new SimulationMap(*curMap));
     }
   }
 
-  {
-    auto [qlock, queries] = interface.masterAccessQueries();
+  if (!curMap && !newMap) {
+    return;
+  }
 
-    while (!queries.empty()) {
-      const auto & query = queries.front();
-      // if current map exists then apply changes to new map else to current
-      if (curMapExist) {
-        newMap->setQuery(std::move(*query));
-      } else {
-        curMap->setQuery(std::move(*query));
-      }
-      queries.pop();
+  auto [qlock, queries] = interface.masterAccessQueries();
+
+  while (!queries.empty()) {
+    const auto & query = queries.front();
+
+    if (newMap) {
+      newMap->setQuery(std::move(*query));
+    } else {
+      curMap->setQuery(std::move(*query));
+    }
+
+    queries.pop();
 
 #ifndef NDEBUG
-      std::cout << "master: update query processed." << std::endl;
+    std::cout << "master: update query processed." << std::endl;
 #endif
-    }
   }
 }
 
