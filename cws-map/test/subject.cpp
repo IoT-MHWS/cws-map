@@ -24,11 +24,11 @@ TEST(Subject, updateTemperature) {
 
   TurnableLightEmitter emitter(
       LightEmitter(
-          Plain(Physical(10, 400, Temperature{30}, Absorption(0.5)), Id{.idx = 1}, 1),
+          Plain(Physical(10, 400, Temperature{30}, Absorption{0.5}), Id{.idx = 1}, 1),
           {}, TempSourceParams{.heatProduction = 4000}),
       TurnableStatus::ON, {}, TempSourceParams{.heatProduction = 0});
 
-  EXPECT_TRUE(static_cast<Plain*>(&emitter)->isTempSource());
+  EXPECT_TRUE(static_cast<Plain *>(&emitter)->isTempSource());
 
   Temperature before = emitter.getTemperature();
 
@@ -37,4 +37,9 @@ TEST(Subject, updateTemperature) {
 
   Temperature after = emitter.getTemperature();
   EXPECT_EQ(Temperature{.value = 1}.value, after.value - before.value);
+
+  emitter.setStatus(TurnableStatus::OFF);
+
+  Temperature afterOff = emitter.getTemperature();
+  EXPECT_EQ(after, afterOff);
 }
