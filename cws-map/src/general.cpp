@@ -14,6 +14,13 @@ std::ostream & operator<<(std::ostream & out, const Dimension * value) {
   return out;
 }
 
+std::ostream & operator<<(std::ostream & out, const Temperature * value) {
+  if (value) {
+    out << "{value: " << value->value << "}";
+  }
+  return out;
+}
+
 bool operator==(const Dimension & lhs, const Dimension & rhs) {
   return lhs.width == rhs.width && lhs.height == rhs.height;
 }

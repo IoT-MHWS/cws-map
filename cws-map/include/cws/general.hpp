@@ -25,6 +25,8 @@ struct Temperature {
   double value;
   friend Temperature operator+(const Temperature & lhs, const Temperature & rhs);
 
+  friend std::ostream & operator<<(std::ostream & out, const Temperature * value);
+
   double get() const { return value; }
 };
 

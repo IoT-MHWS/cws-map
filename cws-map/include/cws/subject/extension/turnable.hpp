@@ -14,7 +14,7 @@ class Turnable : virtual public Subject::Extensiable {
   TurnableStatus status_;
 
 public:
-  Turnable(TurnableStatus status) : status_(TurnableStatus::OFF) {}
+  Turnable(TurnableStatus status) : status_(status) {}
 
   bool isTurnable() const final override { return true; }
 
