@@ -2,12 +2,11 @@
 
 #include "cws/simulation/interface.hpp"
 #include "cws/simulation/simulation.hpp"
-#include "cws/subject/light_emitter.hpp"
-#include <cws/general.hpp>
-#include <cws/map.hpp>
+#include "cws/general.hpp"
+#include "cws/map.hpp"
 #include <thread>
 
-TEST(interface, simulation) {
+TEST(Interface, SimulateMapEmpty) {
   SimulationInterface interface;
 
   SimulationMaster master(interface);
@@ -53,17 +52,4 @@ TEST(interface, simulation) {
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   interface.exit();
-}
-
-TEST(interface, decoration) {
-  using namespace Subject;
-
-  Plain plain({}, Id{.idx = 2}, 0);
-
-  TurnableLightEmitter emitter(LightEmitter(Plain({}, Id{.idx = 1}, 0), {}, {}),
-                               TurnableStatus::OFF, {}, {});
-
-  std::cout << (int)emitter.getSubjectId().type << std::endl;
-  std::cout << emitter.isTempSource() << std::endl;
-  std::cout << plain.isTempSource() << std::endl;
 }
