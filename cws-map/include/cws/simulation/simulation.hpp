@@ -73,6 +73,4 @@ private:
   void waitDurationExceeds(
       const SimulationState & state,
       const std::chrono::time_point<std::chrono::high_resolution_clock> & start);
-
-  bool mapExisted();
 };

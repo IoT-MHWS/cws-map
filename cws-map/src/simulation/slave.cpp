@@ -2,7 +2,6 @@
 
 // #include <sys/prctl.h>
 
-/* ExecutorSlave */
 void SimulationSlave::run() {
   std::thread worker2(&SimulationSlave::execute, this);
   worker.swap(worker2);
@@ -34,25 +33,26 @@ void SimulationSlave::execute() {
 
     cv.wait(lock, [&runReady, &doExit] { return runReady || doExit; });
 
-    if (runReady) {
-      runReady = false;
-      updateSimulationMap();
-      runProcessed = true;
-    }
-
-    lock.unlock();
-    cv.notify_one();
-
     if (doExit) {
       break;
     }
+
+    if (runReady) {
+      runReady = false;
+      updateSimulationMap();
+    }
+
+    runProcessed = true;
+    lock.unlock();
+
+    cv.notify_one();
   }
 }
 
 void SimulationSlave::updateSimulationMap() {
-  if (master.mapExisted()) {
+  if (master.newMap) {
     master.newMap->update(*master.curMap);
-    std::cout << "slave: "
-              << "map updated" << std::endl;
   }
+  std::cout << "slave: "
+            << "map updated" << std::endl;
 }

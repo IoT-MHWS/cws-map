@@ -10,13 +10,12 @@
 #include "cws/simulation/simulation_map.hpp"
 
 void SimulationMaster::run() {
-  std::jthread worker2(std::bind_front(&SimulationMaster::execute, this));
-  worker.swap(worker2);
+  std::jthread tmp(std::bind_front(&SimulationMaster::execute, this));
+  worker.swap(tmp);
 }
 
 void SimulationMaster::wait() { worker.join(); }
 
-// called by outer thread
 void SimulationMaster::exit() {
   worker.request_stop();
   this->wait();
@@ -42,31 +41,6 @@ void SimulationMaster::execute(std::stop_token stoken) {
     updateSimulationMap();
 
 #ifndef NDEBUG
-    // if (curMap.get()) {
-    //   std::cout << "curMap: "
-    //             << curMap.get()
-    //                    ->getLayers()
-    //                    .getSubjectLayer()
-    //                    .getCell({.x = 0, .y = 0})
-    //                    .getElement()
-    //                    .getSubjectList()
-    //                    .size()
-    //             << std::endl;
-    // }
-    // if (newMap.get()) {
-    //   std::cout << "newMap: "
-    //             << newMap.get()
-    //                    ->getLayers()
-    //                    .getSubjectLayer()
-    //                    .getCell({.x = 0, .y = 0})
-    //                    .getElement()
-    //                    .getSubjectList()
-    //                    .size()
-    //             << std::endl;
-    // }
-#endif
-
-#ifndef NDEBUG
     std::cout << "master: " << state << std::endl;
 #endif
 
@@ -75,12 +49,14 @@ void SimulationMaster::execute(std::stop_token stoken) {
     bool isSimTypeINF = state.type == SimulationType::INFINITE;
 
     if (isStatusRunning && (isSimTypeINF || isNotLastTick)) {
-      state.currentTick += 1;
-      notifySlaveReady();
-      waitSlaveProcess();
+      if (newMap)
+        notifySlaveReady();
+      state.currentTick += 1;// always updated even if map doesn't exist
+      if (newMap)
+        waitSlaveProcess();
     }
 
-    if (state.type != SimulationType::INFINITE && state.currentTick == state.lastTick) {
+    if (!isSimTypeINF && state.currentTick == state.lastTick) {
       state.status = SimulationStatus::STOPPED;
     }
 
@@ -91,9 +67,8 @@ void SimulationMaster::execute(std::stop_token stoken) {
 #endif
 
     // Set current map as updated map
-    if (mapExisted()) {
-      auto newMapR = newMap.release();
-      curMap = std::shared_ptr<SimulationMap>(newMapR);
+    if (newMap) {
+      curMap = std::shared_ptr<SimulationMap>(newMap.release());
     }
 
     interface.masterSet(state, curMap);
@@ -199,5 +174,3 @@ void SimulationMaster::waitDurationExceeds(
 
   std::this_thread::sleep_for(waitTime);
 }
-
-bool SimulationMaster::mapExisted() { return !!newMap; }
