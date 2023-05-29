@@ -3,6 +3,23 @@
 #include "cws/map_layer/air.hpp"
 #include "cws/map_layer/subject.hpp"
 
+TEST(AirPlain, add) {
+  using namespace Air;
+
+  Plain lhs(Physical(1, 300, {30}, {0.3}), 0.3);
+  Plain rhs(Physical(2, 600, {60}, {0.6}), 0.6);
+
+  Plain exp(Physical(3, 500, {54}, {0.5}), 0.5);
+  Plain res = lhs + rhs;
+
+  ASSERT_EQ(exp.getType(), res.getType());
+  ASSERT_EQ(exp.getWeight(), res.getWeight());
+  ASSERT_EQ(exp.getDefLightAbsorption().value, res.getDefLightAbsorption().value);
+  ASSERT_EQ(exp.getHeatCapacity(), res.getHeatCapacity());
+  ASSERT_EQ(exp.getTemperature().value, res.getTemperature().value);
+  ASSERT_EQ(exp.getCurLightAbsorption().value, res.getCurLightAbsorption().value);
+}
+
 TEST(AirContainer, addRemoveErase) {
   using namespace Air;
 
@@ -11,6 +28,8 @@ TEST(AirContainer, addRemoveErase) {
 
   container.add(std::make_unique<Plain>(Physical{}, 0.15));
   container.add(std::make_unique<Plain>(Physical{}, 0.15));
+  container.add(std::make_unique<Plain>(Physical{}, Type::UNSPECIFIED, 0.15));
+
   ASSERT_FALSE(container.empty());
 
   const auto & list = container.getList();
@@ -64,7 +83,8 @@ TEST(MapLayerAir, nextConvectionCellNoSubjects) {
 
   auto & container = layerAir.accessCell({0, 0}).accessElement().accessAirContainer();
   container.add(std::make_unique<Air::Plain>(Physical(10, 400, {30}, {}), 3));
-  container.add(std::make_unique<Air::Plain>(Physical(20, 400, {30}, {}), 1.5));
+  container.add(std::make_unique<Air::Plain>(Physical(20, 400, {30}, {}),
+                                             Air::Type::UNSPECIFIED, 1.5));
 
   MapLayerSubject layerSubject(dim);
   auto & subjectList =
@@ -72,7 +92,7 @@ TEST(MapLayerAir, nextConvectionCellNoSubjects) {
 
   layerAir.nextConvection(layerSubject);
 
-  for (auto &elptr : container.getList()) {
+  for (auto & elptr : container.getList()) {
     ASSERT_EQ(Temperature{30}, elptr->getTemperature());
   }
 }
@@ -95,7 +115,7 @@ TEST(MapLayerAir, nextConvectionCellNoAir) {
 
   layerAir.nextConvection(layerSubject);
 
-  for (auto &elptr : subjectList) {
+  for (auto & elptr : subjectList) {
     ASSERT_EQ(Temperature{60}, elptr->getTemperature());
   }
 }
@@ -108,7 +128,8 @@ TEST(MapLayerAir, nextConvectionCellValues) {
 
   auto & container = layerAir.accessCell({0, 0}).accessElement().accessAirContainer();
   container.add(std::make_unique<Air::Plain>(Physical(10, 400, {30}, {}), 3));
-  container.add(std::make_unique<Air::Plain>(Physical(20, 400, {30}, {}), 1.5));
+  container.add(std::make_unique<Air::Plain>(Physical(20, 400, {30}, {}),
+                                             Air::Type::UNSPECIFIED, 1.5));
 
   MapLayerSubject layerSubject(dim);
   auto & subjectList =

@@ -36,7 +36,19 @@ void Container::updateTemperature(double heatAirTransfer) {
 const std::list<Container::PlainUPTR> & Container::getList() { return airList; }
 
 void Container::add(PlainUPTR && plain) {
-  airList.push_back(std::move(plain));
+  bool merged = false;
+
+  for (auto it = airList.begin(); it != airList.end(); ++it) {
+    if ((*it)->getType() == plain->getType()) {
+      *it->get() = *it->get() + *plain;
+      merged = true;
+      break;
+    }
+  }
+  if (!merged) {
+    airList.push_back(std::move(plain));
+  }
+
   normalizeTemperature();
 }
 

@@ -10,6 +10,8 @@
  */
 void Map::update(const Map & cur) {
   layers.subjectLayer.nextTemperature();
+  layers.airLayer.nextConvection(layers.subjectLayer);
+  layers.airLayer.nextMixing();
 
   layers.absorptionLayer.updateAbsorption(layers.subjectLayer);
   layers.illuminationLayer.updateIllumination(layers.absorptionLayer,

@@ -23,7 +23,9 @@ public:
   virtual ~Physical() = default;
 
   double getWeight() const { return weight_; }
+
   int getHeatCapacity() const { return heatCapacity_; }
+
   Temperature getTemperature() const { return temperature_; }
   void setTemperature(Temperature temp) { temperature_ = temp; }
 
