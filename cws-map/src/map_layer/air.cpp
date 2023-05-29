@@ -1,13 +1,7 @@
 #include "cws/map_layer/air.hpp"
 
-/*
- * subTr = subSurface * deltaT * airCoef
- * sum(airTr) + sum(subTr) = 0
- * deltaT = subTr - airTr
- */
 void MapLayerAir::nextConvection(MapLayerSubject & subjectLayer) {
   Dimension dim = getDimension();
-
   Coordinates c;
   for (c.x = 0; c.x < dim.width; ++c.x) {
     for (c.y = 0; c.y < dim.height; ++c.y) {
@@ -16,10 +10,15 @@ void MapLayerAir::nextConvection(MapLayerSubject & subjectLayer) {
   }
 }
 
+/*
+ * subTr = subSurface * deltaT * airCoef
+ * sum(airTr) + sum(subTr) = 0
+ * deltaT = subTr - airTr
+ */
 void MapLayerAir::nextConvection(MapLayerSubject & subjectLayer, Coordinates c) {
   auto & airContainer = accessCell(c).accessElement().accessAirContainer();
   // if no air then there is no convection
-  if (!airContainer.hasAir()) {
+  if (airContainer.empty()) {
     return;
   }
 
@@ -32,7 +31,7 @@ void MapLayerAir::nextConvection(MapLayerSubject & subjectLayer, Coordinates c) 
   double totalHeatTransfer = 0;
 
   for (auto & sub : subList) {
-    auto deltaTemp = sub->getTemperature().get() - airTemp.get();
+    auto deltaTemp = airTemp.get() - sub->getTemperature().get();
     auto subSurf = sub->getSurfaceArea();
     double heatTransfer = subSurf * deltaTemp * airCoef;
     sub->updateTemperature(heatTransfer);

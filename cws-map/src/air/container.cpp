@@ -3,7 +3,7 @@
 namespace Air {
 
 // first check if hasAir and then do get/set stuff
-bool Container::hasAir() const { return !airList.empty(); }
+bool Container::empty() const { return airList.empty(); }
 
 double Container::getHeatTransferCoef() const {
   double totalWeight;
@@ -31,6 +31,18 @@ void Container::updateTemperature(double heatAirTransfer) {
   }
   // then normalizeTemperature
   normalizeTemperature();
+}
+
+const std::list<Container::PlainUPTR> & Container::getList() { return airList; }
+
+void Container::add(PlainUPTR && plain) {
+  airList.push_back(std::move(plain));
+  normalizeTemperature();
+}
+
+std::list<Container::PlainUPTR>::const_iterator
+Container::erase(std::list<PlainUPTR>::const_iterator & it) {
+  return airList.erase(it);
 }
 
 void Container::getHeatTransferAndTotalWeight(double * totalWeight,

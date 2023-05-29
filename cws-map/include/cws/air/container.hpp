@@ -12,7 +12,11 @@ namespace Air {
  * 1) temperature of everything should be equal
  */
 class Container {
-  std::list<std::unique_ptr<Plain>> airList;
+public:
+  using PlainUPTR = std::unique_ptr<Plain>;
+
+private:
+  std::list<PlainUPTR> airList;
 
 public:
   Container() = default;
@@ -22,14 +26,18 @@ public:
   Container(const Container & obj) noexcept {
     airList.clear();
     for (const auto & e : obj.airList) {
-      airList.push_back(std::unique_ptr<Air::Plain>(e->clone()));
+      airList.push_back(PlainUPTR(e->clone()));
     }
   }
 
-  bool hasAir() const;
+  bool empty() const;
   double getHeatTransferCoef() const;
   Temperature getTemperature() const;
   void updateTemperature(double heatAirTransfer);
+
+  const std::list<PlainUPTR> & getList();
+  void add(PlainUPTR && plain);
+  std::list<PlainUPTR>::const_iterator erase(std::list<PlainUPTR>::const_iterator & it);
 
 private:
   void getHeatTransferAndTotalWeight(double * totalWeight, double * transferCoef) const;
