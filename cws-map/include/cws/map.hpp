@@ -10,14 +10,14 @@ struct Layers {
 public:
   MapLayerSubject subjectLayer;
 
-  MapLayerAbsorption absorptionLayer;
+  MapLayerObstruction obstructionLayer;
   MapLayerIllumination illuminationLayer;
 
   MapLayerAir airLayer;
 
 public:
   explicit Layers(Dimension dimension)
-      : subjectLayer(dimension), absorptionLayer(dimension),
+      : subjectLayer(dimension), obstructionLayer(dimension),
         illuminationLayer(dimension), airLayer(dimension) {}
 
 public:

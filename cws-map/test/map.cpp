@@ -5,4 +5,3 @@ TEST(Map, NextStatePlain) {
   Map cur({4, 4});
   Map next(cur);
 }
-

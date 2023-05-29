@@ -21,7 +21,7 @@ class Plain : public Physical, virtual public Extensiable {
   Id id_;
   double surfaceArea_;
 
-  double defAirConduction_;
+  Obstruction defAirObstruction_;
 
 public:
   Plain(Physical && params, Id id, double surfaceArea)
@@ -36,8 +36,8 @@ public:
   Id getSubjectId() const { return id_; }
   double getSurfaceArea() const { return surfaceArea_; }
 
-  double getDefAirConduction() const { return defAirConduction_; }
-  virtual double getCurAirConduction() const { return defAirConduction_; }
+  Obstruction getDefAirObstruction() const { return defAirObstruction_; }
+  virtual Obstruction getCurAirObstruction() const { return defAirObstruction_; }
 
 protected:
   void setType(Type type) { id_.type = type; }

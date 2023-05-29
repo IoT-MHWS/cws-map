@@ -1,24 +1,11 @@
 #pragma once
 
 #include "cws/layer/illumination.hpp"
+#include "cws/layer/obstruction.hpp"
 #include "cws/layer/subject.hpp"
 #include "cws/map_layer/base.hpp"
+#include "cws/map_layer/obstruction.hpp"
 #include "cws/map_layer/subject.hpp"
-
-class MapLayerAbsorption : public MapLayerBase<LayerAbsorption> {
-public:
-  MapLayerAbsorption(Dimension dimension) : MapLayerBase<LayerAbsorption>(dimension) {}
-
-  void updateAbsorption(const MapLayerSubject & layerSubject);
-
-  Absorption getAbsorption(Coordinates c) const {
-    return getCell(c).getElement().getAbsorption();
-  }
-
-  void setAbsorption(Coordinates c, Absorption abs) {
-    accessCell(c).accessElement().setAbsorption(abs);
-  }
-};
 
 class MapLayerIllumination : public MapLayerBase<LayerIllumination> {
 
@@ -29,7 +16,7 @@ public:
   MapLayerIllumination(Dimension dimension, Illumination base)
       : MapLayerBase<LayerIllumination>(dimension, base) {}
 
-  void updateIllumination(const MapLayerAbsorption & absorptionLayer,
+  void updateIllumination(const MapLayerObstruction & obstructionLayer,
                           const MapLayerSubject & subjectLayer);
 
   void setIllumination(Coordinates coord, Illumination illum) {

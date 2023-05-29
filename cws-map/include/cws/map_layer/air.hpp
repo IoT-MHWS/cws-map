@@ -14,5 +14,5 @@ public:
   void nextConvection(MapLayerSubject & subjectLayer);
   void nextConvection(MapLayerSubject & subjectLayer, Coordinates c);
 
-  void nextMixing();
+  void nextMixing(const MapLayerSubject & subjectLayer);
 };

@@ -46,6 +46,4 @@ void MapLayerAir::nextConvection(MapLayerSubject & subjectLayer, Coordinates c) 
  * 1) Weight of each type of air should approach to medium
  * 2) Temperature of air should mix and then approach to medium
  */
-void MapLayerAir::nextMixing() {
-
-}
+void MapLayerAir::nextMixing(const MapLayerSubject & subjectLayer) {}

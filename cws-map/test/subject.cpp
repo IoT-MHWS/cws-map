@@ -24,7 +24,7 @@ TEST(Subject, updateTemperature) {
 
   TurnableLightEmitter emitter(
       LightEmitter(
-          Plain(Physical(10, 400, Temperature{30}, Absorption{0.5}), Id{.idx = 1}, 1),
+          Plain(Physical(10, 400, Temperature{30}, Obstruction{0.5}), Id{.idx = 1}, 1),
           {}, TempSourceParams{.heatProduction = 4000}),
       TurnableStatus::ON, {}, TempSourceParams{.heatProduction = 0});
 

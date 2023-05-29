@@ -12,13 +12,13 @@ private:
   double weight_;
   int heatCapacity_;
   Temperature temperature_;
-  Absorption defLightAbsorption_;
+  Obstruction defLightObstruction_;
 
 public:
   Physical(double weight = 0, int heatCapacity = 0, Temperature temp = {},
-           Absorption lightAbs = {})
+           Obstruction lightAbs = {})
       : weight_(weight), heatCapacity_(heatCapacity), temperature_(temp),
-        defLightAbsorption_(lightAbs) {}
+        defLightObstruction_(lightAbs) {}
 
   virtual ~Physical() = default;
 
@@ -29,8 +29,8 @@ public:
   Temperature getTemperature() const { return temperature_; }
   void setTemperature(Temperature temp) { temperature_ = temp; }
 
-  Absorption getDefLightAbsorption() const { return defLightAbsorption_; }
-  virtual Absorption getCurLightAbsorption() const { return defLightAbsorption_; }
+  Obstruction getDefLightObstruction() const { return defLightObstruction_; }
+  virtual Obstruction getCurLightObstruction() const { return defLightObstruction_; }
 
 public:
   void updateTemperature(double heatProd);

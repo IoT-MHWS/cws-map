@@ -30,15 +30,15 @@ struct Temperature {
   friend bool operator==(const Temperature & lhs, const Temperature & rhs);
 };
 
-struct Absorption {
+struct Obstruction {
   double value;
 
   double get() const { return value; }
 
-  friend bool operator>(const Absorption & lhs, const Absorption & rhs);
-  friend Absorption operator+(const Absorption & lhs, const Absorption & rhs);
-  friend Absorption operator-(const Absorption & lhs, const Absorption & rhs);
-  friend Absorption operator*(const Absorption & lhs, const Absorption & rhs);
+  friend bool operator>(const Obstruction & lhs, const Obstruction & rhs);
+  friend Obstruction operator+(const Obstruction & lhs, const Obstruction & rhs);
+  friend Obstruction operator-(const Obstruction & lhs, const Obstruction & rhs);
+  friend Obstruction operator*(const Obstruction & lhs, const Obstruction & rhs);
 };
 
 struct Illumination {
@@ -46,7 +46,7 @@ struct Illumination {
 
   int get() const { return value; }
 
-  Illumination getActualIllumination(const Absorption & abs);
+  Illumination getActualIllumination(const Obstruction & abs);
 
   friend Illumination operator+(const Illumination & lhs, const Illumination & rhs);
   friend bool operator==(const Illumination & lhs, const Illumination & rhs);

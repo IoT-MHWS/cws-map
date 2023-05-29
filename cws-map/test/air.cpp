@@ -14,10 +14,10 @@ TEST(AirPlain, add) {
 
   ASSERT_EQ(exp.getType(), res.getType());
   ASSERT_EQ(exp.getWeight(), res.getWeight());
-  ASSERT_EQ(exp.getDefLightAbsorption().value, res.getDefLightAbsorption().value);
+  ASSERT_EQ(exp.getDefLightObstruction().value, res.getDefLightObstruction().value);
   ASSERT_EQ(exp.getHeatCapacity(), res.getHeatCapacity());
   ASSERT_EQ(exp.getTemperature().value, res.getTemperature().value);
-  ASSERT_EQ(exp.getCurLightAbsorption().value, res.getCurLightAbsorption().value);
+  ASSERT_EQ(exp.getCurLightObstruction().value, res.getCurLightObstruction().value);
 }
 
 TEST(AirContainer, addRemoveErase) {

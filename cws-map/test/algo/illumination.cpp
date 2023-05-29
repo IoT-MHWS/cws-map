@@ -5,7 +5,7 @@
 #include <vector>
 
 struct illum_params {
-  double absorption;
+  double obstruction;
   int cur_illumination;
 };
 
@@ -26,7 +26,7 @@ struct cell {
 };
 
 /*
- * Illimination absorption is calculated like: sort elements from max to min by
+ * Illimination obstruction is calculated like: sort elements from max to min by
  * absorption and calculated subtracted multiplication
  *
  * ex: sub1 = 0.5, sub2 = 0.3, sub3 = 0.6

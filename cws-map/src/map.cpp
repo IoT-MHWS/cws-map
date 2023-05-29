@@ -1,20 +1,20 @@
 #include <cws/map.hpp>
 
 /*
- * 1) Update temperature layer
- * 1.1) Update in-cell temperature
- * 1.2) Update between-cell temperature
- * 2) Update absorption layer == done
- * 3) Update illumination == done
+ * Update subject temperature == done
+ * Update in-cell temperature == done
+ * Update obstruction layer == done
+ * Update between-cell temperature
+ * Update illumination == done
  *
  */
 void Map::update(const Map & cur) {
   layers.subjectLayer.nextTemperature();
   layers.airLayer.nextConvection(layers.subjectLayer);
-  layers.airLayer.nextMixing();
+  layers.airLayer.nextMixing(layers.subjectLayer);
 
-  layers.absorptionLayer.updateAbsorption(layers.subjectLayer);
-  layers.illuminationLayer.updateIllumination(layers.absorptionLayer,
+  layers.obstructionLayer.updateObstruction(layers.subjectLayer);
+  layers.illuminationLayer.updateIllumination(layers.obstructionLayer,
                                               layers.subjectLayer);
 }
 

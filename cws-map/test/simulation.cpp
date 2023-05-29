@@ -1,6 +1,3 @@
 #include "gtest/gtest.h"
 
-TEST(Simulation, Init) {
-  
-}
-
+TEST(Simulation, Init) {}

@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
 
-#include "cws/simulation/interface.hpp"
-#include "cws/simulation/simulation.hpp"
 #include "cws/general.hpp"
 #include "cws/map.hpp"
+#include "cws/simulation/interface.hpp"
+#include "cws/simulation/simulation.hpp"
 #include <thread>
 
 TEST(Interface, SimulateMapEmpty) {

@@ -13,11 +13,3 @@ public:
   Illumination getIllumination() const { return illumination_; }
   void setIllumination(Illumination illumination) { illumination_ = illumination; }
 };
-
-class LayerAbsorption : public Layer {
-  Absorption absorption_;
-
-public:
-  Absorption getAbsorption() const { return absorption_; }
-  void setAbsorption(Absorption absorption) { absorption_ = absorption; }
-};
