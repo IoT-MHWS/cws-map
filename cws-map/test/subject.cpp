@@ -9,10 +9,23 @@ TEST(Subject, TurnableLightEmitter) {
 
   Plain plain({}, Id{.idx = 2}, 0, {});
 
-  TurnableLightEmitter emitter(LightEmitter(Plain({}, Id{.idx = 1}, 0, {}), {}, {}),
-                               TurnableStatus::OFF, {}, {});
+  TurnableLightEmitter emitter(
+      LightEmitter(Plain(Physical(1, 2, {3}, {4}), Id{.idx = 1}, 5, {0.5}),
+                   LightSourceParams{.rawIllumination = Illumination{10}},
+                   TempSourceParams{.heatProduction = 400}),
+      TurnableStatus::OFF, {}, {});
 
+  EXPECT_EQ(1, emitter.getWeight());
+  EXPECT_EQ(2, emitter.getHeatCapacity());
+  EXPECT_EQ(3, emitter.getTemperature().get());
+  EXPECT_EQ(4, emitter.getDefLightObstruction().get());
+  EXPECT_EQ(1, emitter.getSubjectId().idx);
   EXPECT_EQ(emitter.getSubjectId().type, Type::TURNABLE_LIGHT_EMITTER);
+  EXPECT_EQ(5, emitter.getSurfaceArea());
+  EXPECT_EQ(0.5, emitter.getDefAirObstruction().get());
+  EXPECT_EQ(10, emitter.getDefLightParams().rawIllumination.get());
+  EXPECT_EQ(400, emitter.getDefTempParams().heatProduction);
+
   EXPECT_TRUE(emitter.isTempSource());
   EXPECT_FALSE(plain.isTempSource());
 }
