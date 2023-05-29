@@ -18,5 +18,9 @@ public:
     return getCell(c).getElement().getSubjectList();
   }
 
+  std::list<std::unique_ptr<Subject::Plain>> & accessSubjectList(Coordinates c) {
+    return accessCell(c).accessElement().accessSubjectList();
+  }
+
   void nextTemperature();
 };

@@ -24,7 +24,7 @@ std::list<Coordinates> getNeighbours(Dimension dim, Coordinates p) {
   for (int x = p.x - 1; x <= p.x + 1; ++x) {
     for (int y = p.y - 1; y <= p.y + 1; ++y) {
       if (x < 0 || x >= dim.width || y < 0 || y >= dim.height ||
-          (x == p.x && y == p.x)) {
+          (x == p.x && y == p.y)) {
         continue;
       }
       n.emplace_back(x, y);
@@ -53,12 +53,12 @@ void calcForCell(MapLayerIllumination & layer, const MapLayerObstruction & obstr
   // get closest element to the src or src
   for (const auto & n : neighs) {
     auto v_pn = getVector(p, n);
-    auto sc_pn = getScalarMultiplication(v_psrc, v_pn);
+    auto sm_pn = getScalarMultiplication(v_psrc, v_pn);
     auto d_pn = getDistanceSquare(v_pn);
     // find closest point if choosing between diagonal and adjacent
-    if (sc_pn > best_sm_pn || (sc_pn == best_sm_pn && d_pn < best_d_pn)) {
+    if (sm_pn > best_sm_pn || (sm_pn == best_sm_pn && d_pn < best_d_pn)) {
       best_n = n;
-      best_sm_pn = sc_pn;
+      best_sm_pn = sm_pn;
       best_d_pn = d_pn;
     }
   }
@@ -94,7 +94,7 @@ calcForLightSrc(Dimension dim, const MapLayerObstruction & obstructionLayer,
 
   Coordinates p;
   for (p.x = 0; p.x < dim.width; ++p.x) {
-    for (p.y = 0; p.y < dim.height; ++p.x) {
+    for (p.y = 0; p.y < dim.height; ++p.y) {
       calcForCell(res, obstructionLayer, src.first, p);
     }
   }
@@ -106,14 +106,16 @@ void MapLayerIllumination::updateIllumination(
     const MapLayerObstruction & obstructionLayer,
     const MapLayerSubject & subjectLayer) {
 
-  const auto & srcs = subjectLayer.getActiveLightSources();
   auto dim = getDimension();
 
-  for (const auto & src : srcs) {
-    auto res = calcForLightSrc(dim, obstructionLayer, src);
+  Coordinates c;
+  for (c.x = 0; c.x < dim.width; ++c.x)
+    for (c.y = 0; c.y < dim.height; ++c.y)
+      setIllumination(c, Illumination{0});
 
-    // illumination for each source is managed like simple addition
-    Coordinates c;
+  // illumination for each source is managed like simple addition for each source
+  for (const auto & src : subjectLayer.getActiveLightSources()) {
+    auto res = calcForLightSrc(dim, obstructionLayer, src);
     for (c.x = 0; c.x < dim.width; ++c.x) {
       for (c.y = 0; c.y < dim.height; ++c.y) {
         setIllumination(c, getIllumination(c) + res.getIllumination(c));

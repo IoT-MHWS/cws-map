@@ -5,6 +5,7 @@
 #include "cws/subject/extension/turnable.hpp"
 #include "cws/subject/plain.hpp"
 #include "cws/subject/temp_emitter.hpp"
+#include <iostream>
 
 namespace Subject {
 

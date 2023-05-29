@@ -20,7 +20,7 @@ TEST(AirPlain, add) {
   ASSERT_EQ(exp.getCurLightObstruction().value, res.getCurLightObstruction().value);
 }
 
-TEST(AirContainer, addRemoveErase) {
+TEST(AirContainer, USEaddRemoveErase) {
   using namespace Air;
 
   Container container;

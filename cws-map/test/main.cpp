@@ -1,3 +1,7 @@
+#include "cws/general.hpp"
+#include "cws/map_layer/illumination.hpp"
+#include "cws/map_layer/obstruction.hpp"
+#include "cws/subject/light_emitter.hpp"
 #include "gtest/gtest.h"
 
 int test_google(int argc, char ** argv) {
@@ -5,4 +9,11 @@ int test_google(int argc, char ** argv) {
   return RUN_ALL_TESTS();
 }
 
-int main(int argc, char ** argv) { return test_google(argc, argv); }
+int test() {
+  return 0;
+}
+
+int main(int argc, char ** argv) {
+  // return test();
+  return test_google(argc, argv);
+}
