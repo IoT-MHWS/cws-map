@@ -26,7 +26,13 @@ class map(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables.release["BUILD_TESTING"] = False
+
+        if self.settings.build_type == "Debug":
+            tc.cache_variables["BUILD_TESTING"] = True
+            tc.cache_variables["ADD_CWS_MAP"] = True
+            tc.cache_variables["ADD_PROTO"] = False
+            tc.cache_variables["ADD_GRPC_SERVER"] = False
+
         tc.generate()
 
     def build(self):
