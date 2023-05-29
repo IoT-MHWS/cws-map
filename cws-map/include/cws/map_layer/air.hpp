@@ -2,6 +2,7 @@
 
 #include "cws/layer/air.hpp"
 #include "cws/map_layer/base.hpp"
+#include "cws/map_layer/obstruction.hpp"
 #include "cws/map_layer/subject.hpp"
 
 /*
@@ -14,5 +15,6 @@ public:
   void nextConvection(MapLayerSubject & subjectLayer);
   void nextConvection(MapLayerSubject & subjectLayer, Coordinates c);
 
-  void nextMixing(const MapLayerSubject & subjectLayer);
+  void nextMixing(const MapLayerObstruction & obstructionLayer,
+                  const MapLayerSubject & subjectLayer);
 };

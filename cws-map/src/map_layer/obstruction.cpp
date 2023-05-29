@@ -9,9 +9,8 @@ Obstruction
 calcCellLightObs(const std::list<std::unique_ptr<Subject::Plain>> & subList) {
 
   std::vector<Obstruction> lightObsV(subList.size());
-  for (auto & sub : subList) {
+  for (auto & sub : subList)
     lightObsV.push_back(sub->getCurLightObstruction());
-  }
 
   std::sort(lightObsV.begin(), lightObsV.end(),
             [](const Obstruction & lsv, const Obstruction & rsv) -> bool {
@@ -31,9 +30,9 @@ calcCellLightObs(const std::list<std::unique_ptr<Subject::Plain>> & subList) {
 Obstruction calcCellAirObs(const std::list<std::unique_ptr<Subject::Plain>> & subList) {
 
   std::vector<Obstruction> airObsV(subList.size());
-  for (auto & sub : subList) {
+
+  for (auto & sub : subList)
     airObsV.push_back(sub->getCurAirObstruction());
-  }
 
   std::sort(airObsV.begin(), airObsV.end(),
             [](const Obstruction & lsv, const Obstruction & rsv) -> bool {
@@ -49,7 +48,7 @@ Obstruction calcCellAirObs(const std::list<std::unique_ptr<Subject::Plain>> & su
   return FULL_OBSTRUCTION - res;
 }
 
-void MapLayerObstruction::updateObstruction(const MapLayerSubject & layerSubject) {
+void MapLayerObstruction::updateLightObstruction(const MapLayerSubject & layerSubject) {
   auto dimension = getDimension();
   assert(dimension == layerSubject.getDimension());
 
@@ -57,10 +56,20 @@ void MapLayerObstruction::updateObstruction(const MapLayerSubject & layerSubject
 
   for (c.x = 0; c.x < dimension.width; ++c.x) {
     for (c.y = 0; c.y < dimension.height; ++c.y) {
-      auto & subList = layerSubject.getSubjectList(c);
+      setLightObstruction(c, calcCellLightObs(layerSubject.getSubjectList(c)));
+    }
+  }
+}
 
-      setLightObstruction(c, calcCellLightObs(subList));
-      setAirObstruction(c, calcCellAirObs(subList));
+void MapLayerObstruction::updateAirObstruction(const MapLayerSubject & layerSubject) {
+  auto dimension = getDimension();
+  assert(dimension == layerSubject.getDimension());
+
+  Coordinates c;
+
+  for (c.x = 0; c.x < dimension.width; ++c.x) {
+    for (c.y = 0; c.y < dimension.height; ++c.y) {
+      setAirObstruction(c, calcCellAirObs(layerSubject.getSubjectList(c)));
     }
   }
 }

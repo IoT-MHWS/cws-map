@@ -109,9 +109,9 @@ TEST(MapLayerAir, nextConvectionCellNoAir) {
       layerSubject.accessCell({0, 0}).accessElement().accessSubjectList();
 
   subjectList.emplace_back(std::make_unique<Subject::Plain>(
-      Physical(10, 1000, {60}, {}), Subject::Id{.idx = 1}, 10));
+      Physical(10, 1000, {60}, {}), Subject::Id{.idx = 1}, 10, Obstruction{}));
   subjectList.emplace_back(std::make_unique<Subject::Plain>(
-      Physical(10, 1000, {60}, {}), Subject::Id{.idx = 1}, 5));
+      Physical(10, 1000, {60}, {}), Subject::Id{.idx = 1}, 5, Obstruction{}));
 
   layerAir.nextConvection(layerSubject);
 
@@ -136,9 +136,9 @@ TEST(MapLayerAir, nextConvectionCellValues) {
       layerSubject.accessCell({0, 0}).accessElement().accessSubjectList();
 
   subjectList.emplace_back(std::make_unique<Subject::Plain>(
-      Physical(10, 1000, {60}, {}), Subject::Id{.idx = 1}, 10));
+      Physical(10, 1000, {60}, {}), Subject::Id{.idx = 1}, 10, Obstruction{}));
   subjectList.emplace_back(std::make_unique<Subject::Plain>(
-      Physical(10, 1000, {60}, {}), Subject::Id{.idx = 1}, 5));
+      Physical(10, 1000, {60}, {}), Subject::Id{.idx = 1}, 5, Obstruction{}));
 
   for (int i = 0; i < 1000; ++i) {
     layerAir.nextConvection(layerSubject);

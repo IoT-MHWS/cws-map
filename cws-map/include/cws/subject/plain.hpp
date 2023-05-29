@@ -20,12 +20,12 @@ protected:
 class Plain : public Physical, virtual public Extensiable {
   Id id_;
   double surfaceArea_;
-
   Obstruction defAirObstruction_;
 
 public:
-  Plain(Physical && params, Id id, double surfaceArea)
-      : Physical(std::move(params)), id_(id), surfaceArea_(surfaceArea) {
+  Plain(Physical && params, Id id, double surfaceArea, Obstruction defAirObstruction)
+      : Physical(std::move(params)), id_(id), surfaceArea_(surfaceArea),
+        defAirObstruction_(defAirObstruction) {
 
     setType(Type::PLAIN);
   }

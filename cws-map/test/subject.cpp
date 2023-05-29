@@ -7,9 +7,9 @@
 TEST(Subject, TurnableLightEmitter) {
   using namespace Subject;
 
-  Plain plain({}, Id{.idx = 2}, 0);
+  Plain plain({}, Id{.idx = 2}, 0, {});
 
-  TurnableLightEmitter emitter(LightEmitter(Plain({}, Id{.idx = 1}, 0), {}, {}),
+  TurnableLightEmitter emitter(LightEmitter(Plain({}, Id{.idx = 1}, 0, {}), {}, {}),
                                TurnableStatus::OFF, {}, {});
 
   EXPECT_EQ(emitter.getSubjectId().type, Type::TURNABLE_LIGHT_EMITTER);
@@ -23,9 +23,9 @@ TEST(Subject, updateTemperature) {
   using namespace Subject;
 
   TurnableLightEmitter emitter(
-      LightEmitter(
-          Plain(Physical(10, 400, Temperature{30}, Obstruction{0.5}), Id{.idx = 1}, 1),
-          {}, TempSourceParams{.heatProduction = 4000}),
+      LightEmitter(Plain(Physical(10, 400, Temperature{30}, Obstruction{0.5}),
+                         Id{.idx = 1}, 1, {}),
+                   {}, TempSourceParams{.heatProduction = 4000}),
       TurnableStatus::ON, {}, TempSourceParams{.heatProduction = 0});
 
   EXPECT_TRUE(static_cast<Plain *>(&emitter)->isTempSource());

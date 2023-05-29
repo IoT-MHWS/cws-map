@@ -9,21 +9,23 @@ public:
   MapLayerObstruction(Dimension dimension)
       : MapLayerBase<LayerObstruction>(dimension) {}
 
-  void updateObstruction(const MapLayerSubject & layerSubject);
+  void updateAirObstruction(const MapLayerSubject & layerSubject);
+
+  void updateLightObstruction(const MapLayerSubject & layerSubject);
 
   Obstruction getLightObstruction(Coordinates c) const {
     return getCell(c).getElement().getLightObstruction();
   }
 
-  void setLightObstruction(Coordinates c, Obstruction abs) {
-    accessCell(c).accessElement().setLightObstruction(abs);
+  void setLightObstruction(Coordinates c, Obstruction obs) {
+    accessCell(c).accessElement().setLightObstruction(obs);
   }
 
   Obstruction getAirObstruction(Coordinates c) const {
     return getCell(c).getElement().getAirObstruction();
   }
 
-  void setAirObstruction(Coordinates c, Obstruction abs) {
-    accessCell(c).accessElement().setAirObstruction(abs);
+  void setAirObstruction(Coordinates c, Obstruction obs) {
+    accessCell(c).accessElement().setAirObstruction(obs);
   }
 };
