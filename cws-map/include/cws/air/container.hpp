@@ -37,11 +37,13 @@ public:
 
   const std::list<PlainUPTR> & getList();
   void add(PlainUPTR && plain);
+  void add(std::list<PlainUPTR> && list);
   std::list<PlainUPTR>::const_iterator erase(std::list<PlainUPTR>::const_iterator & it);
 
 private:
   void getHeatTransferAndTotalWeight(double * totalWeight, double * transferCoef) const;
   void normalizeTemperature();
+  void addNotNormalize(PlainUPTR && plain);
 };
 
 };// namespace Air

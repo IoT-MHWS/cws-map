@@ -4,8 +4,8 @@
  * Update subject temperature == done
  * Update convection (in-cell) temperature == done
  * Update air obstruction == done
- * Update mixing (between-cell) temperature
- * Update light obstruction == done 
+ * Update circulation (between-cell) temperature
+ * Update light obstruction == done
  * Update illumination == done
  *
  */
@@ -13,7 +13,7 @@ void Map::update(const Map & cur) {
   layers.subjectLayer.nextTemperature();
   layers.airLayer.nextConvection(layers.subjectLayer);
   layers.obstructionLayer.updateAirObstruction(layers.subjectLayer);
-  layers.airLayer.nextMixing(layers.obstructionLayer, layers.subjectLayer);
+  layers.airLayer.nextCirculation(layers.obstructionLayer, layers.subjectLayer);
   layers.obstructionLayer.updateLightObstruction(layers.subjectLayer);
   layers.illuminationLayer.updateIllumination(layers.obstructionLayer,
                                               layers.subjectLayer);

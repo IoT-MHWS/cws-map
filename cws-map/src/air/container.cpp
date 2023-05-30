@@ -36,25 +36,21 @@ void Container::updateTemperature(double heatAirTransfer) {
 const std::list<Container::PlainUPTR> & Container::getList() { return airList; }
 
 void Container::add(PlainUPTR && plain) {
-  bool merged = false;
-
-  for (auto it = airList.begin(); it != airList.end(); ++it) {
-    if ((*it)->getType() == plain->getType()) {
-      *it->get() = *it->get() + *plain;
-      merged = true;
-      break;
-    }
-  }
-  if (!merged) {
-    airList.push_back(std::move(plain));
-  }
-
+  addNotNormalize(std::move(plain));
   normalizeTemperature();
 }
 
 std::list<Container::PlainUPTR>::const_iterator
 Container::erase(std::list<PlainUPTR>::const_iterator & it) {
   return airList.erase(it);
+}
+
+void Container::add(std::list<PlainUPTR> && list) {
+  while (!list.empty()) {
+    addNotNormalize(std::move(list.front()));
+    list.pop_front();
+  }
+  normalizeTemperature();
 }
 
 void Container::getHeatTransferAndTotalWeight(double * totalWeight,
@@ -85,6 +81,21 @@ void Container::normalizeTemperature() {
 
   for (const auto & air : airList) {
     air->setTemperature(temp);
+  }
+}
+
+void Container::addNotNormalize(PlainUPTR && plain) {
+  bool merged = false;
+
+  for (auto it = airList.begin(); it != airList.end(); ++it) {
+    if ((*it)->getType() == plain->getType()) {
+      *it->get() = *it->get() + *plain;
+      merged = true;
+      break;
+    }
+  }
+  if (!merged) {
+    airList.push_back(std::move(plain));
   }
 }
 

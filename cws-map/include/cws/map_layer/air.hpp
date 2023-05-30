@@ -15,6 +15,6 @@ public:
   void nextConvection(MapLayerSubject & subjectLayer);
   void nextConvection(MapLayerSubject & subjectLayer, Coordinates c);
 
-  void nextMixing(const MapLayerObstruction & obstructionLayer,
-                  const MapLayerSubject & subjectLayer);
+  void nextCirculation(const MapLayerObstruction & obstructionLayer,
+                       const MapLayerSubject & subjectLayer);
 };

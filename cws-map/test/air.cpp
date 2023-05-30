@@ -3,7 +3,7 @@
 #include "cws/map_layer/air.hpp"
 #include "cws/map_layer/subject.hpp"
 
-TEST(AirPlain, add) {
+TEST(AirPlain, OperatorAdd) {
   using namespace Air;
 
   Plain lhs(Physical(1, 300, {30}, {0.3}), 0.3);
@@ -30,6 +30,32 @@ TEST(AirContainer, USEaddRemoveErase) {
   container.add(std::make_unique<Plain>(Physical{}, 0.15));
   container.add(std::make_unique<Plain>(Physical{}, Type::UNSPECIFIED, 0.15));
 
+  ASSERT_FALSE(container.empty());
+
+  const auto & list = container.getList();
+  auto it = list.begin();
+
+  it = container.erase(it);
+  ASSERT_FALSE(container.empty());
+
+  it = container.erase(it);
+  ASSERT_TRUE(container.empty());
+  ASSERT_EQ(list.end(), it);
+}
+
+TEST(AirContainer, addList) {
+  using namespace Air;
+
+  Container container;
+  ASSERT_TRUE(container.empty());
+
+  std::list<Container::PlainUPTR> lst;
+
+  lst.push_back(std::make_unique<Plain>(Physical{}, 0.15));
+  lst.push_back(std::make_unique<Plain>(Physical{}, 0.15));
+  lst.push_back(std::make_unique<Plain>(Physical{}, Type::UNSPECIFIED, 0.15));
+
+  container.add(std::move(lst));
   ASSERT_FALSE(container.empty());
 
   const auto & list = container.getList();

@@ -9,9 +9,7 @@ int test_google(int argc, char ** argv) {
   return RUN_ALL_TESTS();
 }
 
-int test() {
-  return 0;
-}
+int test() { return 0; }
 
 int main(int argc, char ** argv) {
   // return test();
