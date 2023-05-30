@@ -7,6 +7,9 @@
 using namespace Air;
 using PlainUPTR = std::unique_ptr<Air::Plain>;
 
+static const double MASS_TEMP_ITER_COEF = 0.1;
+static const double TEMP_ITER_COEF = 10;
+
 void MapLayerAir::nextConvection(MapLayerSubject & subjectLayer) {
   Dimension dim = getDimension();
   Coordinates c;
@@ -96,6 +99,8 @@ void MapLayerAir::nextConvection(MapLayerSubject & subjectLayer, Coordinates c) 
 void MapLayerAir::nextCirculation(const MapLayerAir & curLayerAir,
                                   const MapLayerObstruction & obstructionLayer) {
   nextCirculationMassTemp(curLayerAir, obstructionLayer);
+  // MapLayerAir interLayerAir(*this); // road to 0 fps
+  // nextCirculationTemp(interLayerAir, obstructionLayer);
   nextCirculationTemp(curLayerAir, obstructionLayer);
 }
 
@@ -128,8 +133,6 @@ void MapLayerAir::nextCirculationTemp(const MapLayerAir & curLayerAir,
     }
   }
 }
-
-double MASS_TEMP_ITER_COEF = 0.1;
 
 // 1.1) Get current air container
 // 1.2) Get cell neighbours
@@ -201,13 +204,12 @@ void MapLayerAir::nextCirculationCellMassTemp(
     double neighCoef = std::pow(suitableAirs.size(), 0.5);
     double iterCoef = MASS_TEMP_ITER_COEF;
     for (const auto & [nc, nair] : suitableAirs) {
-      double curTrans = 1 - obstructionLayer.getAirObstruction(c).get();
-      double neiTrans = 1 - obstructionLayer.getAirObstruction(nc).get();
+      double curTrans = std::max(1 - obstructionLayer.getAirObstruction(c).get(), 0.);
+      double neiTrans = std::max(1 - obstructionLayer.getAirObstruction(nc).get(), 0.);
 
       double valueDiff = curAirValue - cellMassTempValue(nair);
-      double normCoef =
-          (iterCoef * curTrans * neiTrans) / (neighCoef * getNeighDistance(c, nc));
-      double normValueDiff = normCoef * valueDiff;
+      double normCoef = (iterCoef) / (neighCoef * getNeighDistance(c, nc));
+      double normValueDiff = normCoef * curTrans * neiTrans * valueDiff;
       // create air with weight
       airMap[nc].push_back(cloneWithValueMassTemp(*curAir, normValueDiff));
       airMap[c].push_back(cloneWithValueMassTemp(*curAir, -normValueDiff));
@@ -216,7 +218,42 @@ void MapLayerAir::nextCirculationCellMassTemp(
   moveToLayerFromAirMap(*this, std::move(airMap));
 }
 
+// logic almost the same as with convection in-cell
 void MapLayerAir::nextCirculationCellTemp(const MapLayerAir & curLayerAir,
                                           const MapLayerObstruction & obstructionLayer,
                                           Coordinates c) {
+  auto & curAirCon = curLayerAir.getAirContainer(c);
+
+  if (curAirCon.empty()) {
+    return;
+  }
+
+  auto curAirTemp = curAirCon.getTemperature();
+  auto curAirCoef = curAirCon.getHeatTransferCoef();
+
+  double totalHeatTransfer = 0;
+  const auto neighList = getNeighbours(this->getDimension(), c);
+
+  for (const auto & nc : neighList) {
+    auto & curNeighCon = curLayerAir.getAirContainer(nc);
+    if (curNeighCon.empty()) {
+      break;
+    }
+    auto curNeighTemp = curNeighCon.getTemperature();
+
+    double deltaTemp = curAirTemp.get() - curNeighTemp.get();
+
+    if (deltaTemp > 0) {
+      double curTrans = std::max(1 - obstructionLayer.getAirObstruction(c).get(), 0.);
+      double neiTrans = std::max(1 - obstructionLayer.getAirObstruction(nc).get(), 0.);
+      double normCoef = TEMP_ITER_COEF / getNeighDistance(c, nc);
+
+      double heatTransfer = normCoef * curAirCon.getWeight() * curNeighCon.getWeight() *
+                            curTrans * neiTrans * deltaTemp * curAirCoef;
+
+      this->accessAirContainer(nc).updateTemperature(heatTransfer);
+      totalHeatTransfer -= heatTransfer;
+    }
+  }
+  this->accessAirContainer(c).updateTemperature(totalHeatTransfer);
 }

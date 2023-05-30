@@ -42,6 +42,7 @@ public:
 
   double getHeatTransferCoef() const;
   Temperature getTemperature() const;
+  double getWeight() const;
   void updateTemperature(double heatAirTransfer);
 
 private:

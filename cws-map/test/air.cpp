@@ -230,7 +230,7 @@ TEST(MapLayerAir, nextCirculationMassTemp) {
                                                   Air::Type::UNSPECIFIED, 0.30));
 
   auto & curContainer22 = curLayerAir.accessAirContainer({2, 2});
-  curContainer11.add(std::make_unique<Air::Plain>(Physical(20, 400, {100}, {}),
+  curContainer22.add(std::make_unique<Air::Plain>(Physical(20, 400, {100}, {}),
                                                   Air::Type::PLAIN, 0.30));
 
   MapLayerAir nextLayerAir(curLayerAir);
@@ -250,6 +250,88 @@ TEST(MapLayerAir, nextCirculationMassTemp) {
 
   for (int i = 0; i < 100; ++i) {
     nextLayerAir.nextCirculationMassTemp(curLayerAir, obstruction);
+    std::cout << "ITERATION: " << i << std::endl;
+    displayAirMap(nextLayerAir);
+    curLayerAir = MapLayerAir(nextLayerAir);
+  }
+}
+
+TEST(MapLayerAir, nextCirculationTemp) {
+  Dimension dim{3, 3};
+
+  MapLayerAir curLayerAir(dim);
+  auto & curContainer11 = curLayerAir.accessAirContainer({1, 1});
+
+  curContainer11.add(std::make_unique<Air::Plain>(Physical(10, 400, {300}, {}),
+                                                  Air::Type::PLAIN, 0.30));
+  curContainer11.add(std::make_unique<Air::Plain>(Physical(20, 600, {300}, {}),
+                                                  Air::Type::UNSPECIFIED, 0.30));
+
+  auto & curContainer22 = curLayerAir.accessAirContainer({2, 2});
+  curContainer22.add(std::make_unique<Air::Plain>(Physical(20, 400, {100}, {}),
+                                                  Air::Type::PLAIN, 0.30));
+  MapLayerAir nextLayerAir(curLayerAir);
+
+  MapLayerSubject subject(dim);
+
+  MapLayerObstruction obstruction(dim);
+  std::vector<std::vector<double>> obs_layer{
+      {1., 0.2, 0.4},
+      {0.2, 0.2, 0.0},
+      {0.99, 0.2, 0.0},
+  };
+  Coordinates c;
+  for (c.x = 0; c.x < dim.width; ++c.x)
+    for (c.y = 0; c.y < dim.height; ++c.y)
+      obstruction.setAirObstruction(c, Obstruction{obs_layer[c.x][c.y]});
+
+  for (int i = 0; i < 100; ++i) {
+    nextLayerAir.nextCirculationTemp(curLayerAir, obstruction);
+    std::cout << "ITERATION: " << i << std::endl;
+    displayAirMap(nextLayerAir);
+    curLayerAir = MapLayerAir(nextLayerAir);
+  }
+}
+
+TEST(MapLayerAir, nextCirculation) {
+  Dimension dim{5, 5};
+
+  MapLayerAir curLayerAir(dim);
+  auto & curContainer11 = curLayerAir.accessAirContainer({1, 1});
+
+  curContainer11.add(std::make_unique<Air::Plain>(Physical(10, 400, {300}, {}),
+                                                  Air::Type::PLAIN, 0.30));
+  curContainer11.add(std::make_unique<Air::Plain>(Physical(20, 600, {300}, {}),
+                                                  Air::Type::UNSPECIFIED, 0.30));
+
+  auto & curContainer22 = curLayerAir.accessAirContainer({2, 2});
+  curContainer22.add(std::make_unique<Air::Plain>(Physical(20, 400, {100}, {}),
+                                                  Air::Type::PLAIN, 0.30));
+  MapLayerAir nextLayerAir(curLayerAir);
+
+  MapLayerSubject subject(dim);
+
+  MapLayerObstruction obstruction(dim);
+  std::vector<std::vector<double>> obs_layer{
+      {1., 0.2, 0.4},
+      {0.2, 0.2, 0.0},
+      {0.99, 0.2, 0.0},
+  };
+  Coordinates c;
+  for (c.x = 0; c.x < dim.width; ++c.x) {
+    for (c.y = 0; c.y < dim.height; ++c.y) {
+      Obstruction obs;
+      if (c.x >= obs_layer.size() || c.y >= obs_layer[0].size()) {
+        obs = Obstruction{0};
+      } else {
+        obs = Obstruction{obs_layer[c.x][c.y]};
+      }
+      obstruction.setAirObstruction(c, obs);
+    }
+  }
+
+  for (int i = 0; i < 100; ++i) {
+    nextLayerAir.nextCirculation(curLayerAir, obstruction);
     std::cout << "ITERATION: " << i << std::endl;
     displayAirMap(nextLayerAir);
     curLayerAir = MapLayerAir(nextLayerAir);

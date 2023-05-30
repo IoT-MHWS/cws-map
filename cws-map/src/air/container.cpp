@@ -53,6 +53,13 @@ Temperature Container::getTemperature() const {
   return airList.front()->getTemperature();
 }
 
+double Container::getWeight() const {
+  double totalWeight;
+  double transferCoef;
+  getHeatTransferAndTotalWeight(&totalWeight, &transferCoef);
+  return totalWeight;
+}
+
 // maintain temperature of all air is the same
 void Container::updateTemperature(double heatAirTransfer) {
   double totalWeight;
@@ -80,7 +87,7 @@ void Container::normalizeTemperature() {
   }
 
   Temperature temp;
-  if (std::abs(totalEnergy) > 10e-6) {
+  if (std::abs(totalEnergy) > 10e-14) {
     temp = Temperature{.value = totalEnergy / totalWC};
   } else{
     temp = Temperature{.value = 0};
