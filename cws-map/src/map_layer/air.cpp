@@ -1,6 +1,11 @@
 #include "cws/map_layer/air.hpp"
 #include "cws/common.hpp"
 #include <cassert>
+#include <cmath>
+#include <map>
+
+using namespace Air;
+using PlainUPTR = std::unique_ptr<Air::Plain>;
 
 void MapLayerAir::nextConvection(MapLayerSubject & subjectLayer) {
   Dimension dim = getDimension();
@@ -98,6 +103,7 @@ void MapLayerAir::nextCirculation(const MapLayerAir & curLayerAir,
 void MapLayerAir::nextCirculationMassTemp(
     const MapLayerAir & curLayerAir, const MapLayerObstruction & obstructionLayer) {
   Dimension dim = getDimension();
+  assert(this != &curLayerAir);
   assert(obstructionLayer.getDimension() == dim);
 
   Coordinates c;
@@ -112,6 +118,7 @@ void MapLayerAir::nextCirculationMassTemp(
 void MapLayerAir::nextCirculationTemp(const MapLayerAir & curLayerAir,
                                       const MapLayerObstruction & obstructionLayer) {
   Dimension dim = getDimension();
+  assert(this != &curLayerAir);
   assert(obstructionLayer.getDimension() == dim);
 
   Coordinates c;
@@ -122,14 +129,94 @@ void MapLayerAir::nextCirculationTemp(const MapLayerAir & curLayerAir,
   }
 }
 
+double MASS_TEMP_ITER_COEF = 0.1;
+
+// 1.1) Get current air container
+// 1.2) Get cell neighbours
+// 2) For each air in current air container iterate over neighbours and put
+// in
+// For each air in airContainer
+// Check neighbours for this air
+// * If not found -> just accept that weight == 0
+// * If found -> accept weight equals weight
+
+double cellMassTempValue(const Air::Plain * air) {
+  if (air == nullptr) {
+    return 0;
+  }
+  return air->getTemperature().get() * air->getWeight();
+}
+
+// works only for for < 9 neighbours
+double getNeighDistance(Coordinates a, Coordinates b) {
+  if (a.x == b.x || a.y == b.y)
+    return 1;
+  else
+    return pow(2, 0.5);
+}
+
+PlainUPTR cloneWithValueMassTemp(const Plain & source, double value) {
+  return std::unique_ptr<Plain>(
+      source.cloneWithWeight(value / source.getTemperature().get()));
+}
+
+std::map<Coordinates, std::list<PlainUPTR>>
+getMapToAddAir(const std::list<Coordinates> & neighList, const Coordinates & c) {
+  std::map<Coordinates, std::list<PlainUPTR>> airToAdd;
+  airToAdd.emplace(c, std::list<PlainUPTR>());
+  for (const auto & neigh : neighList) {
+    airToAdd.emplace(neigh, std::list<PlainUPTR>());
+  }
+  return airToAdd;
+}
+
+void moveToLayerFromAirMap(MapLayerAir & layer,
+                           std::map<Coordinates, std::list<PlainUPTR>> && airMap) {
+  for (auto & [key, value] : airMap) {
+    auto & container = layer.accessAirContainer(key);
+    container.add(std::move(value));
+  }
+}
+
 void MapLayerAir::nextCirculationCellMassTemp(
     const MapLayerAir & curLayerAir, const MapLayerObstruction & obstructionLayer,
     Coordinates c) {
 
-  const auto neiList = getNeighbours(this->getDimension(), c);
-  auto & airContainer = accessAirContainer(c);
+  const auto neighList = getNeighbours(this->getDimension(), c);
+  auto airMap = getMapToAddAir(neighList, c);
+
+  for (const auto & curAir : curLayerAir.getAirContainer(c).getList()) {
+    double curAirValue = cellMassTempValue(curAir.get());
+    // also store nulls
+    std::list<std::pair<Coordinates, Plain *>> suitableAirs;
+    // Select neighbours to change
+    for (const auto & neigh : neighList) {
+      auto neighAir = curLayerAir.getAirContainer(neigh).findOrNull(*curAir.get());
+      if (cellMassTempValue(neighAir) >= curAirValue) {
+        continue;
+      }
+      suitableAirs.emplace_back(neigh, neighAir);
+    }
+    // Calculate air value change
+    double neighCoef = std::pow(suitableAirs.size(), 0.5);
+    double iterCoef = MASS_TEMP_ITER_COEF;
+    for (const auto & [nc, nair] : suitableAirs) {
+      double curTrans = 1 - obstructionLayer.getAirObstruction(c).get();
+      double neiTrans = 1 - obstructionLayer.getAirObstruction(nc).get();
+
+      double valueDiff = curAirValue - cellMassTempValue(nair);
+      double normCoef =
+          (iterCoef * curTrans * neiTrans) / (neighCoef * getNeighDistance(c, nc));
+      double normValueDiff = normCoef * valueDiff;
+      // create air with weight
+      airMap[nc].push_back(cloneWithValueMassTemp(*curAir, normValueDiff));
+      airMap[c].push_back(cloneWithValueMassTemp(*curAir, -normValueDiff));
+    }
+  }
+  moveToLayerFromAirMap(*this, std::move(airMap));
 }
 
 void MapLayerAir::nextCirculationCellTemp(const MapLayerAir & curLayerAir,
                                           const MapLayerObstruction & obstructionLayer,
-                                          Coordinates c) {}
+                                          Coordinates c) {
+}

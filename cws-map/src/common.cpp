@@ -2,11 +2,21 @@
 #include <list>
 
 // Coordinates
-std::ostream & operator<<(std::ostream & out, const Coordinates * value) {
-  if (value) {
-    out << "{x:" << value->x << ",y:" << value->y << "}";
-  }
+std::ostream & operator<<(std::ostream & out, const Coordinates & value) {
+  out << "{x:" << value.x << ",y:" << value.y << "}";
   return out;
+}
+
+bool operator<(const Coordinates & lhs, const Coordinates & rhs) {
+  if (lhs.x == rhs.x) {
+    return lhs.y < rhs.y;
+  } else {
+    return lhs.x < rhs.x;
+  }
+}
+
+bool operator==(const Coordinates & lhs, const Coordinates & rhs) {
+  return lhs.x == rhs.x && lhs.y == rhs.y;
 }
 
 // Dimension

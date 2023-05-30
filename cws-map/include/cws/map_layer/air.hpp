@@ -16,7 +16,7 @@ public:
     return getCell(c).getElement().getAirContainer();
   }
 
-  const Air::Container & accessAirContainer(Coordinates c) {
+  Air::Container & accessAirContainer(Coordinates c) {
     return accessCell(c).accessElement().accessAirContainer();
   }
 

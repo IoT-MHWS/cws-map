@@ -1,11 +1,19 @@
 #include "cws/air/plain.hpp"
 #include <cassert>
+#include <iostream>
 
 using namespace Air;
 
 template<typename T>
 T proportion(T lhs, double lhsRatio, T rhs, double rhsRatio) {
   return (lhs * lhsRatio + rhs * rhsRatio) / (lhsRatio + rhsRatio);
+}
+
+// create same object but reset it's weight
+Plain * Plain::cloneWithWeight(double weight) const {
+  auto eptr = this->clone();
+  eptr->setWeight(weight);
+  return eptr;
 }
 
 Plain Plain::operator+(const Plain & rhs) {

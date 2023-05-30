@@ -30,19 +30,23 @@ public:
     }
   }
 
-  bool empty() const;
-  double getHeatTransferCoef() const;
-  Temperature getTemperature() const;
-  void updateTemperature(double heatAirTransfer);
+  const std::list<PlainUPTR> & getList() const;
 
-  const std::list<PlainUPTR> & getList();
+  bool empty() const;
   void add(PlainUPTR && plain);
   void add(std::list<PlainUPTR> && list);
   std::list<PlainUPTR>::const_iterator erase(std::list<PlainUPTR>::const_iterator & it);
 
+  // nullable
+  Plain * findOrNull(const Plain & plain) const;
+
+  double getHeatTransferCoef() const;
+  Temperature getTemperature() const;
+  void updateTemperature(double heatAirTransfer);
+
 private:
-  void getHeatTransferAndTotalWeight(double * totalWeight, double * transferCoef) const;
   void normalizeTemperature();
+  void getHeatTransferAndTotalWeight(double * totalWeight, double * transferCoef) const;
   void addNotNormalize(PlainUPTR && plain);
 };
 

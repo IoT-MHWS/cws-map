@@ -32,6 +32,9 @@ public:
   Obstruction getDefLightObstruction() const { return defLightObstruction_; }
   virtual Obstruction getCurLightObstruction() const { return defLightObstruction_; }
 
+protected:
+  void setWeight(double weight) { weight_ = weight; }
+
 public:
   void updateTemperature(double heatProd);
 };

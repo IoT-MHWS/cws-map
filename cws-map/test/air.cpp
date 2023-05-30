@@ -69,6 +69,19 @@ TEST(AirContainer, addList) {
   ASSERT_EQ(list.end(), it);
 }
 
+TEST(AirContainer, findOrDefault) {
+  using namespace Air;
+
+  Container container;
+  ASSERT_TRUE(container.empty());
+
+  Plain plain(Physical(10, 20, {30}, {40}), 0.15);
+
+  auto enew = container.findOrNull(plain);
+  ASSERT_TRUE(container.empty());
+  ASSERT_EQ(nullptr, enew);
+}
+
 TEST(AirContainer, normalize) {
   using namespace Air;
 
@@ -182,5 +195,63 @@ TEST(MapLayerAir, nextConvectionCellValues) {
       }
       std::cout << "}" << std::endl;
     }
+  }
+}
+
+void displayAirMap(const MapLayerAir & layerAir) {
+  Dimension dim = layerAir.getDimension();
+  Coordinates c;
+  for (c.x = 0; c.x < dim.width; ++c.x) {
+    for (c.y = 0; c.y < dim.height; ++c.y) {
+      auto container = layerAir.getAirContainer(c);
+      std::cout << "[";
+      for (const auto & air : container.getList()) {
+        std::cout << "{";
+        std::cout << "i:" << (int)air->getType() << ",";
+        std::cout << "w:" << air->getWeight() << ",";
+        std::cout << "t:" << air->getTemperature().get() << ",";
+        std::cout << "},";
+      }
+      std::cout << "]\t";
+    }
+    std::cout << "\n";
+  }
+}
+
+TEST(MapLayerAir, nextCirculationMassTemp) {
+  Dimension dim{3, 3};
+
+  MapLayerAir curLayerAir(dim);
+  auto & curContainer11 = curLayerAir.accessAirContainer({1, 1});
+
+  curContainer11.add(std::make_unique<Air::Plain>(Physical(10, 400, {300}, {}),
+                                                  Air::Type::PLAIN, 0.30));
+  curContainer11.add(std::make_unique<Air::Plain>(Physical(20, 600, {300}, {}),
+                                                  Air::Type::UNSPECIFIED, 0.30));
+
+  auto & curContainer22 = curLayerAir.accessAirContainer({2, 2});
+  curContainer11.add(std::make_unique<Air::Plain>(Physical(20, 400, {100}, {}),
+                                                  Air::Type::PLAIN, 0.30));
+
+  MapLayerAir nextLayerAir(curLayerAir);
+
+  MapLayerSubject subject(dim);
+
+  MapLayerObstruction obstruction(dim);
+  std::vector<std::vector<double>> obs_layer{
+      {1., 0.2, 0.4},
+      {0.2, 0.2, 0.0},
+      {0.99, 0.2, 0.0},
+  };
+  Coordinates c;
+  for (c.x = 0; c.x < dim.width; ++c.x)
+    for (c.y = 0; c.y < dim.height; ++c.y)
+      obstruction.setAirObstruction(c, Obstruction{obs_layer[c.x][c.y]});
+
+  for (int i = 0; i < 100; ++i) {
+    nextLayerAir.nextCirculationMassTemp(curLayerAir, obstruction);
+    std::cout << "ITERATION: " << i << std::endl;
+    displayAirMap(nextLayerAir);
+    curLayerAir = MapLayerAir(nextLayerAir);
   }
 }

@@ -11,6 +11,8 @@ struct Coordinates {
   int y;
 
   friend std::ostream & operator<<(std::ostream & out, const Coordinates & value);
+  friend bool operator<(const Coordinates &lhs, const Coordinates &rhs);
+  friend bool operator==(const Coordinates &lhs, const Coordinates &rhs);
 };
 
 struct Dimension {

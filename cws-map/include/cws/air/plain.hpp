@@ -18,6 +18,7 @@ public:
       : Physical(std::move(params)), type_(type), heatTransferCoef_(heatTransferCoef) {}
 
   virtual Plain * clone() const { return new Plain(*this); }
+  Plain * cloneWithWeight(double weight) const;
 
   double getHeatTransferCoef() const { return heatTransferCoef_; }
 
