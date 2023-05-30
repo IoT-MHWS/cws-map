@@ -134,15 +134,6 @@ void MapLayerAir::nextCirculationTemp(const MapLayerAir & curLayerAir,
   }
 }
 
-// 1.1) Get current air container
-// 1.2) Get cell neighbours
-// 2) For each air in current air container iterate over neighbours and put
-// in
-// For each air in airContainer
-// Check neighbours for this air
-// * If not found -> just accept that weight == 0
-// * If found -> accept weight equals weight
-
 double cellMassTempValue(const Air::Plain * air) {
   if (air == nullptr) {
     return 0;
