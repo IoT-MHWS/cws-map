@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <ostream>
 
 /*
@@ -51,3 +52,5 @@ struct Illumination {
   friend Illumination operator+(const Illumination & lhs, const Illumination & rhs);
   friend bool operator==(const Illumination & lhs, const Illumination & rhs);
 };
+
+std::list<Coordinates> getNeighbours(Dimension dim, Coordinates p);

@@ -7,7 +7,7 @@
 #include <iostream>
 #include <vector>
 
-#include "cws/general.hpp"
+#include "cws/common.hpp"
 #include "cws/layer/base.hpp"
 #include "cws/util.hpp"
 

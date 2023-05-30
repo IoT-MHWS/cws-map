@@ -1,4 +1,5 @@
-#include "cws/general.hpp"
+#include "cws/common.hpp"
+#include <list>
 
 // Coordinates
 std::ostream & operator<<(std::ostream & out, const Coordinates * value) {
@@ -60,4 +61,20 @@ bool operator==(const Illumination & lhs, const Illumination & rhs) {
 
 Illumination Illumination::getActualIllumination(const Obstruction & abs) {
   return {.value = static_cast<int>(this->value * (1 - abs.value))};
+}
+
+std::list<Coordinates> getNeighbours(Dimension dim, Coordinates p) {
+
+  std::list<Coordinates> n;
+
+  for (int x = p.x - 1; x <= p.x + 1; ++x) {
+    for (int y = p.y - 1; y <= p.y + 1; ++y) {
+      if (x < 0 || x >= dim.width || y < 0 || y >= dim.height ||
+          (x == p.x && y == p.y)) {
+        continue;
+      }
+      n.emplace_back(x, y);
+    }
+  }
+  return n;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cws/general.hpp"
+#include "cws/common.hpp"
 #include "cws/layer/base.hpp"
 
 class LayerIllumination : public Layer {

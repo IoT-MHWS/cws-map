@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cws/general.hpp"
+#include "cws/common.hpp"
 #include "cws/layer/obstruction.hpp"
 #include "cws/map_layer/subject.hpp"
 

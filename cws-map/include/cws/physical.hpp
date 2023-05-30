@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cws/general.hpp"
+#include "cws/common.hpp"
 
 /*
  * Parameters can be alterable and always same, it depends on object state. To

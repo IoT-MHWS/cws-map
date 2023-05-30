@@ -120,7 +120,7 @@ void SimulationMaster::updateSimulationMap() {
     newMap.reset();
   } else {
     if (curMap) {
-      newMap.reset(new SimulationMap(*curMap));
+      newMap.reset(curMap->clone());
     }
   }
 

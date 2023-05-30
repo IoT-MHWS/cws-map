@@ -51,7 +51,7 @@ void SimulationSlave::execute() {
 
 void SimulationSlave::updateSimulationMap() {
   if (master.newMap) {
-    master.newMap->update(*master.curMap);
+    master.newMap->next(*master.curMap);
   }
   std::cout << "slave: "
             << "map updated" << std::endl;

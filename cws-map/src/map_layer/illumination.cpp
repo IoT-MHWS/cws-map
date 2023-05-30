@@ -17,21 +17,6 @@ int getScalarMultiplication(PII v1, PII v2) {
 
 int getDistanceSquare(PII v) { return v.first * v.first + v.second * v.second; }
 
-std::list<Coordinates> getNeighbours(Dimension dim, Coordinates p) {
-
-  std::list<Coordinates> n;
-
-  for (int x = p.x - 1; x <= p.x + 1; ++x) {
-    for (int y = p.y - 1; y <= p.y + 1; ++y) {
-      if (x < 0 || x >= dim.width || y < 0 || y >= dim.height ||
-          (x == p.x && y == p.y)) {
-        continue;
-      }
-      n.emplace_back(x, y);
-    }
-  }
-  return n;
-}
 
 void calcForCell(MapLayerIllumination & layer, const MapLayerObstruction & obstruction,
                  Coordinates & src, Coordinates p) {

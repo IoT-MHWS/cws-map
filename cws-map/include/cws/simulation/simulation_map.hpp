@@ -28,6 +28,8 @@ class SimulationMap : public Map {
 public:
   explicit SimulationMap(Dimension dimension) : Map(dimension) {}
 
+  virtual SimulationMap * clone() { return new SimulationMap(*this); }
+
   void setQuery(SubjectQuery && query);
   const Subject::Plain * getQuery(const SubjectQuery & query) const;
 

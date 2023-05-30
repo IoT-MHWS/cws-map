@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "cws/general.hpp"
+#include "cws/common.hpp"
 #include "cws/map.hpp"
 #include "cws/simulation/interface.hpp"
 #include "cws/simulation/simulation.hpp"

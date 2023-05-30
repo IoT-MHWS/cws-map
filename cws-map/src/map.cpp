@@ -1,6 +1,8 @@
 #include <cws/map.hpp>
 
 /*
+ * Current state (this) of map is equal to passed by argument
+ *
  * Update subject temperature == done
  * Update convection (in-cell) temperature == done
  * Update air obstruction == done
@@ -9,11 +11,11 @@
  * Update illumination == done
  *
  */
-void Map::update(const Map & cur) {
+void Map::next(const Map & curMap) {
   layers.subjectLayer.nextTemperature();
   layers.airLayer.nextConvection(layers.subjectLayer);
   layers.obstructionLayer.updateAirObstruction(layers.subjectLayer);
-  layers.airLayer.nextCirculation(layers.obstructionLayer, layers.subjectLayer);
+  layers.airLayer.nextCirculation(curMap.layers.airLayer, layers.obstructionLayer);
   layers.obstructionLayer.updateLightObstruction(layers.subjectLayer);
   layers.illuminationLayer.updateIllumination(layers.obstructionLayer,
                                               layers.subjectLayer);

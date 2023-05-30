@@ -1,5 +1,5 @@
 #include "cws/map_layer/obstruction.hpp"
-#include "cws/general.hpp"
+#include "cws/common.hpp"
 #include "cws/map_layer/subject.hpp"
 #include "gtest/gtest.h"
 

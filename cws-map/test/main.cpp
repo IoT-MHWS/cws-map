@@ -1,4 +1,4 @@
-#include "cws/general.hpp"
+#include "cws/common.hpp"
 #include "cws/map_layer/illumination.hpp"
 #include "cws/map_layer/obstruction.hpp"
 #include "cws/subject/light_emitter.hpp"

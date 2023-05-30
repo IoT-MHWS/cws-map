@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cws/general.hpp"
+#include "cws/common.hpp"
 #include "cws/simulation/general.hpp"
 #include "cws/simulation/interface.hpp"
 // #include "cws/subject/interactive.hpp"

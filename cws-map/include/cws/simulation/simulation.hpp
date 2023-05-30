@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cws/general.hpp"
+#include "cws/common.hpp"
 #include "cws/map.hpp"
 #include "cws/simulation/general.hpp"
 #include "cws/simulation/simulation_map.hpp"
