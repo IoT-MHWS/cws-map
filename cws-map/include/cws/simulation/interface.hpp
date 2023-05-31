@@ -1,11 +1,14 @@
 #pragma once
 
 #include <cstddef>
+#include <mutex>
 #include <queue>
+#include <shared_mutex>
 
 #include "cws/simulation/general.hpp"
-#include "cws/simulation/simulation.hpp"
 #include "cws/simulation/simulation_map.hpp"
+
+class SimulationMaster;
 
 class SimulationInterface {
   friend SimulationMaster;
@@ -55,7 +58,7 @@ private:
   std::pair<std::unique_lock<std::mutex> &&, QueueUP<SubjectQuery> &>
   masterAccessQueries();
 
-  void masterSet(const SimulationState & state, const SimulationMap & map);
+  void masterSet(const SimulationState & state, const SimulationMap * map);
 
 public:
   void run();

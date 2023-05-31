@@ -49,26 +49,33 @@ void SimulationMaster::execute(std::stop_token stoken) {
     bool isStatusRunning = state.status == SimulationStatus::RUNNING;
     bool isNotLastTick = state.currentTick < state.lastTick;
     bool isSimTypeINF = state.type == SimulationType::INFINITE;
+    bool isRunning = isStatusRunning && (isSimTypeINF || isNotLastTick);
+    bool doSlave = isRunning && mapsExist();
 
-    if (isStatusRunning && (isSimTypeINF || isNotLastTick)) {
-      if (mapsExist()) {
-        notifySlaveReady();
-
-        // set previous frame when current is becoming ready
-        interface.masterSet(state, *currMap);
-#ifndef NDEBUG
-        std::cout << "master->interface: state set" << std::endl
-                  << "  state: " << state << std::endl
-                  << "  map: " << &*currMap << std::endl;
-#endif
-
-        waitSlaveProcess();
-      }
-      state.currentTick += 1;
+    if (doSlave) {
+      notifySlaveReady();
     }
 
-    if (!isSimTypeINF && state.currentTick == state.lastTick) {
-      state.status = SimulationStatus::STOPPED;
+    {
+      // set previous frame when current is becoming ready
+      interface.masterSet(state, currMap.get());
+#ifndef NDEBUG
+      std::cout << "master->interface: state set" << std::endl
+                << "  state: " << state << std::endl
+                << "  map: " << &*currMap << std::endl;
+#endif
+
+      if (isRunning) {
+        state.currentTick += 1;
+      }
+
+      if (!isSimTypeINF && state.currentTick == state.lastTick) {
+        state.status = SimulationStatus::STOPPED;
+      }
+    }
+
+    if (doSlave) {
+      waitSlaveProcess();
     }
 
     prepareMapsNextIter();

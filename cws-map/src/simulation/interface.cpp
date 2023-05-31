@@ -1,4 +1,5 @@
 #include "cws/simulation/interface.hpp"
+#include "cws/simulation/simulation.hpp"
 
 void SimulationInterface::run() { master->run(); }
 
@@ -44,12 +45,18 @@ Optional<Dimension> SimulationInterface::masterGetDimension() {
 }
 
 void SimulationInterface::masterSet(const SimulationState & state,
-                                    const SimulationMap & map) {
+                                    const SimulationMap * map) {
   std::unique_lock lock(out.mutex);
+
   this->out.state = state;
-  // just copy for each tick
-  // TODO: may do it when input requests are waiting, but it can make them blocked
-  this->out.map = std::make_shared<SimulationMap>(map);
+
+  // NOTE: may do it only when input requests are waiting
+  //  may results of requirests being blocked
+  if (map == nullptr) {
+    this->out.map.reset();
+  } else {
+    this->out.map = std::make_shared<SimulationMap>(*map);
+  }
 }
 
 std::pair<std::unique_lock<std::mutex> &&, SimulationInterface::QueueUP<SubjectQuery> &>
