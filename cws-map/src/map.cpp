@@ -6,10 +6,14 @@
  * Update subject temperature == done
  * Update convection (in-cell) temperature == done
  * Update air obstruction == done
- * Update circulation (between-cell) temperature
+ * Update circulation (between-cell) temperature == done
  * Update light obstruction == done
  * Update illumination == done
  *
+ * Clear wireless network from previous frame == done
+ * Collect packages from subjects == done
+ * Update network (spread packets)
+ * Place packages in subjects == done
  */
 void Map::next(const Map & curMap) {
   layers.subjectLayer.nextTemperature();
@@ -19,6 +23,11 @@ void Map::next(const Map & curMap) {
   layers.obstructionLayer.updateLightObstruction(layers.subjectLayer);
   layers.illuminationLayer.updateIllumination(layers.obstructionLayer,
                                               layers.subjectLayer);
+  // clear network from previous state
+  layers.networkWireless.clearNetwork();
+  layers.networkWireless.collectTransmittablePackages(layers.subjectLayer);
+  layers.networkWireless.updateNetwork(layers.obstructionLayer);
+  layers.networkWireless.placeReceivablePackages(layers.subjectLayer);
 }
 
 std::ostream & operator<<(std::ostream & out, const Layers * layers) {
