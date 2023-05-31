@@ -3,6 +3,10 @@
 #include "cws/layer/subject.hpp"
 #include "cws/map_layer/base.hpp"
 
+class MapLayerNetwork;
+class MapLayerObstruction;
+class MapLayerIllumination;
+
 /*
  * Extended logic for subject layer
  */
@@ -23,4 +27,13 @@ public:
   }
 
   void nextTemperature();
+  void setupSubjects(const MapLayerObstruction & obstructionLayer,
+                     const MapLayerIllumination & illuminationLayer);
+
+  void receivePackets(const MapLayerNetwork & networkLayer);
+
+private:
+  void setupSubject(Subject::Plain & subject,
+                    const MapLayerObstruction & obstructionLayer,
+                    const MapLayerIllumination & illuminationLayer);
 };

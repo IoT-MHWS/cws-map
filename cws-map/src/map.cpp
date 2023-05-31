@@ -27,7 +27,9 @@ void Map::next(const Map & curMap) {
   layers.networkWireless.clearNetwork();
   layers.networkWireless.collectTransmittablePackages(layers.subjectLayer);
   layers.networkWireless.updateNetwork(layers.obstructionLayer);
-  layers.networkWireless.placeReceivablePackages(layers.subjectLayer);
+  layers.subjectLayer.receivePackets(layers.networkWireless);
+  // like cameras and so on
+  layers.subjectLayer.setupSubjects(layers.obstructionLayer, layers.illuminationLayer);
 }
 
 std::ostream & operator<<(std::ostream & out, const Layers * layers) {

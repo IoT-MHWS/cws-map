@@ -7,7 +7,7 @@
 
 namespace Subject {
 
-class BaseCamera : public Plain {
+class BaseCamera : public Plain, public ExtCamera {
 public:
   using PCoordPlain = std::pair<Coordinates, Plain &>;
 
@@ -22,37 +22,57 @@ public:
   BaseCamera * clone() const override = 0;
 };
 
-class InfraredCamera : public BaseCamera, public ExtInfraredCamera {
+class InfraredCamera : public BaseCamera {
+private:
+  const MapLayerSubject * layerSubject_;
+  const MapLayerObstruction * layerObstruction_;
 
 public:
   InfraredCamera(Plain && plain, double power, double powerThreshold)
-      : BaseCamera(std::move(plain), power, powerThreshold) {}
+      : BaseCamera(std::move(plain), power, powerThreshold) {
+
+    setType(Type::INFRARED_CAMERA);
+  }
 
   InfraredCamera * clone() const override { return new InfraredCamera(*this); }
 
-  // maybe store ptrs to layers inside?
-  std::list<PCoordPlain>
-  getVisibleSubjects(const MapLayerSubject & layerSubject,
-                     const MapLayerObstruction & layerObstruction) override;
+  void setup(const MapLayerSubject & layerSubject,
+             const MapLayerObstruction & layerObstruction) {
+    layerSubject_ = &layerSubject;
+    layerObstruction_ = &layerObstruction;
+  }
+
+  std::list<PCoordPlain> getVisibleSubjects() const override;
 };
 
-class LightCamera : public BaseCamera, public ExtLightCamera {
+class LightCamera : public BaseCamera {
 private:
+  const MapLayerSubject * layerSubject_;
+  const MapLayerObstruction * layerObstruction_;
+  const MapLayerIllumination * layerIllumination_;
+
   double lightThreshold_;
 
 public:
   LightCamera(Plain && plain, double power, double powerThreshold,
               double lightThreshold)
       : BaseCamera(std::move(plain), power, powerThreshold),
-        lightThreshold_(lightThreshold) {}
+        lightThreshold_(lightThreshold) {
+
+    setType(Type::LIGHT_CAMERA);
+  }
 
   LightCamera * clone() const override { return new LightCamera(*this); }
 
-  // maybe store ptrs to layers inside?
-  std::list<PCoordPlain>
-  getVisibleSubjects(const MapLayerSubject & layerSubject,
-                     const MapLayerObstruction & layerObstruction,
-                     const MapLayerIllumination & layerIllumination) override;
+  void setup(const MapLayerSubject & layerSubject,
+             const MapLayerObstruction & layerObstruction,
+             const MapLayerIllumination & layerIllumination) {
+    layerSubject_ = &layerSubject;
+    layerObstruction_ = &layerObstruction;
+    layerIllumination_ = &layerIllumination;
+  }
+
+  std::list<PCoordPlain> getVisibleSubjects() const override;
 };
 
 }// namespace Subject

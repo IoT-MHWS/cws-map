@@ -12,8 +12,8 @@ void NetworkDevice::transmitPackets(
 
 // just copy
 std::list<std::unique_ptr<Network::Packet>>
-NetworkDevice::networkCollectPackets(Network::Type type) {
-  std::list<PacketUPTR> result;
+NetworkDevice::collectNetworkPackets(Network::Type type) const {
+  std::list<std::unique_ptr<Network::Packet>> result;
 
   if (type == networkType_) {
     for (const auto & packet : transmitBuffer_) {
@@ -26,12 +26,13 @@ NetworkDevice::networkCollectPackets(Network::Type type) {
 
 void NetworkDevice::clearTransmitBuffer() { transmitBuffer_.clear(); }
 
-const std::list<std::unique_ptr<Network::Packet>> & NetworkDevice::getReceivedPackets() {
+const std::list<std::unique_ptr<Network::Packet>> &
+NetworkDevice::getReceivedPackets() const {
   return receiveBuffer_;
 }
 
 // just copy
-void NetworkDevice::networkPlacePackets(
+void NetworkDevice::placeNetworkPackets(
     const std::list<std::unique_ptr<Network::Packet>> & packetList,
     Network::Type type) {
 

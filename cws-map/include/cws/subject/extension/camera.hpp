@@ -11,18 +11,9 @@ namespace Subject {
 
 using PCoordPlain = std::pair<Coordinates, Subject::Plain &>;
 
-class ExtInfraredCamera {
+class ExtCamera {
 public:
-  virtual std::list<PCoordPlain>
-  getVisibleSubjects(const MapLayerSubject & layerSubject,
-                     const MapLayerObstruction & layerObstruction) = 0;
+  virtual std::list<PCoordPlain> getVisibleSubjects() const = 0;
 };
 
-class ExtLightCamera {
-  virtual std::list<PCoordPlain>
-  getVisibleSubjects(const MapLayerSubject & layerSubject,
-                     const MapLayerObstruction & layerObstruction,
-                     const MapLayerIllumination & layerIllumination) = 0;
-};
-
-}
+}// namespace Subject

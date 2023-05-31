@@ -10,6 +10,8 @@ enum class Type {
   TEMP_EMITTER = 4,
   TURNABLE_TEMP_EMITTER = 5,
   NETWORK_DEVICE = 6,
+  INFRARED_CAMERA = 7,
+  LIGHT_CAMERA = 8,
 };
 
 }

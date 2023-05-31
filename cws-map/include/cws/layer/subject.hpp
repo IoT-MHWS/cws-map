@@ -61,7 +61,9 @@ public:
 
   const std::list<const Subject::ExtLightSource *> getActiveLightSources() const;
 
-  const std::list<Subject::ExtTransmitter *> getNetworkTransmitters();
+  const std::list<const Subject::ExtTransmitter *> getNetworkTransmitters() const;
 
-  const std::list<Subject::ExtReceiver *> getNetworkReceivers();
+  const std::list<const Subject::ExtReceiver *> getNetworkReceivers() const;
+
+  const std::list<Subject::ExtReceiver *> accessNetworkReceivers();
 };

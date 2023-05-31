@@ -12,7 +12,7 @@ class Packet {
 public:
   Packet(std::vector<byte> && content) : content_(std::move(content)) {}
 
-  virtual Packet * clone() { return new Packet(*this); }
+  virtual Packet * clone() const { return new Packet(*this); }
 
   const std::vector<byte> & getContent() const { return content_; }
   const std::size_t getSize() const { return content_.size(); }

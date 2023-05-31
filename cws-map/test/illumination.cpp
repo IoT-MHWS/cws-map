@@ -9,7 +9,7 @@ TEST(Illumination, updateIllumination) {
 
   Dimension dim{4, 4};
 
-  std::vector<std::vector<double>> abs_layer{
+  std::vector<std::vector<double>> obs_layer{
       {0.2, 0.2, 0.4, 0.1},
       {0.2, 0.2, 0.0, 0.1},
       {0.2, 0.2, 0.0, 0.1},
@@ -19,7 +19,7 @@ TEST(Illumination, updateIllumination) {
   Coordinates c;
   for (c.x = 0; c.x < dim.width; ++c.x)
     for (c.y = 0; c.y < dim.height; ++c.y)
-      obstruction.setLightObstruction(c, Obstruction{abs_layer[c.x][c.y]});
+      obstruction.setLightObstruction(c, Obstruction{obs_layer[c.x][c.y]});
 
   MapLayerSubject subject(dim);
 

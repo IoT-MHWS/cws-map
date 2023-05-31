@@ -21,8 +21,9 @@ const std::list<const ExtLightSource *> LayerSubject::getActiveLightSources() co
   return sources;
 }
 
-const std::list<Subject::ExtTransmitter *> LayerSubject::getNetworkTransmitters() {
-  std::list<ExtTransmitter *> transmitters;
+const std::list<const Subject::ExtTransmitter *>
+LayerSubject::getNetworkTransmitters() const {
+  std::list<const ExtTransmitter *> transmitters;
   for (auto & sub : subjectList) {
     if (auto trans = dynamic_cast<ExtTransmitter *>(sub.get())) {
       transmitters.push_back(trans);
@@ -31,8 +32,9 @@ const std::list<Subject::ExtTransmitter *> LayerSubject::getNetworkTransmitters(
   return transmitters;
 }
 
-const std::list<Subject::ExtReceiver *> LayerSubject::getNetworkReceivers() {
-  std::list<ExtReceiver *> receivers;
+const std::list<const Subject::ExtReceiver *>
+LayerSubject::getNetworkReceivers() const {
+  std::list<const ExtReceiver *> receivers;
   for (auto & sub : subjectList) {
     if (auto receiv = dynamic_cast<ExtReceiver *>(sub.get())) {
       receivers.push_back(receiv);

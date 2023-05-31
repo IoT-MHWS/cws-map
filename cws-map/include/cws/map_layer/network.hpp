@@ -29,11 +29,11 @@ public:
     return layerReceivable_.getCell(c).getElement().getPacketList();
   }
 
+  Network::Type getNetworkType() const { return networkType_; }
   Dimension getDimension() const;
-  void clearNetwork();
 
-  virtual void collectTransmittablePackages(MapLayerSubject & layerSubject);
-  virtual void placeReceivablePackages(MapLayerSubject & layerSubject);
+  void clearNetwork();
+  virtual void collectTransmittablePackages(const MapLayerSubject & layerSubject);
   virtual void updateNetwork(const MapLayerObstruction & obstruction) = 0;
 
 private:

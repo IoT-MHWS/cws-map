@@ -25,16 +25,16 @@ public:
   transmitPackets(std::list<std::unique_ptr<Network::Packet>> && packetList) override;
 
   virtual std::list<std::unique_ptr<Network::Packet>>
-  networkCollectPackets(Network::Type type) override;
+  collectNetworkPackets(Network::Type type) const override;
 
   virtual void clearTransmitBuffer() override;
 
   virtual const std::list<std::unique_ptr<Network::Packet>> &
-  getReceivedPackets() override;
+  getReceivedPackets() const override;
 
-  virtual void
-  networkPlacePackets(const std::list<std::unique_ptr<Network::Packet>> & packetList,
-                      Network::Type type) override;
+  virtual void placeNetworkPackets(
+      const std::list<std::unique_ptr<Network::Packet>> & packetList,
+      Network::Type type) override;
 
   virtual void clearReceiveBuffer() override;
 };

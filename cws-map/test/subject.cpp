@@ -2,6 +2,7 @@
 
 #include "cws/map_layer/subject.hpp"
 #include "cws/physical.hpp"
+#include "cws/subject/camera.hpp"
 #include "cws/subject/light_emitter.hpp"
 
 TEST(Subject, TurnableLightEmitter) {
@@ -54,3 +55,28 @@ TEST(Subject, updateTemperature) {
   Temperature afterOff = emitter.getTemperature();
   EXPECT_EQ(after, afterOff);
 }
+
+TEST(SubjectInfraredCamera, getVisibleSubjects) {
+  using namespace Subject;
+
+  Dimension dim{4, 4};
+
+  std::vector<std::vector<double>> obs_layer{
+      {0.2, 0.2, 0.4, 0.1},
+      {0.2, 0.2, 0.0, 0.1},
+      {0.2, 0.2, 0.0, 0.1},
+      {0.2, 0.0, 0.4, 0.5},
+  };
+  MapLayerObstruction obstruction(dim);
+  Coordinates c;
+  for (c.x = 0; c.x < dim.width; ++c.x)
+    for (c.y = 0; c.y < dim.height; ++c.y)
+      obstruction.setLightObstruction(c, Obstruction{obs_layer[c.x][c.y]});
+
+  MapLayerSubject layerSubject(dim);
+
+  layerSubject.accessSubjectList({1, 1}).push_back(
+      std::make_unique<InfraredCamera>(Plain(Physical(), 1, 0, {}), 100, 20));
+}
+
+TEST(SubjectLightCamera, getVisibleSubjects) { using namespace Subject; }
