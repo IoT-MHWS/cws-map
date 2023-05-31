@@ -2,6 +2,7 @@
 
 #include "cws/layer/base.hpp"
 #include "cws/subject/extension/light_source.hpp"
+#include "cws/subject/extension/network.hpp"
 #include "cws/subject/plain.hpp"
 
 #include <list>
@@ -11,7 +12,7 @@ class LayerSubject : public Layer {
   std::list<std::unique_ptr<Subject::Plain>> subjectList;
 
 public:
-  LayerSubject() : Layer() {}
+  LayerSubject() = default;
 
   LayerSubject(LayerSubject && obj) noexcept : Layer(std::move(obj)) {
     this->subjectList = std::move(obj.subjectList);
@@ -59,4 +60,8 @@ public:
   }
 
   const std::list<const Subject::ExtLightSource *> getActiveLightSources() const;
+
+  const std::list<Subject::ExtTransmitter *> getNetworkTransmitters();
+
+  const std::list<Subject::ExtReceiver *> getNetworkReceivers();
 };

@@ -13,12 +13,13 @@ private:
   int heatCapacity_;
   Temperature temperature_;
   Obstruction defLightObstruction_;
+  Obstruction defWirelessObstruction_;
 
 public:
   Physical(double weight = 0, int heatCapacity = 0, Temperature temp = {},
-           Obstruction lightAbs = {})
+           Obstruction lightObs = {}, Obstruction wirelessObs = {})
       : weight_(weight), heatCapacity_(heatCapacity), temperature_(temp),
-        defLightObstruction_(lightAbs) {}
+        defLightObstruction_(lightObs), defWirelessObstruction_(wirelessObs) {}
 
   virtual ~Physical() = default;
 
@@ -31,6 +32,11 @@ public:
 
   Obstruction getDefLightObstruction() const { return defLightObstruction_; }
   virtual Obstruction getCurLightObstruction() const { return defLightObstruction_; }
+
+  Obstruction getDefWirelessObstruction() const { return defWirelessObstruction_; }
+  virtual Obstruction getCurWirelessObstruction() const {
+    return defWirelessObstruction_;
+  }
 
 protected:
   void setWeight(double weight) { weight_ = weight; }

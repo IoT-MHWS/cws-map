@@ -6,8 +6,6 @@
 
 namespace Subject {
 
-using namespace Subject;
-
 /*
  * Always turned on temp emitted
  */

@@ -40,3 +40,24 @@ TEST(MapLayerObstruction, updateLightObstruction) {
 
   ASSERT_EQ(Obstruction{0.75}.get(), obstruction.getLightObstruction({0, 0}).get());
 }
+
+TEST(MapLayerObstruction, updateWirelessObstruction) {
+  Dimension dim{1, 1};
+
+  MapLayerObstruction obstruction(dim);
+
+  MapLayerSubject layerSubject(dim);
+  auto & subjectList =
+      layerSubject.accessCell({0, 0}).accessElement().accessSubjectList();
+
+  subjectList.emplace_back(
+      std::make_unique<Subject::Plain>(Physical(10, 1000, {60}, {0.}, {0.5}),
+                                       Subject::Id{.idx = 1}, 0.40, Obstruction{0.40}));
+  subjectList.emplace_back(
+      std::make_unique<Subject::Plain>(Physical(10, 1000, {60}, {0.}, {0.5}),
+                                       Subject::Id{.idx = 1}, 0.60, Obstruction{0.40}));
+
+  obstruction.updateWirelessObstruction(layerSubject);
+
+  ASSERT_EQ(Obstruction{0.75}.get(), obstruction.getWirelessObstruction({0, 0}).get());
+}

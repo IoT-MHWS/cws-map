@@ -6,6 +6,7 @@
 class LayerObstruction : public Layer {
   Obstruction lightObstruction_;
   Obstruction airObstruction_;
+  Obstruction wirelessObstruction_;
 
 public:
   Obstruction getLightObstruction() const { return lightObstruction_; }
@@ -13,4 +14,7 @@ public:
 
   Obstruction getAirObstruction() const { return airObstruction_; }
   void setAirObstruction(Obstruction obstruction) { airObstruction_ = obstruction; }
+
+  Obstruction getWirelessObstruction() const { return wirelessObstruction_; }
+  void setWirelessObstruction(Obstruction obstruction) { wirelessObstruction_ = obstruction; }
 };

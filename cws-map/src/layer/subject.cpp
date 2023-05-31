@@ -1,4 +1,5 @@
 #include "cws/layer/subject.hpp"
+#include "cws/subject/extension/network.hpp"
 #include "cws/subject/extension/turnable.hpp"
 #include "cws/subject/light_emitter.hpp"
 #include <cassert>
@@ -18,4 +19,24 @@ const std::list<const ExtLightSource *> LayerSubject::getActiveLightSources() co
     }
   }
   return sources;
+}
+
+const std::list<Subject::ExtTransmitter *> LayerSubject::getNetworkTransmitters() {
+  std::list<ExtTransmitter *> transmitters;
+  for (auto & sub : subjectList) {
+    if (auto trans = dynamic_cast<ExtTransmitter *>(sub.get())) {
+      transmitters.push_back(trans);
+    }
+  }
+  return transmitters;
+}
+
+const std::list<Subject::ExtReceiver *> LayerSubject::getNetworkReceivers() {
+  std::list<ExtReceiver *> receivers;
+  for (auto & sub : subjectList) {
+    if (auto receiv = dynamic_cast<ExtReceiver *>(sub.get())) {
+      receivers.push_back(receiv);
+    }
+  }
+  return receivers;
 }

@@ -13,6 +13,8 @@ public:
 
   void updateLightObstruction(const MapLayerSubject & layerSubject);
 
+  void updateWirelessObstruction(const MapLayerSubject & layerSubject);
+
   Obstruction getLightObstruction(Coordinates c) const {
     return getCell(c).getElement().getLightObstruction();
   }
@@ -27,5 +29,13 @@ public:
 
   void setAirObstruction(Coordinates c, Obstruction obs) {
     accessCell(c).accessElement().setAirObstruction(obs);
+  }
+
+  Obstruction getWirelessObstruction(Coordinates c) const {
+    return getCell(c).getElement().getWirelessObstruction();
+  }
+
+  void setWirelessObstruction(Coordinates c, Obstruction obs) {
+    accessCell(c).accessElement().setWirelessObstruction(obs);
   }
 };
