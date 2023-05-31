@@ -1,7 +1,6 @@
 #pragma once
 
 #include "cws/physical.hpp"
-#include "cws/subject/extension/base.hpp"
 #include "cws/subject/type.hpp"
 
 namespace Subject {
@@ -17,7 +16,7 @@ protected:
   friend bool operator==(const Id &, const Id &);
 };
 
-class Plain : public Physical, virtual public Extensiable {
+class Plain : public Physical {
   Id id_;
   double surfaceArea_;
   Obstruction defAirObstruction_;

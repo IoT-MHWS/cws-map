@@ -1,24 +1,15 @@
 #pragma once
 
-#include "cws/subject/extension/base.hpp"
 namespace Subject {
 
 struct TempSourceParams {
   double heatProduction;
 };
 
-class TempSourceAlt : virtual public Subject::Extensiable {
-  TempSourceParams defParams_;
-
+class ExtTempSource {
 public:
-  TempSourceAlt(TempSourceParams params) : defParams_(params) {}
-
-  bool isTempSource() const final override { return true; }
-
-public:
-  TempSourceParams getDefTempParams() const { return defParams_; }
-  virtual TempSourceParams getCurTempParams() const { return defParams_; }
-
+  virtual TempSourceParams getDefTempParams() const = 0;
+  virtual TempSourceParams getCurTempParams() const = 0;
   virtual void nextTemperature() = 0;
 };
 

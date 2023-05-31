@@ -1,6 +1,5 @@
 #pragma once
 
-#include "cws/subject/extension/base.hpp"
 #include "cws/util.hpp"
 
 namespace Subject {
@@ -10,17 +9,10 @@ enum class TurnableStatus {
   ON = 1,
 };
 
-class Turnable : virtual public Subject::Extensiable {
-  TurnableStatus status_;
-
+class ExtTurnable {
 public:
-  Turnable(TurnableStatus status) : status_(status) {}
-
-  bool isTurnable() const final override { return true; }
-
-public:
-  TurnableStatus getStatus() const { return status_; }
-  void setStatus(TurnableStatus status) { status_ = status; }
+  virtual TurnableStatus getStatus() const = 0;
+  virtual void setStatus(TurnableStatus status) = 0;
 };
 
 }// namespace Subject

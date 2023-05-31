@@ -5,18 +5,16 @@
 
 using namespace Subject;
 
-const std::list<const LightSourceAlt *> LayerSubject::getActiveLightSources() const {
-  std::list<const LightSourceAlt *> sources;
+const std::list<const ExtLightSource *> LayerSubject::getActiveLightSources() const {
+  std::list<const ExtLightSource *> sources;
   for (const auto & sub : subjectList) {
-    if (sub->isTempSource()) {
-      if (sub->isTurnable() &&
-          dynamic_cast<Turnable *>(sub.get())->getStatus() != TurnableStatus::ON) {
-        continue;
+    if (auto lightSub = dynamic_cast<ExtLightSource *>(sub.get())) {
+      if (auto turnable = dynamic_cast<ExtTurnable *>(lightSub)) {
+        if (turnable->getStatus() != TurnableStatus::ON) {
+          continue;
+        }
       }
-      // requires rtti
-      auto src = dynamic_cast<LightSourceAlt *>(sub.get());
-      assert(src != nullptr);
-      sources.push_back(src);
+      sources.push_back(lightSub);
     }
   }
   return sources;

@@ -58,5 +58,5 @@ public:
     return subjectList;
   }
 
-  const std::list<const Subject::LightSourceAlt *> getActiveLightSources() const;
+  const std::list<const Subject::ExtLightSource *> getActiveLightSources() const;
 };

@@ -11,29 +11,37 @@ using namespace Subject;
 /*
  * Always turned on temp emitted
  */
-class TempEmitter : public Plain, public TempSourceAlt {
+class TempEmitter : public Plain, public ExtTempSource {
+  TempSourceParams tempParams_;
+
 public:
-  TempEmitter(Plain && plain, TempSourceParams && temp)
-      : Plain(std::move(plain)), TempSourceAlt(std::move(temp)) {
+  TempEmitter(Plain && plain, TempSourceParams tempParams)
+      : Plain(std::move(plain)), tempParams_(tempParams) {
 
     setType(Type::TEMP_EMITTER);
   }
 
-  void nextTemperature() override;
-
   TempEmitter * clone() const override { return new TempEmitter(*this); }
+
+  void nextTemperature() final override;
+
+  virtual TempSourceParams getDefTempParams() const final override {
+    return tempParams_;
+  };
+  virtual TempSourceParams getCurTempParams() const override { return tempParams_; }
 };
 
 /*
  * Temp emitter that can be switched off
  */
-class TurnableTempEmitter : public TempEmitter, public Turnable {
+class TurnableTempEmitter : public TempEmitter, public ExtTurnable {
+  TurnableStatus turnableStatus_;
   TempSourceParams offTempParams_;
 
 public:
   TurnableTempEmitter(TempEmitter && emitter, TurnableStatus status,
                       TempSourceParams offTempParams)
-      : TempEmitter(std::move(emitter)), Turnable(status),
+      : TempEmitter(std::move(emitter)), turnableStatus_(status),
         offTempParams_(offTempParams) {
 
     setType(Type::TURNABLE_TEMP_EMITTER);
@@ -43,7 +51,9 @@ public:
     return new TurnableTempEmitter(*this);
   }
 
-  TempSourceParams getCurTempParams() const override;
+  TurnableStatus getStatus() const final override { return turnableStatus_; }
+  void setStatus(TurnableStatus status) final override { turnableStatus_ = status; }
+  TempSourceParams getCurTempParams() const final override;
 };
 
 }// namespace Subject

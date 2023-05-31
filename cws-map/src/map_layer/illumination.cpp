@@ -64,7 +64,7 @@ void calcForCell(MapLayerIllumination & layer, const MapLayerObstruction & obstr
 
 MapLayerIllumination
 calcForLightSrc(Dimension dim, const MapLayerObstruction & obstructionLayer,
-                std::pair<Coordinates, const Subject::LightSourceAlt *> src) {
+                std::pair<Coordinates, const Subject::ExtLightSource *> src) {
 
   // to check whether calculated for this cell
   MapLayerIllumination res(dim, ILLUMINATION_DEFAULT);

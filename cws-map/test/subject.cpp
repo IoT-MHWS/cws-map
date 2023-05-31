@@ -11,8 +11,8 @@ TEST(Subject, TurnableLightEmitter) {
 
   TurnableLightEmitter emitter(
       LightEmitter(Plain(Physical(1, 2, {3}, {4}), Id{.idx = 1}, 5, {0.5}),
-                   LightSourceParams{.rawIllumination = Illumination{10}},
-                   TempSourceParams{.heatProduction = 400}),
+                   TempSourceParams{.heatProduction = 400},
+                   LightSourceParams{.rawIllumination = Illumination{10}}),
       TurnableStatus::OFF, {}, {});
 
   EXPECT_EQ(1, emitter.getWeight());
@@ -26,8 +26,8 @@ TEST(Subject, TurnableLightEmitter) {
   EXPECT_EQ(10, emitter.getDefLightParams().rawIllumination.get());
   EXPECT_EQ(400, emitter.getDefTempParams().heatProduction);
 
-  EXPECT_TRUE(emitter.isTempSource());
-  EXPECT_FALSE(plain.isTempSource());
+  EXPECT_NE(nullptr, dynamic_cast<ExtLightSource *>(&emitter));
+  EXPECT_NE(nullptr, dynamic_cast<ExtTempSource *>(&emitter));
 }
 
 TEST(MapLayerSubject, createTemplate) { MapLayerSubject layer({4, 4}); }
@@ -38,10 +38,8 @@ TEST(Subject, updateTemperature) {
   TurnableLightEmitter emitter(
       LightEmitter(Plain(Physical(10, 400, Temperature{30}, Obstruction{0.5}),
                          Id{.idx = 1}, 1, {}),
-                   {}, TempSourceParams{.heatProduction = 4000}),
+                   TempSourceParams{.heatProduction = 4000}, {}),
       TurnableStatus::ON, {}, TempSourceParams{.heatProduction = 0});
-
-  EXPECT_TRUE(static_cast<Plain *>(&emitter)->isTempSource());
 
   Temperature before = emitter.getTemperature();
 

@@ -23,8 +23,8 @@ TEST(Illumination, updateIllumination) {
 
   MapLayerSubject subject(dim);
 
-  LightEmitter emitter(Plain(Physical(0, 0, {}, {}), Id{.idx = 1}, 0, {}),
-                       LightSourceParams{.rawIllumination = Illumination{200}}, {});
+  LightEmitter emitter(Plain(Physical(0, 0, {}, {}), Id{.idx = 1}, 0, {}), {},
+                       LightSourceParams{.rawIllumination = Illumination{200}});
 
   subject.accessSubjectList({1, 1}).push_back(std::make_unique<LightEmitter>(emitter));
 

@@ -10,7 +10,7 @@ class MapLayerSubject : public MapLayerBase<LayerSubject> {
 public:
   MapLayerSubject(Dimension dimension) : MapLayerBase<LayerSubject>(dimension) {}
 
-  std::list<std::pair<Coordinates, const Subject::LightSourceAlt *>>
+  std::list<std::pair<Coordinates, const Subject::ExtLightSource *>>
   getActiveLightSources() const;
 
   const std::list<std::unique_ptr<Subject::Plain>> &
