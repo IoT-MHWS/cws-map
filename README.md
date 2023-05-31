@@ -75,4 +75,3 @@ cmake --build --preset conan-release --target=fix-clang-format
 
 ## TODO
 
-* [ ] Remove rtti
