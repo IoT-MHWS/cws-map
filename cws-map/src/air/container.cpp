@@ -89,7 +89,7 @@ void Container::normalizeTemperature() {
   Temperature temp;
   if (std::abs(totalEnergy) > 10e-14) {
     temp = Temperature{.value = totalEnergy / totalWC};
-  } else{
+  } else {
     temp = Temperature{.value = 0};
   }
 

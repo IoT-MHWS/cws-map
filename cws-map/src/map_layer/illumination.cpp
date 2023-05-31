@@ -17,7 +17,6 @@ int getScalarMultiplication(PII v1, PII v2) {
 
 int getDistanceSquare(PII v) { return v.first * v.first + v.second * v.second; }
 
-
 void calcForCell(MapLayerIllumination & layer, const MapLayerObstruction & obstruction,
                  Coordinates & src, Coordinates p) {
 
