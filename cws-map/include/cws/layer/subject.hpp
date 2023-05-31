@@ -14,7 +14,7 @@ public:
   LayerSubject() : Layer() {}
 
   LayerSubject(LayerSubject && obj) noexcept : Layer(std::move(obj)) {
-    std::swap(this->subjectList, obj.subjectList);
+    this->subjectList = std::move(obj.subjectList);
   }
 
   LayerSubject(const LayerSubject & obj) noexcept : Layer(obj) {
@@ -22,6 +22,33 @@ public:
     for (const auto & e : obj.subjectList) {
       subjectList.push_back(std::unique_ptr<Subject::Plain>(e->clone()));
     }
+  }
+
+  LayerSubject & operator=(LayerSubject && obj) noexcept {
+    if (this == &obj) {
+      return *this;
+    }
+
+    Layer::operator=(std::move(obj));
+
+    this->subjectList = std::move(obj.subjectList);
+
+    return *this;
+  }
+
+  LayerSubject & operator=(const LayerSubject & obj) noexcept {
+    if (this == &obj) {
+      return *this;
+    }
+
+    Layer::operator=(obj);
+
+    subjectList.clear();
+    for (const auto & e : obj.subjectList) {
+      subjectList.push_back(std::unique_ptr<Subject::Plain>(e->clone()));
+    }
+
+    return *this;
   }
 
   const std::list<std::unique_ptr<Subject::Plain>> & getSubjectList() const {

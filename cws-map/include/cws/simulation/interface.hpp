@@ -55,7 +55,7 @@ private:
   std::pair<std::unique_lock<std::mutex> &&, QueueUP<SubjectQuery> &>
   masterAccessQueries();
 
-  void masterSet(SimulationState state, std::shared_ptr<const SimulationMap> map);
+  void masterSet(const SimulationState & state, const SimulationMap & map);
 
 public:
   void run();

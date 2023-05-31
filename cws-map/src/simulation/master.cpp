@@ -37,11 +37,13 @@ void SimulationMaster::execute(std::stop_token stoken) {
     std::cout << "------------------------------------------" << std::endl;
 #endif
 
-    updateSimulationState();
-    updateSimulationMap();
+    updateState();
+    updateMap();
 
 #ifndef NDEBUG
-    std::cout << "master: " << state << std::endl;
+    std::cout << "master: " << state << std::endl
+              << "  curMap: " << currMap.get() << std::endl
+              << "  newMap: " << nextMap.get() << std::endl;
 #endif
 
     bool isStatusRunning = state.status == SimulationStatus::RUNNING;
@@ -49,33 +51,32 @@ void SimulationMaster::execute(std::stop_token stoken) {
     bool isSimTypeINF = state.type == SimulationType::INFINITE;
 
     if (isStatusRunning && (isSimTypeINF || isNotLastTick)) {
-      if (newMap)
+      if (mapsExist()) {
         notifySlaveReady();
-      state.currentTick += 1;// always updated even if map doesn't exist
-      if (newMap)
+
+        // set previous frame when current is becoming ready
+        interface.masterSet(state, *currMap);
+#ifndef NDEBUG
+        std::cout << "master->interface: state set" << std::endl
+                  << "  state: " << state << std::endl
+                  << "  map: " << &*currMap << std::endl;
+#endif
+
         waitSlaveProcess();
+      }
+      state.currentTick += 1;
     }
 
     if (!isSimTypeINF && state.currentTick == state.lastTick) {
       state.status = SimulationStatus::STOPPED;
     }
 
-#ifndef NDEBUG
-    std::cout << "master: " << std::endl
-              << "  curMap: " << curMap.get() << std::endl
-              << "  newMap: " << newMap.get() << std::endl;
-#endif
-
-    // Set current map as updated map
-    if (newMap) {
-      curMap = std::shared_ptr<SimulationMap>(newMap.release());
-    }
-
-    interface.masterSet(state, curMap);
+    prepareMapsNextIter();
 
 #ifndef NDEBUG
-    std::cout << "master: "
-              << "updated interface state" << std::endl;
+    std::cout << "master: map prepared" << std::endl
+              << "  curMap: " << currMap.get() << std::endl
+              << "  newMap: " << nextMap.get() << std::endl;
 #endif
 
     waitDurationExceeds(state, clockStart);
@@ -90,7 +91,7 @@ bool SimulationMaster::processStopRequest(const std::stop_token & stoken) {
   return requested;
 }
 
-void SimulationMaster::updateSimulationState() {
+void SimulationMaster::updateState() {
   SimulationStateIn stateIn = interface.masterGetState();
   if (stateIn.simType.isSet()) {
     state.type = stateIn.simType.get();
@@ -109,22 +110,18 @@ void SimulationMaster::updateSimulationState() {
   }
 }
 
-void SimulationMaster::updateSimulationMap() {
+void SimulationMaster::updateMap() {
   // to be synced with slave
   std::scoped_lock<std::mutex> lock(msMutex);
 
   Optional<Dimension> dimension = interface.masterGetDimension();
 
   if (dimension.isSet()) {
-    curMap.reset(new SimulationMap(dimension.get()));
-    newMap.reset();
-  } else {
-    if (curMap) {
-      newMap.reset(curMap->clone());
-    }
+    currMap.reset(new SimulationMap(dimension.get()));
+    nextMap.reset(new SimulationMap(dimension.get()));
   }
 
-  if (!curMap && !newMap) {
+  if (!mapsExist()) {
     return;
   }
 
@@ -132,18 +129,18 @@ void SimulationMaster::updateSimulationMap() {
 
   while (!queries.empty()) {
     const auto & query = queries.front();
-
-    if (newMap) {
-      newMap->setQuery(std::move(*query));
-    } else {
-      curMap->setQuery(std::move(*query));
-    }
-
+    nextMap->setQuery(std::move(*query));
     queries.pop();
-
 #ifndef NDEBUG
     std::cout << "master: update query processed." << std::endl;
 #endif
+  }
+}
+
+// makes current and next state map the same
+void SimulationMaster::prepareMapsNextIter() {
+  if (mapsExist()) {
+    *currMap = *nextMap;
   }
 }
 
@@ -173,3 +170,5 @@ void SimulationMaster::waitDurationExceeds(
 
   std::this_thread::sleep_for(waitTime);
 }
+
+bool SimulationMaster::mapsExist() { return currMap.get() && nextMap.get(); }

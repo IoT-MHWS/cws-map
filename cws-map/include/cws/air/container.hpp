@@ -21,13 +21,36 @@ private:
 public:
   Container() = default;
 
-  Container(Container && obj) noexcept { std::swap(this->airList, obj.airList); }
+  Container(Container && obj) noexcept { this->airList = std::move(obj.airList); }
 
   Container(const Container & obj) noexcept {
     airList.clear();
     for (const auto & e : obj.airList) {
       airList.push_back(PlainUPTR(e->clone()));
     }
+  }
+
+  Container & operator=(Container && obj) noexcept {
+    if (this == &obj) {
+      return *this;
+    }
+
+    this->airList = std::move(obj.airList);
+
+    return *this;
+  }
+
+  Container & operator=(const Container & obj) noexcept {
+    if (this == &obj) {
+      return *this;
+    }
+
+    airList.clear();
+    for (const auto & e : obj.airList) {
+      airList.push_back(PlainUPTR(e->clone()));
+    }
+
+    return *this;
   }
 
   const std::list<PlainUPTR> & getList() const;

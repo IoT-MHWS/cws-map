@@ -43,11 +43,13 @@ Optional<Dimension> SimulationInterface::masterGetDimension() {
   return prev;
 }
 
-void SimulationInterface::masterSet(SimulationState state,
-                                    std::shared_ptr<const SimulationMap> map) {
+void SimulationInterface::masterSet(const SimulationState & state,
+                                    const SimulationMap & map) {
   std::unique_lock lock(out.mutex);
   this->out.state = state;
-  this->out.map = map;
+  // just copy for each tick
+  // TODO: may do it when input requests are waiting, but it can make them blocked
+  this->out.map = std::make_shared<SimulationMap>(map);
 }
 
 std::pair<std::unique_lock<std::mutex> &&, SimulationInterface::QueueUP<SubjectQuery> &>

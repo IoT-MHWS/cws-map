@@ -46,8 +46,8 @@ class SimulationMaster {
   std::condition_variable cv;
   std::mutex msMutex;
 
-  std::shared_ptr<SimulationMap> curMap;
-  std::unique_ptr<SimulationMap> newMap;
+  std::unique_ptr<SimulationMap> currMap;
+  std::unique_ptr<SimulationMap> nextMap;
 
   bool runReady = false;
   bool runProcessed = false;
@@ -61,13 +61,16 @@ public:
   void wait();
   void exit();
 
+  bool mapsExist();
+
 private:
   void execute(std::stop_token stoken);
 
   bool processStopRequest(const std::stop_token & stoken);
 
-  void updateSimulationState();
-  void updateSimulationMap();
+  void updateState();
+  void updateMap();
+  void prepareMapsNextIter();
   void notifySlaveReady();
   void waitSlaveProcess();
   void waitDurationExceeds(
