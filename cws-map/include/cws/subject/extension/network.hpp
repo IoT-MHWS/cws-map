@@ -14,8 +14,8 @@ namespace Subject {
 
 class ExtTransmitter {
 public:
-  virtual void transmitPackets(
-      std::list<std::unique_ptr<Network::Packet>> && packetList) = 0;
+  virtual void
+  transmitPackets(std::list<std::unique_ptr<Network::Packet>> && packetList) = 0;
 
   virtual std::list<std::unique_ptr<Network::Container>>
   collectNetworkContainers(Network::Type type) const = 0;

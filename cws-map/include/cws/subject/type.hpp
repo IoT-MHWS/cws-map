@@ -12,6 +12,7 @@ enum class Type {
   NETWORK_DEVICE = 6,
   INFRARED_CAMERA = 7,
   LIGHT_CAMERA = 8,
+  TURNABLE = 9,
 };
 
 }
