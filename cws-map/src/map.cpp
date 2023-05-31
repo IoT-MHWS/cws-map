@@ -12,7 +12,7 @@
  *
  * Clear wireless network from previous frame == done
  * Collect packages from subjects == done
- * Update network (spread packets)
+ * Update network (spread containers where packets are stored)
  * Place packages in subjects == done
  */
 void Map::next(const Map & curMap) {
@@ -25,9 +25,9 @@ void Map::next(const Map & curMap) {
                                               layers.subjectLayer);
   // clear network from previous state
   layers.networkWireless.clearNetwork();
-  layers.networkWireless.collectTransmittablePackages(layers.subjectLayer);
+  layers.networkWireless.collectTransmittableContainers(layers.subjectLayer);
   layers.networkWireless.updateNetwork(layers.obstructionLayer);
-  layers.subjectLayer.receivePackets(layers.networkWireless);
+  layers.subjectLayer.receiveContainers(layers.networkWireless);
   // like cameras and so on
   layers.subjectLayer.setupSubjects(layers.obstructionLayer, layers.illuminationLayer);
 }

@@ -4,7 +4,7 @@
 #include <utility>
 
 template<typename T>
-struct Optional {
+struct Optional final {
 private:
   T _value;
   bool _set = false;
@@ -27,7 +27,7 @@ public:
   void reset() { this->_set = false; }
 };
 
-struct SimulationStateIn {
+struct SimulationStateIn final {
   Optional<SimulationType> simType;
   Optional<SimulationStatus> simStatus;
   Optional<std::size_t> currentTick, lastTick;

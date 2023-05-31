@@ -1,5 +1,3 @@
 #include "gtest/gtest.h"
 
-TEST(MapLayersNetworkWireless, updateNetwork) {
-
-}
+TEST(MapLayersNetworkWireless, updateNetwork) {}

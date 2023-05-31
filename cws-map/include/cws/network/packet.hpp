@@ -2,20 +2,19 @@
 
 #include <vector>
 
-using byte = unsigned char;
-
 namespace Network {
+
+using byte = unsigned char;
 
 class Packet {
   std::vector<byte> content_;
 
 public:
-  Packet(std::vector<byte> && content) : content_(std::move(content)) {}
+  Packet(std::vector<byte> && content) : content_(content) {}
 
-  virtual Packet * clone() const { return new Packet(*this); }
+  virtual ~Packet() = default;
 
-  const std::vector<byte> & getContent() const { return content_; }
-  const std::size_t getSize() const { return content_.size(); }
+  virtual Packet * clone() { return new Packet(*this); }
 };
 
-}// namespace Network
+};// namespace Network

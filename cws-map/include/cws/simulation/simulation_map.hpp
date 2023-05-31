@@ -10,7 +10,7 @@ enum SubjectQueryType {
   SELECT = 4
 };
 
-struct SubjectQuery {
+struct SubjectQuery final {
   SubjectQueryType queryType;
   Coordinates coordinates;
   std::unique_ptr<Subject::Plain> subject;

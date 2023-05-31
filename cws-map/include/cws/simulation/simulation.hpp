@@ -12,7 +12,7 @@
 class SimulationMaster;
 class SimulationInterface;
 
-class SimulationSlave {
+class SimulationSlave final {
   SimulationMaster & master;
   std::thread worker;
 
@@ -32,7 +32,7 @@ private:
 };
 
 /* Manages map and passed it to interface */
-class SimulationMaster {
+class SimulationMaster final {
   friend SimulationSlave;
 
   SimulationState state;

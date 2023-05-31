@@ -15,7 +15,7 @@
  * Just a normal cell that contains element in it
  */
 template<Derived<Layer> T>
-class CellLayer {
+class CellLayer final {
   T element_;
 
 public:
@@ -51,6 +51,8 @@ public:
         field_(std::vector<std::vector<CellLayer<T>>>(
             dimension.width,
             std::vector<CellLayer<T>>(dimension.height, CellLayer<T>(base)))) {}
+
+  virtual ~MapLayer() = default;
 
   Dimension getDimension() const { return dimension_; }
 

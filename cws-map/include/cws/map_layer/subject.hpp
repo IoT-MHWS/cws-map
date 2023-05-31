@@ -30,7 +30,7 @@ public:
   void setupSubjects(const MapLayerObstruction & obstructionLayer,
                      const MapLayerIllumination & illuminationLayer);
 
-  void receivePackets(const MapLayerNetwork & networkLayer);
+  void receiveContainers(const MapLayerNetwork & networkLayer);
 
 private:
   void setupSubject(Subject::Plain & subject,

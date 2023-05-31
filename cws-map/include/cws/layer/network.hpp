@@ -1,28 +1,28 @@
 #pragma once
 
 #include "cws/layer/base.hpp"
-#include "cws/network/packet.hpp"
+#include "cws/network/container.hpp"
 #include <list>
 #include <memory>
 
 class LayerNetwork : public Layer {
 public:
-  using PacketUPTR = std::unique_ptr<Network::Packet>;
+  using ContainerUPTR = std::unique_ptr<Network::Container>;
 
 private:
-  std::list<PacketUPTR> packetList;
+  std::list<ContainerUPTR> containerList;
 
 public:
   LayerNetwork() = default;
 
   LayerNetwork(LayerNetwork && obj) noexcept : Layer(std::move(obj)) {
-    this->packetList = std::move(obj.packetList);
+    this->containerList = std::move(obj.containerList);
   }
 
   LayerNetwork(const LayerNetwork & obj) noexcept : Layer(obj) {
-    packetList.clear();
-    for (const auto & e : obj.packetList) {
-      packetList.push_back(std::unique_ptr<Network::Packet>(e->clone()));
+    containerList.clear();
+    for (const auto & e : obj.containerList) {
+      containerList.push_back(std::unique_ptr<Network::Container>(e->clone()));
     }
   }
 
@@ -33,7 +33,7 @@ public:
 
     Layer::operator=(std::move(obj));
 
-    this->packetList = std::move(obj.packetList);
+    this->containerList = std::move(obj.containerList);
 
     return *this;
   }
@@ -45,15 +45,15 @@ public:
 
     Layer::operator=(obj);
 
-    packetList.clear();
-    for (const auto & e : obj.packetList) {
-      packetList.push_back(std::unique_ptr<Network::Packet>(e->clone()));
+    containerList.clear();
+    for (const auto & e : obj.containerList) {
+      containerList.push_back(std::unique_ptr<Network::Container>(e->clone()));
     }
 
     return *this;
   }
 
-  const std::list<PacketUPTR> & getPacketList() const { return packetList; }
+  const std::list<ContainerUPTR> & getContainerList() const { return containerList; }
 
-  std::list<PacketUPTR> & getPacketList() { return packetList; }
+  std::list<ContainerUPTR> & getContainerList() { return containerList; }
 };

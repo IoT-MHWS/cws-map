@@ -10,7 +10,7 @@
 
 class SimulationMaster;
 
-class SimulationInterface {
+class SimulationInterface final {
   friend SimulationMaster;
 
   template<class T>

@@ -6,7 +6,7 @@
 /*
  * Coordinates of a cell on the map
  */
-struct Coordinates {
+struct Coordinates final {
   int x;
   int y;
 
@@ -15,7 +15,7 @@ struct Coordinates {
   friend bool operator==(const Coordinates & lhs, const Coordinates & rhs);
 };
 
-struct Dimension {
+struct Dimension final {
   int width;
   int height;
 
@@ -23,7 +23,7 @@ struct Dimension {
   friend bool operator==(const Dimension & lhs, const Dimension & rhs);
 };
 
-struct Temperature {
+struct Temperature final {
   double value;
 
   double get() const { return value; }
@@ -33,7 +33,7 @@ struct Temperature {
   friend bool operator==(const Temperature & lhs, const Temperature & rhs);
 };
 
-struct Obstruction {
+struct Obstruction final {
   double value;
 
   double get() const { return value; }
@@ -44,7 +44,7 @@ struct Obstruction {
   friend Obstruction operator*(const Obstruction & lhs, const Obstruction & rhs);
 };
 
-struct Illumination {
+struct Illumination final {
   int value;
 
   int get() const { return value; }

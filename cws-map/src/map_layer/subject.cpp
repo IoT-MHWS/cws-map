@@ -72,7 +72,7 @@ void MapLayerSubject::setupSubjects(const MapLayerObstruction & obstructionLayer
   }
 }
 
-void MapLayerSubject::receivePackets(const MapLayerNetwork & networkLayer) {
+void MapLayerSubject::receiveContainers(const MapLayerNetwork & networkLayer) {
   Dimension dim = getDimension();
 
   Coordinates c;
@@ -81,8 +81,8 @@ void MapLayerSubject::receivePackets(const MapLayerNetwork & networkLayer) {
       auto & cellSubs = this->accessCell(c).accessElement().accessSubjectList();
       for (auto & sub : cellSubs) {
         if (auto netSub = dynamic_cast<Subject::ExtReceiver *>(sub.get())) {
-          netSub->placeNetworkPackets(networkLayer.getReceivablePackages(c),
-                                      networkLayer.getNetworkType());
+          netSub->placeNetworkContainers(networkLayer.getReceivableContainers(c),
+                                         networkLayer.getNetworkType());
         }
       }
     }

@@ -1,3 +1,6 @@
 #pragma once
 
-class Layer {};
+class Layer {
+public:
+  virtual ~Layer() = default;
+};

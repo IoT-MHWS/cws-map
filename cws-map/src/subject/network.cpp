@@ -2,47 +2,47 @@
 
 namespace Subject {
 
-void NetworkDevice::transmitPackets(
-    std::list<std::unique_ptr<Network::Packet>> && packetList) {
+using namespace Network;
 
-  for (auto && packet : packetList) {
-    transmitBuffer_.push_back(std::move(packet));
+void NetworkDevice::transmitPackets(
+    std::list<std::unique_ptr<Packet>> && containerList) {
+
+  for (auto && container : containerList) {
+    transmitPackets_.push_back(std::move(container));
   }
 }
 
-// just copy
-std::list<std::unique_ptr<Network::Packet>>
-NetworkDevice::collectNetworkPackets(Network::Type type) const {
-  std::list<std::unique_ptr<Network::Packet>> result;
+void NetworkDevice::clearTransmitBuffer() { transmitPackets_.clear(); }
 
-  if (type == networkType_) {
-    for (const auto & packet : transmitBuffer_) {
-      result.push_back(std::unique_ptr<Network::Packet>(packet->clone()));
+const std::list<std::unique_ptr<Packet>> & NetworkDevice::getReceivedPackets() const {
+  return receivedPackets_;
+}
+
+void NetworkDevice::clearReceiveBuffer() { receivedPackets_.clear(); }
+
+std::list<std::unique_ptr<Container>>
+WirelessNetworkDevice::collectNetworkContainers(Network::Type type) const {
+  std::list<std::unique_ptr<Container>> result;
+
+  if (type == Network::Type::WIRELESS) {
+    for (const auto & packet : transmitPackets_) {
+      result.push_back(std::make_unique<WirelessContainer>(
+          std::unique_ptr<Packet>(packet->clone()), getTransmitPower()));
     }
   }
 
   return result;
 }
 
-void NetworkDevice::clearTransmitBuffer() { transmitBuffer_.clear(); }
+void WirelessNetworkDevice::placeNetworkContainers(
+    const std::list<std::unique_ptr<Container>> & containerList, Network::Type type) {
 
-const std::list<std::unique_ptr<Network::Packet>> &
-NetworkDevice::getReceivedPackets() const {
-  return receiveBuffer_;
-}
-
-// just copy
-void NetworkDevice::placeNetworkPackets(
-    const std::list<std::unique_ptr<Network::Packet>> & packetList,
-    Network::Type type) {
-
-  if (type == networkType_) {
-    for (const auto & packet : packetList) {
-      receiveBuffer_.push_back(std::unique_ptr<Network::Packet>(packet->clone()));
+  if (type == Network::Type::WIRELESS) {
+    for (const auto & container : containerList) {
+      receivedPackets_.push_back(
+          std::unique_ptr<Packet>(container->getPacket()->clone()));
     }
   }
 }
-
-void NetworkDevice::clearReceiveBuffer() { receiveBuffer_.clear(); }
 
 };// namespace Subject

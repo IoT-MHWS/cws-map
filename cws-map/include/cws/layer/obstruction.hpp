@@ -16,5 +16,7 @@ public:
   void setAirObstruction(Obstruction obstruction) { airObstruction_ = obstruction; }
 
   Obstruction getWirelessObstruction() const { return wirelessObstruction_; }
-  void setWirelessObstruction(Obstruction obstruction) { wirelessObstruction_ = obstruction; }
+  void setWirelessObstruction(Obstruction obstruction) {
+    wirelessObstruction_ = obstruction;
+  }
 };

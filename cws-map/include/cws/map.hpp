@@ -7,7 +7,7 @@
 #include "cws/map_layer/network.hpp"
 #include "cws/map_layer/subject.hpp"
 
-struct Layers {
+struct Layers final {
 public:
   MapLayerSubject subjectLayer;
   MapLayerObstruction obstructionLayer;
@@ -31,6 +31,8 @@ protected:
 
 public:
   explicit Map(Dimension dimension) : layers(dimension), dimension(dimension) {}
+
+  virtual ~Map() = default;
 
   const Layers & getLayers() const { return layers; }
 
