@@ -38,8 +38,12 @@ public:
       : Container(std::move(packet)), signalPower_(signalPower) {}
 
   WirelessContainer * clone() const override { return new WirelessContainer(*this); }
+  WirelessContainer * cloneWithSignal(double signalPower) const;
 
   double getSignalPower() const { return signalPower_; }
+
+protected:
+  void setSignalPower(double signalPower) { signalPower_ = signalPower; }
 };
 
 }// namespace Network
