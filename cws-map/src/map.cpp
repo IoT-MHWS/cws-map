@@ -12,8 +12,10 @@
  *
  * Clear wireless network from previous frame == done
  * Collect packages from subjects == done
- * Update network (spread containers where packets are stored)
+ * Update network (spread containers where packets are stored) == done
  * Place packages in subjects == done
+ *
+ * Setup subjects (cameras and so on) == done
  */
 void Map::next(const Map & curMap) {
   layers.subjectLayer.nextTemperature();

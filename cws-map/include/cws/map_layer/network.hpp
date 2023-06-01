@@ -36,7 +36,7 @@ public:
   virtual void collectTransmittableContainers(const MapLayerSubject & layerSubject);
   virtual void updateNetwork(const MapLayerObstruction & obstruction) = 0;
 
-private:
+protected:
   std::list<std::unique_ptr<Network::Container>> &
   getTransmittableContainers(Coordinates c) {
     return layerTransmittable_.accessCell(c).accessElement().getContainerList();
@@ -54,4 +54,7 @@ public:
       : MapLayerNetwork(dimension, Network::Type::WIRELESS) {}
 
   void updateNetwork(const MapLayerObstruction & obstruction) override;
+
+private:
+  void updateNetworkCell(const MapLayerObstruction & obstruction, Coordinates c);
 };

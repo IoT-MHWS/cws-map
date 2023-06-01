@@ -1,20 +1,21 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 namespace Network {
 
-using byte = unsigned char;
-
 class Packet {
-  std::vector<byte> content_;
+  std::vector<std::byte> content_;
 
 public:
-  Packet(std::vector<byte> && content) : content_(content) {}
+  Packet(std::vector<std::byte> && content) : content_(content) {}
 
   virtual ~Packet() = default;
 
   virtual Packet * clone() { return new Packet(*this); }
+
+  const std::vector<std::byte> & getContent() const { return content_; }
 };
 
 };// namespace Network
