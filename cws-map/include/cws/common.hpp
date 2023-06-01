@@ -56,3 +56,9 @@ struct Illumination final {
 };
 
 std::list<Coordinates> getNeighbours(Dimension dim, Coordinates p);
+
+std::pair<int, int> getVector(Coordinates p1, Coordinates p2);
+
+int getScalarMultiplication(std::pair<int, int> v1, std::pair<int, int> v2);
+
+int getDistanceSquare(std::pair<int, int> v);

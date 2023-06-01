@@ -40,16 +40,16 @@ void MapLayerSubject::nextTemperature() {
   }
 }
 
-void MapLayerSubject::setupSubject(Subject::Plain & subject,
+void MapLayerSubject::setupSubject(Subject::Plain & subject, Coordinates c,
                                    const MapLayerObstruction & obstructionLayer,
                                    const MapLayerIllumination & illuminationLayer) {
   using namespace Subject;
 
   switch (subject.getSubjectId().type) {
   case Type::INFRARED_CAMERA:
-    return static_cast<InfraredCamera &>(subject).setup(*this, obstructionLayer);
+    return static_cast<InfraredCamera &>(subject).setup(c, *this, obstructionLayer);
   case Type::LIGHT_CAMERA:
-    return static_cast<LightCamera &>(subject).setup(*this, obstructionLayer,
+    return static_cast<LightCamera &>(subject).setup(c, *this, obstructionLayer,
                                                      illuminationLayer);
   default:
     break;
@@ -66,7 +66,7 @@ void MapLayerSubject::setupSubjects(const MapLayerObstruction & obstructionLayer
     for (c.y = 0; c.y < dim.height; ++c.y) {
       auto & cellSubs = this->accessCell(c).accessElement().accessSubjectList();
       for (auto & sub : cellSubs) {
-        setupSubject(*sub, obstructionLayer, illuminationLayer);
+        setupSubject(*sub, c, obstructionLayer, illuminationLayer);
       }
     }
   }

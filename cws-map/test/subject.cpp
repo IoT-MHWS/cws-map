@@ -56,27 +56,107 @@ TEST(Subject, updateTemperature) {
   EXPECT_EQ(after, afterOff);
 }
 
-TEST(SubjectInfraredCamera, getVisibleSubjects) {
+TEST(SubjectInfraredCamera, getVisibleSubjectsUSE) {
   using namespace Subject;
 
-  Dimension dim{4, 4};
+  Dimension dim{8, 8};
 
   std::vector<std::vector<double>> obs_layer{
-      {0.2, 0.2, 0.4, 0.1},
+      {1., 0.2, 0.4, 0.1},
       {0.2, 0.2, 0.0, 0.1},
-      {0.2, 0.2, 0.0, 0.1},
+      {0.2, 0.8, 0.0, 0.1},
       {0.2, 0.0, 0.4, 0.5},
   };
   MapLayerObstruction obstruction(dim);
+
+  std::vector<std::vector<int>> illum_layer{
+      {200, 100, 50, 100},
+      {150, 200, 200, 100},
+      {150, 50, 100, 100},
+      {150, 100, 150, 150},
+  };
+  MapLayerIllumination illumination(dim);
+
   Coordinates c;
-  for (c.x = 0; c.x < dim.width; ++c.x)
-    for (c.y = 0; c.y < dim.height; ++c.y)
-      obstruction.setLightObstruction(c, Obstruction{obs_layer[c.x][c.y]});
+  for (c.x = 0; c.x < dim.width; ++c.x) {
+    for (c.y = 0; c.y < dim.height; ++c.y) {
+      Obstruction obs;
+      Illumination ill;
+      if (c.x < 4 && c.y < 4) {
+        obs = Obstruction{obs_layer[c.x][c.y]};
+        ill = Illumination{illum_layer[c.x][c.y]};
+      } else {
+        obs = {0};
+        ill = {0};
+      }
+      obstruction.setLightObstruction(c, obs);
+      illumination.setIllumination(c, ill);
+    }
+  }
 
   MapLayerSubject layerSubject(dim);
 
   layerSubject.accessSubjectList({1, 1}).push_back(
       std::make_unique<InfraredCamera>(Plain(Physical(), 1, 0, {}), 100, 20));
+
+  layerSubject.setupSubjects(obstruction, illumination);
+
+  auto camera =
+      static_cast<InfraredCamera *>(layerSubject.getSubjectList({1, 1}).begin()->get());
+
+  auto visSubs = camera->getVisibleSubjects();
 }
 
-TEST(SubjectLightCamera, getVisibleSubjects) { using namespace Subject; }
+TEST(SubjectLightCamera, getVisibleSubjectsUSE) {
+  using namespace Subject;
+
+  Dimension dim{8, 8};
+
+  std::vector<std::vector<double>> obs_layer{
+      {1., 0.2, 0.4, 0.1},
+      {0.2, 0.2, 0.0, 0.1},
+      {0.2, 0.8, 0.0, 0.1},
+      {0.2, 0.0, 0.4, 0.5},
+  };
+  MapLayerObstruction obstruction(dim);
+
+  std::vector<std::vector<int>> illum_layer{
+      {200, 100, 50, 100},
+      {150, 200, 200, 100},
+      {150, 50, 100, 100},
+      {150, 100, 150, 150},
+  };
+  MapLayerIllumination illumination(dim);
+
+  Coordinates c;
+  for (c.x = 0; c.x < dim.width; ++c.x) {
+    for (c.y = 0; c.y < dim.height; ++c.y) {
+      Obstruction obs;
+      Illumination ill;
+      if (c.x < 4 && c.y < 4) {
+        obs = Obstruction{obs_layer[c.x][c.y]};
+        ill = Illumination{illum_layer[c.x][c.y]};
+      } else {
+        obs = {0};
+        ill = {0};
+      }
+      obstruction.setLightObstruction(c, obs);
+      illumination.setIllumination(c, ill);
+    }
+  }
+
+  MapLayerSubject layerSubject(dim);
+
+  layerSubject.accessSubjectList({1, 1}).push_back(
+      std::make_unique<LightCamera>(Plain(Physical(), 1, 0, {}), 100, 20, 100));
+
+  layerSubject.setupSubjects(obstruction, illumination);
+
+  auto camera =
+      static_cast<LightCamera *>(layerSubject.getSubjectList({1, 1}).begin()->get());
+
+  auto visSubs = camera->getVisibleSubjects();
+  for (const auto & [coord, sub] : visSubs) {
+    std::cout << coord << " " << (int)sub.getSubjectId().type << std::endl;
+  }
+}

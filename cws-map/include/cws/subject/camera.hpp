@@ -12,6 +12,8 @@ public:
   using PCoordPlain = std::pair<Coordinates, Plain &>;
 
 private:
+  Coordinates cameraCoord_;
+  const MapLayerSubject * layerSubject_;
   double power_;
   double powerThreshold_;
 
@@ -20,11 +22,20 @@ public:
       : Plain(std::move(plain)), power_(power), powerThreshold_(powerThreshold) {}
 
   BaseCamera * clone() const override = 0;
+
+  Coordinates getCameraCoords() const { return cameraCoord_; }
+  const MapLayerSubject * getLayerSubject() const { return layerSubject_; }
+  double getPower() const { return power_; }
+  double getPowerThreshold() const { return powerThreshold_; }
+
+  void setup(Coordinates cameraCoord, const MapLayerSubject & layerSubject) {
+    cameraCoord_ = cameraCoord;
+    layerSubject_ = &layerSubject;
+  }
 };
 
 class InfraredCamera : public BaseCamera {
 private:
-  const MapLayerSubject * layerSubject_;
   const MapLayerObstruction * layerObstruction_;
 
 public:
@@ -36,9 +47,11 @@ public:
 
   InfraredCamera * clone() const override { return new InfraredCamera(*this); }
 
-  void setup(const MapLayerSubject & layerSubject,
+  const MapLayerObstruction * getLayerObstruction() const { return layerObstruction_; }
+
+  void setup(Coordinates cameraCoord, const MapLayerSubject & layerSubject,
              const MapLayerObstruction & layerObstruction) {
-    layerSubject_ = &layerSubject;
+    BaseCamera::setup(cameraCoord, layerSubject);
     layerObstruction_ = &layerObstruction;
   }
 
@@ -47,7 +60,6 @@ public:
 
 class LightCamera : public BaseCamera {
 private:
-  const MapLayerSubject * layerSubject_;
   const MapLayerObstruction * layerObstruction_;
   const MapLayerIllumination * layerIllumination_;
 
@@ -64,10 +76,16 @@ public:
 
   LightCamera * clone() const override { return new LightCamera(*this); }
 
-  void setup(const MapLayerSubject & layerSubject,
+  const MapLayerObstruction * getLayerObstruction() const { return layerObstruction_; }
+  const MapLayerIllumination * getLayerIllumination() const {
+    return layerIllumination_;
+  }
+  double getLightThreshold() const { return lightThreshold_; }
+
+  void setup(Coordinates cameraCoord, const MapLayerSubject & layerSubject,
              const MapLayerObstruction & layerObstruction,
              const MapLayerIllumination & layerIllumination) {
-    layerSubject_ = &layerSubject;
+    BaseCamera::setup(cameraCoord, layerSubject);
     layerObstruction_ = &layerObstruction;
     layerIllumination_ = &layerIllumination;
   }

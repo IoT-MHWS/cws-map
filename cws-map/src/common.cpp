@@ -88,3 +88,15 @@ std::list<Coordinates> getNeighbours(Dimension dim, Coordinates p) {
   }
   return n;
 }
+
+std::pair<int, int> getVector(Coordinates p1, Coordinates p2) {
+  return std::make_pair(p2.x - p1.x, p2.y - p1.y);
+}
+
+int getScalarMultiplication(std::pair<int, int> v1, std::pair<int, int> v2) {
+  return v1.first * v2.first + v1.second * v2.second;
+}
+
+int getDistanceSquare(std::pair<int, int> v) {
+  return v.first * v.first + v.second * v.second;
+}

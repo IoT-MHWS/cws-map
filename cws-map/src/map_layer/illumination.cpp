@@ -5,18 +5,6 @@
 
 static Illumination ILLUMINATION_DEFAULT = {.value = -1};
 
-using PII = std::pair<int, int>;
-
-PII getVector(Coordinates p1, Coordinates p2) {
-  return std::make_pair(p2.x - p1.x, p2.y - p1.y);
-}
-
-int getScalarMultiplication(PII v1, PII v2) {
-  return v1.first * v2.first + v1.second * v2.second;
-}
-
-int getDistanceSquare(PII v) { return v.first * v.first + v.second * v.second; }
-
 void calcForCell(MapLayerIllumination & layer, const MapLayerObstruction & obstruction,
                  Coordinates & src, Coordinates p) {
 

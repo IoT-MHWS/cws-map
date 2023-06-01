@@ -33,7 +33,7 @@ public:
   void receiveContainers(const MapLayerNetwork & networkLayer);
 
 private:
-  void setupSubject(Subject::Plain & subject,
+  void setupSubject(Subject::Plain & subject, Coordinates c,
                     const MapLayerObstruction & obstructionLayer,
                     const MapLayerIllumination & illuminationLayer);
 };
