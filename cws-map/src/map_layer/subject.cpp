@@ -1,7 +1,9 @@
 #include "cws/map_layer/subject.hpp"
+#include "cws/map_layer/air.hpp"
 #include "cws/map_layer/network.hpp"
 #include "cws/subject/camera.hpp"
 #include "cws/subject/extension/temp_source.hpp"
+#include "cws/subject/sensor.hpp"
 
 using namespace Subject;
 
@@ -41,23 +43,41 @@ void MapLayerSubject::nextTemperature() {
 }
 
 void MapLayerSubject::setupSubject(Subject::Plain & subject, Coordinates c,
+                                   const MapLayerAir & airLayer,
                                    const MapLayerObstruction & obstructionLayer,
                                    const MapLayerIllumination & illuminationLayer) {
   using namespace Subject;
 
   switch (subject.getSubjectId().type) {
-  case Type::INFRARED_CAMERA:
-    return static_cast<InfraredCamera &>(subject).setup(c, *this, obstructionLayer);
-  case Type::LIGHT_CAMERA:
+  case Type::INFRARED_CAMERA: {
+    static_cast<InfraredCamera &>(subject).setup(c, *this, obstructionLayer);
+    break;
+  }
+  case Type::LIGHT_CAMERA: {
     return static_cast<LightCamera &>(subject).setup(c, *this, obstructionLayer,
                                                      illuminationLayer);
+    break;
+  }
+  case Type::AIR_TEMPERATURE_SENSOR: {
+    const auto & airContainer = airLayer.getAirContainer(c);
+    if (!airContainer.empty()) {
+      static_cast<SensorAirTemperature &>(subject).setup(airContainer.getTemperature());
+    }
+    break;
+  }
+  case Type::ILLUMINATION_SENSOR: {
+    static_cast<SensorIllumination &>(subject).setup(
+        illuminationLayer.getIllumination(c));
+    break;
+  }
   default:
     break;
   }
 }
 
 // Setup complex devices to be ready to process user requests
-void MapLayerSubject::setupSubjects(const MapLayerObstruction & obstructionLayer,
+void MapLayerSubject::setupSubjects(const MapLayerAir & airLayer,
+                                    const MapLayerObstruction & obstructionLayer,
                                     const MapLayerIllumination & illuminationLayer) {
   Dimension dim = getDimension();
 
@@ -66,7 +86,7 @@ void MapLayerSubject::setupSubjects(const MapLayerObstruction & obstructionLayer
     for (c.y = 0; c.y < dim.height; ++c.y) {
       auto & cellSubs = this->accessCell(c).accessElement().accessSubjectList();
       for (auto & sub : cellSubs) {
-        setupSubject(*sub, c, obstructionLayer, illuminationLayer);
+        setupSubject(*sub, c, airLayer, obstructionLayer, illuminationLayer);
       }
     }
   }

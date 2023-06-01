@@ -6,6 +6,7 @@
 class MapLayerNetwork;
 class MapLayerObstruction;
 class MapLayerIllumination;
+class MapLayerAir;
 
 /*
  * Extended logic for subject layer
@@ -27,13 +28,15 @@ public:
   }
 
   void nextTemperature();
-  void setupSubjects(const MapLayerObstruction & obstructionLayer,
+  void setupSubjects(const MapLayerAir & airLayer,
+                     const MapLayerObstruction & obstructionLayer,
                      const MapLayerIllumination & illuminationLayer);
 
   void receiveContainers(const MapLayerNetwork & networkLayer);
 
 private:
   void setupSubject(Subject::Plain & subject, Coordinates c,
+                    const MapLayerAir & airLayer,
                     const MapLayerObstruction & obstructionLayer,
                     const MapLayerIllumination & illuminationLayer);
 };

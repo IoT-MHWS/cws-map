@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#include "cws/map_layer/air.hpp"
 #include "cws/map_layer/subject.hpp"
 #include "cws/physical.hpp"
 #include "cws/subject/camera.hpp"
@@ -99,7 +100,9 @@ TEST(SubjectInfraredCamera, getVisibleSubjectsUSE) {
   layerSubject.accessSubjectList({1, 1}).push_back(
       std::make_unique<InfraredCamera>(Plain(Physical(), 1, 0, {}), 100, 20));
 
-  layerSubject.setupSubjects(obstruction, illumination);
+  MapLayerAir airLayer(dim);
+
+  layerSubject.setupSubjects(airLayer, obstruction, illumination);
 
   auto camera =
       static_cast<InfraredCamera *>(layerSubject.getSubjectList({1, 1}).begin()->get());
@@ -150,7 +153,9 @@ TEST(SubjectLightCamera, getVisibleSubjectsUSE) {
   layerSubject.accessSubjectList({1, 1}).push_back(
       std::make_unique<LightCamera>(Plain(Physical(), 1, 0, {}), 100, 20, 100));
 
-  layerSubject.setupSubjects(obstruction, illumination);
+  MapLayerAir layerAir(dim);
+
+  layerSubject.setupSubjects(layerAir, obstruction, illumination);
 
   auto camera =
       static_cast<LightCamera *>(layerSubject.getSubjectList({1, 1}).begin()->get());
