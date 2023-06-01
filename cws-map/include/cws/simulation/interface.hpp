@@ -59,6 +59,7 @@ private:
   masterAccessQueries();
 
   void masterSet(const SimulationState & state, const SimulationMap * map);
+  void masterSet(const SimulationState & state);
 
 public:
   void run();

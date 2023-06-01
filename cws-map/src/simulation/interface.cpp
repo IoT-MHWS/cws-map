@@ -59,6 +59,12 @@ void SimulationInterface::masterSet(const SimulationState & state,
   }
 }
 
+void SimulationInterface::masterSet(const SimulationState & state) {
+  std::unique_lock lock(out.mutex);
+
+  this->out.state = state;
+}
+
 std::pair<std::unique_lock<std::mutex> &&, SimulationInterface::QueueUP<SubjectQuery> &>
 SimulationInterface::masterAccessQueries() {
   std::unique_lock lock(in.queueMutex);

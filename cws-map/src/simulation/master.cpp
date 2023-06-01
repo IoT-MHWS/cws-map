@@ -38,7 +38,6 @@ void SimulationMaster::execute(std::stop_token stoken) {
 #endif
 
     updateState();
-    updateMap();
 
 #ifndef NDEBUG
     std::cout << "master: " << state << std::endl
@@ -52,33 +51,44 @@ void SimulationMaster::execute(std::stop_token stoken) {
     bool isRunning = isStatusRunning && (isSimTypeINF || isNotLastTick);
     bool doSlave = isRunning && mapsExist();
 
+    if (isRunning) {
+      updateMap();
+    }
+
     if (doSlave) {
       notifySlaveReady();
     }
 
-    {
-      // set previous frame when current is becoming ready
+    if (isRunning) {
       interface.masterSet(state, currMap.get());
 #ifndef NDEBUG
       std::cout << "master->interface: state set" << std::endl
                 << "  state: " << state << std::endl
                 << "  map: " << &*currMap << std::endl;
 #endif
+    } else {
+      interface.masterSet(state);
+#ifndef NDEBUG
+      std::cout << "master->interface: state set" << std::endl
+                << "  state: " << state << std::endl;
+#endif
+    }
 
-      if (isRunning) {
-        state.currentTick += 1;
-      }
+    if (isRunning) {
+      state.currentTick += 1;
+    }
 
-      if (!isSimTypeINF && state.currentTick == state.lastTick) {
-        state.status = SimulationStatus::STOPPED;
-      }
+    if (!isSimTypeINF && state.currentTick == state.lastTick) {
+      state.status = SimulationStatus::STOPPED;
     }
 
     if (doSlave) {
       waitSlaveProcess();
     }
 
-    prepareMapsNextIter();
+    if (isRunning) {
+      prepareMapsNextIter();
+    }
 
 #ifndef NDEBUG
     std::cout << "master: map prepared" << std::endl
