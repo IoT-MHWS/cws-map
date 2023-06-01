@@ -13,9 +13,9 @@ TEST(MapLayerObstruction, updateAirObstruction) {
       layerSubject.accessCell({0, 0}).accessElement().accessSubjectList();
 
   subjectList.emplace_back(std::make_unique<Subject::Plain>(
-      Physical(10, 1000, {60}, {}), Subject::Id{.idx = 1}, 0.40, Obstruction{0.40}));
+      Physical(10, 1000, {60}, {}), 1, 0.40, Obstruction{0.40}));
   subjectList.emplace_back(std::make_unique<Subject::Plain>(
-      Physical(10, 1000, {60}, {}), Subject::Id{.idx = 1}, 0.60, Obstruction{0.40}));
+      Physical(10, 1000, {60}, {}), 1, 0.60, Obstruction{0.40}));
 
   obstruction.updateAirObstruction(layerSubject);
 
@@ -32,9 +32,9 @@ TEST(MapLayerObstruction, updateLightObstruction) {
       layerSubject.accessCell({0, 0}).accessElement().accessSubjectList();
 
   subjectList.emplace_back(std::make_unique<Subject::Plain>(
-      Physical(10, 1000, {60}, {0.5}), Subject::Id{.idx = 1}, 0.40, Obstruction{0.40}));
+      Physical(10, 1000, {60}, {0.5}), 1, 0.40, Obstruction{0.40}));
   subjectList.emplace_back(std::make_unique<Subject::Plain>(
-      Physical(10, 1000, {60}, {0.5}), Subject::Id{.idx = 1}, 0.60, Obstruction{0.40}));
+      Physical(10, 1000, {60}, {0.5}), 1, 0.60, Obstruction{0.40}));
 
   obstruction.updateLightObstruction(layerSubject);
 
@@ -50,12 +50,10 @@ TEST(MapLayerObstruction, updateWirelessObstruction) {
   auto & subjectList =
       layerSubject.accessCell({0, 0}).accessElement().accessSubjectList();
 
-  subjectList.emplace_back(
-      std::make_unique<Subject::Plain>(Physical(10, 1000, {60}, {0.}, {0.5}),
-                                       Subject::Id{.idx = 1}, 0.40, Obstruction{0.40}));
-  subjectList.emplace_back(
-      std::make_unique<Subject::Plain>(Physical(10, 1000, {60}, {0.}, {0.5}),
-                                       Subject::Id{.idx = 1}, 0.60, Obstruction{0.40}));
+  subjectList.emplace_back(std::make_unique<Subject::Plain>(
+      Physical(10, 1000, {60}, {0.}, {0.5}), 1, 0.40, Obstruction{0.40}));
+  subjectList.emplace_back(std::make_unique<Subject::Plain>(
+      Physical(10, 1000, {60}, {0.}, {0.5}), 1, 0.60, Obstruction{0.40}));
 
   obstruction.updateWirelessObstruction(layerSubject);
 

@@ -15,8 +15,9 @@ bool operator==(const Air::Id & lhs, const Air::Id & rhs) {
   return (lhs.type == rhs.type) && lhs.idx == rhs.idx;
 }
 
-std::ostream & operator<<(std::ostream &out, const Id & rhs) {
-  out << "{" << "t:" << (int)rhs.type << ",idx:" << rhs.idx << "}";
+std::ostream & operator<<(std::ostream & out, const Id & rhs) {
+  out << "{"
+      << "t:" << (int)rhs.type << ",idx:" << rhs.idx << "}";
   return out;
 }
 

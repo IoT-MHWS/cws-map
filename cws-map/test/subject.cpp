@@ -9,10 +9,10 @@
 TEST(Subject, TurnableLightEmitter) {
   using namespace Subject;
 
-  Plain plain({}, Id{.idx = 2}, 0, {});
+  Plain plain({}, 2, 0, {});
 
   TurnableLightEmitter emitter(
-      LightEmitter(Plain(Physical(1, 2, {3}, {4}), Id{.idx = 1}, 5, {0.5}),
+      LightEmitter(Plain(Physical(1, 2, {3}, {4}), 1, 5, {0.5}),
                    TempSourceParams{.heatProduction = 400},
                    LightSourceParams{.rawIllumination = Illumination{10}}),
       TurnableStatus::OFF, {}, {});
@@ -38,9 +38,9 @@ TEST(Subject, updateTemperature) {
   using namespace Subject;
 
   TurnableLightEmitter emitter(
-      LightEmitter(Plain(Physical(10, 400, Temperature{30}, Obstruction{0.5}),
-                         Id{.idx = 1}, 1, {}),
-                   TempSourceParams{.heatProduction = 4000}, {}),
+      LightEmitter(
+          Plain(Physical(10, 400, Temperature{30}, Obstruction{0.5}), 1, 1, {}),
+          TempSourceParams{.heatProduction = 4000}, {}),
       TurnableStatus::ON, {}, TempSourceParams{.heatProduction = 0});
 
   Temperature before = emitter.getTemperature();

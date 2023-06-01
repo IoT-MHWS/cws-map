@@ -22,10 +22,6 @@ class Plain : public Physical {
   Obstruction defAirObstruction_;
 
 public:
-  Plain(Physical && params, Id id, double surfaceArea, Obstruction defAirObstruction)
-      : Physical(std::move(params)), id_(id), surfaceArea_(surfaceArea),
-        defAirObstruction_(defAirObstruction) {}
-
   Plain(Physical && params, int idx, double surfaceArea, Obstruction defAirObstruction)
       : Physical(std::move(params)), id_(Id{.idx = idx}), surfaceArea_(surfaceArea),
         defAirObstruction_(defAirObstruction) {
