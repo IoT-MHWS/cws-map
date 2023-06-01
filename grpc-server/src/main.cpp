@@ -29,7 +29,7 @@ SimulationStateIn getDefaultState() {
   return state;
 }
 
-int main(int argc, char * argv[]) {
+int run(const std::string & host, int port) {
   SimulationInterface interface;
   SimulationMaster master(interface);
 
@@ -41,7 +41,7 @@ int main(int argc, char * argv[]) {
 
   grpc::ServerBuilder builder;
 
-  buildServer(builder, "127.0.0.1", 8200);
+  buildServer(builder, host, port);
 
   SimulationService simulationService(interface);
   MapService mapService(interface);
@@ -61,4 +61,20 @@ int main(int argc, char * argv[]) {
   interface.exit();
 
   return 0;
+}
+
+int main(int argc, char * argv[]) {
+
+  try {
+    if (argc != 3) {
+      throw std::invalid_argument("Invalid count of arguments. Required 3.");
+    }
+
+    std::string host = argv[1];
+    int port = std::stoi(argv[2]);
+    return run(host, port);
+
+  } catch (std::invalid_argument & e) {
+    std::cout << e.what() << std::endl;
+  }
 }

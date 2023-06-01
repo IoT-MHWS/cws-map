@@ -30,8 +30,8 @@ class map(ConanFile):
         if self.settings.build_type == "Debug":
             tc.cache_variables["BUILD_TESTING"] = True
             tc.cache_variables["ADD_CWS_MAP"] = True
-            tc.cache_variables["ADD_PROTO"] = False
-            tc.cache_variables["ADD_GRPC_SERVER"] = False
+            tc.cache_variables["ADD_PROTO"] = True
+            tc.cache_variables["ADD_GRPC_SERVER"] = True
 
         tc.generate()
 
