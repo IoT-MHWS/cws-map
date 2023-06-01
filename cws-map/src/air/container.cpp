@@ -31,7 +31,7 @@ Container::erase(std::list<PlainUPTR>::const_iterator & it) {
 Plain * Container::findOrNull(const Plain & plain) const {
   const auto & it =
       std::find_if(airList.begin(), airList.end(), [&plain](const PlainUPTR & rhs) {
-        return rhs->getType() == plain.getType();
+        return rhs->getId() == plain.getId();
       });
 
   if (it != airList.end()) {
@@ -116,7 +116,7 @@ void Container::addNotNormalize(PlainUPTR && plain) {
   bool merged = false;
 
   for (auto it = airList.begin(); it != airList.end(); ++it) {
-    if ((*it)->getType() == plain->getType()) {
+    if ((*it)->getId() == plain->getId()) {
       *it->get() = *it->get() + *plain;
       merged = true;
       break;

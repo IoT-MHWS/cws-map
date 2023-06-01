@@ -4,7 +4,8 @@
 #include <deque>
 #include <queue>
 
-using namespace Subject;
+namespace Subject {
+
 using PCoordPlain = BaseCamera::PCoordPlain;
 
 using IsCellFitFn = bool (*)(double cellPower, const BaseCamera & baseCamera);
@@ -138,4 +139,4 @@ std::list<PCoordPlain> LightCamera::getVisibleSubjects() const {
   return getVisibleSubjectsGen(*this, isCellFit, getResidualPower, cellFilter);
 }
 
-// namespace Subject
+}// namespace Subject

@@ -6,16 +6,25 @@
 
 namespace Air {
 
+struct Id {
+  Type type;
+  int idx;
+
+  friend bool operator==(const Id & lhs, const Id & rhs);
+  friend std::ostream & operator<<(std::ostream &, const Id & rhs);
+};
+
 class Plain : public Physical {
-  Type type_;
+  Id id_;
   double heatTransferCoef_;
 
 public:
-  Plain(Physical && params, double heatTransferCoef)
-      : Plain(std::move(params), Type::PLAIN, heatTransferCoef) {}
+  Plain(Physical && params, Id id, double heatTransferCoef)
+      : Physical(std::move(params)), id_(id), heatTransferCoef_(heatTransferCoef) {}
 
-  Plain(Physical && params, Type type, double heatTransferCoef)
-      : Physical(std::move(params)), type_(type), heatTransferCoef_(heatTransferCoef) {}
+  Plain(Physical && params, int idx, double heatTransferCoef)
+      : Plain(std::move(params), Id{.type = Type::PLAIN, .idx = idx},
+              heatTransferCoef) {}
 
   virtual Plain * clone() const { return new Plain(*this); }
 
@@ -23,7 +32,7 @@ public:
 
   double getHeatTransferCoef() const { return heatTransferCoef_; }
 
-  Type getType() const { return type_; }
+  Id getId() const { return id_; }
 
   virtual Plain operator+(const Plain & rsv);
 };

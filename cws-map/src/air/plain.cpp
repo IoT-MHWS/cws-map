@@ -4,9 +4,20 @@
 
 using namespace Air;
 
+namespace Air {
+
 template<typename T>
 T proportion(T lhs, double lhsRatio, T rhs, double rhsRatio) {
   return (lhs * lhsRatio + rhs * rhsRatio) / (lhsRatio + rhsRatio);
+}
+
+bool operator==(const Air::Id & lhs, const Air::Id & rhs) {
+  return (lhs.type == rhs.type) && lhs.idx == rhs.idx;
+}
+
+std::ostream & operator<<(std::ostream &out, const Id & rhs) {
+  out << "{" << "t:" << (int)rhs.type << ",idx:" << rhs.idx << "}";
+  return out;
 }
 
 // create same object but reset it's weight
@@ -17,7 +28,7 @@ Plain * Plain::cloneWithWeight(double weight) const {
 }
 
 Plain Plain::operator+(const Plain & rhs) {
-  assert(this->getType() == rhs.getType());
+  assert(this->getId() == rhs.getId());
 
   auto lhsW = getWeight();
   auto lhsHC = getHeatCapacity();
@@ -37,5 +48,7 @@ Plain Plain::operator+(const Plain & rhs) {
   Obstruction resA = {.value = proportion(lhsA, lhsW, rhsA, rhsW)};
   double resHTC = proportion(lhsHTC, lhsW, rhsHTC, rhsW);
 
-  return Plain(Physical(resW, resHC, resT, resA), getType(), resHTC);
+  return Plain(Physical(resW, resHC, resT, resA), getId(), resHTC);
 }
+
+}// namespace Air

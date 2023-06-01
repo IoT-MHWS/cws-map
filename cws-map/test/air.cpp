@@ -6,13 +6,13 @@
 TEST(AirPlain, OperatorAdd) {
   using namespace Air;
 
-  Plain lhs(Physical(1, 300, {30}, {0.3}), 0.3);
-  Plain rhs(Physical(2, 600, {60}, {0.6}), 0.6);
+  Plain lhs(Physical(1, 300, {30}, {0.3}), 0, 0.3);
+  Plain rhs(Physical(2, 600, {60}, {0.6}), 0, 0.6);
 
-  Plain exp(Physical(3, 500, {54}, {0.5}), 0.5);
+  Plain exp(Physical(3, 500, {54}, {0.5}), 0, 0.5);
   Plain res = lhs + rhs;
 
-  ASSERT_EQ(exp.getType(), res.getType());
+  ASSERT_EQ(exp.getId(), res.getId());
   ASSERT_EQ(exp.getWeight(), res.getWeight());
   ASSERT_EQ(exp.getDefLightObstruction().value, res.getDefLightObstruction().value);
   ASSERT_EQ(exp.getHeatCapacity(), res.getHeatCapacity());
@@ -26,9 +26,9 @@ TEST(AirContainer, addRemoveEraseUSE) {
   Container container;
   ASSERT_TRUE(container.empty());
 
-  container.add(std::make_unique<Plain>(Physical{}, 0.15));
-  container.add(std::make_unique<Plain>(Physical{}, 0.15));
-  container.add(std::make_unique<Plain>(Physical{}, Type::UNSPECIFIED, 0.15));
+  container.add(std::make_unique<Plain>(Physical{}, 0, 0.15));
+  container.add(std::make_unique<Plain>(Physical{}, 0, 0.15));
+  container.add(std::make_unique<Plain>(Physical{}, Id{Type::UNSPECIFIED}, 0.15));
 
   ASSERT_FALSE(container.empty());
 
@@ -51,9 +51,9 @@ TEST(AirContainer, addList) {
 
   std::list<Container::PlainUPTR> lst;
 
-  lst.push_back(std::make_unique<Plain>(Physical{}, 0.15));
-  lst.push_back(std::make_unique<Plain>(Physical{}, 0.15));
-  lst.push_back(std::make_unique<Plain>(Physical{}, Type::UNSPECIFIED, 0.15));
+  lst.push_back(std::make_unique<Plain>(Physical{}, 0, 0.15));
+  lst.push_back(std::make_unique<Plain>(Physical{}, 0, 0.15));
+  lst.push_back(std::make_unique<Plain>(Physical{}, Id{Type::UNSPECIFIED}, 0.15));
 
   container.add(std::move(lst));
   ASSERT_FALSE(container.empty());
@@ -75,7 +75,7 @@ TEST(AirContainer, findOrDefault) {
   Container container;
   ASSERT_TRUE(container.empty());
 
-  Plain plain(Physical(10, 20, {30}, {40}), 0.15);
+  Plain plain(Physical(10, 20, {30}, {40}), 0, 0.15);
 
   auto enew = container.findOrNull(plain);
   ASSERT_TRUE(container.empty());
@@ -86,8 +86,8 @@ TEST(AirContainer, normalize) {
   using namespace Air;
 
   Container container;
-  container.add(std::make_unique<Plain>(Physical(10, 400, {30}, {}), 0.15));
-  container.add(std::make_unique<Plain>(Physical(20, 400, {60}, {}), 0.15));
+  container.add(std::make_unique<Plain>(Physical(10, 400, {30}, {}), 0, 0.15));
+  container.add(std::make_unique<Plain>(Physical(20, 400, {60}, {}), 0, 0.15));
 
   for (auto & eptr : container.getList()) {
     ASSERT_EQ(Temperature{50}, eptr->getTemperature());
@@ -98,8 +98,8 @@ TEST(AirContainer, normalize) {
   }
   ASSERT_TRUE(container.empty());
 
-  container.add(std::make_unique<Plain>(Physical(10, 400, {30}, {}), 0.15));
-  container.add(std::make_unique<Plain>(Physical(10, 800, {60}, {}), 0.15));
+  container.add(std::make_unique<Plain>(Physical(10, 400, {30}, {}), 0, 0.15));
+  container.add(std::make_unique<Plain>(Physical(10, 800, {60}, {}), 0, 0.15));
   for (auto & eptr : container.getList()) {
     ASSERT_EQ(Temperature{50}, eptr->getTemperature());
   }
@@ -109,8 +109,8 @@ TEST(AirContainer, getHeatTransferCoef) {
   using namespace Air;
 
   Container container;
-  container.add(std::make_unique<Plain>(Physical(10, 400, {30}, {}), 0.3));
-  container.add(std::make_unique<Plain>(Physical(20, 400, {60}, {}), 0.15));
+  container.add(std::make_unique<Plain>(Physical(10, 400, {30}, {}), 0, 0.3));
+  container.add(std::make_unique<Plain>(Physical(20, 400, {60}, {}), 0, 0.15));
 
   ASSERT_EQ(0.2, container.getHeatTransferCoef());
 }
@@ -121,9 +121,9 @@ TEST(MapLayerAir, nextConvectionCellNoSubjects) {
   MapLayerAir layerAir(dim);
 
   auto & container = layerAir.accessCell({0, 0}).accessElement().accessAirContainer();
-  container.add(std::make_unique<Air::Plain>(Physical(10, 400, {30}, {}), 3));
-  container.add(std::make_unique<Air::Plain>(Physical(20, 400, {30}, {}),
-                                             Air::Type::UNSPECIFIED, 1.5));
+  container.add(std::make_unique<Air::Plain>(Physical(10, 400, {30}, {}), 0, 3));
+  container.add(std::make_unique<Air::Plain>(
+      Physical(20, 400, {30}, {}), Air::Id{.type = Air::Type::UNSPECIFIED}, 1.5));
 
   MapLayerSubject layerSubject(dim);
   auto & subjectList =
@@ -166,9 +166,9 @@ TEST(MapLayerAir, nextConvectionCellValues) {
   MapLayerAir layerAir(dim);
 
   auto & container = layerAir.accessCell({0, 0}).accessElement().accessAirContainer();
-  container.add(std::make_unique<Air::Plain>(Physical(10, 400, {30}, {}), 3));
-  container.add(std::make_unique<Air::Plain>(Physical(20, 400, {30}, {}),
-                                             Air::Type::UNSPECIFIED, 1.5));
+  container.add(std::make_unique<Air::Plain>(Physical(10, 400, {30}, {}), 0, 3));
+  container.add(std::make_unique<Air::Plain>(
+      Physical(20, 400, {30}, {}), Air::Id{.type = Air::Type::UNSPECIFIED}, 1.5));
 
   MapLayerSubject layerSubject(dim);
   auto & subjectList =
@@ -207,7 +207,7 @@ void displayAirMap(const MapLayerAir & layerAir) {
       std::cout << "[";
       for (const auto & air : container.getList()) {
         std::cout << "{";
-        std::cout << "i:" << (int)air->getType() << ",";
+        std::cout << "i:" << air->getId() << ",";
         std::cout << "w:" << air->getWeight() << ",";
         std::cout << "t:" << air->getTemperature().get() << ",";
         std::cout << "},";
@@ -224,14 +224,14 @@ TEST(MapLayerAir, nextCirculationMassTemp) {
   MapLayerAir curLayerAir(dim);
   auto & curContainer11 = curLayerAir.accessAirContainer({1, 1});
 
-  curContainer11.add(std::make_unique<Air::Plain>(Physical(10, 400, {300}, {}),
-                                                  Air::Type::PLAIN, 0.30));
-  curContainer11.add(std::make_unique<Air::Plain>(Physical(20, 600, {300}, {}),
-                                                  Air::Type::UNSPECIFIED, 0.30));
+  curContainer11.add(std::make_unique<Air::Plain>(
+      Physical(10, 400, {300}, {}), Air::Id{.type = Air::Type::PLAIN}, 0.30));
+  curContainer11.add(std::make_unique<Air::Plain>(
+      Physical(20, 600, {300}, {}), Air::Id{.type = Air::Type::UNSPECIFIED}, 0.30));
 
   auto & curContainer22 = curLayerAir.accessAirContainer({2, 2});
-  curContainer22.add(std::make_unique<Air::Plain>(Physical(20, 400, {100}, {}),
-                                                  Air::Type::PLAIN, 0.30));
+  curContainer22.add(std::make_unique<Air::Plain>(
+      Physical(20, 400, {100}, {}), Air::Id{.type = Air::Type::PLAIN}, 0.30));
 
   MapLayerAir nextLayerAir(curLayerAir);
 
@@ -262,14 +262,14 @@ TEST(MapLayerAir, nextCirculationTemp) {
   MapLayerAir curLayerAir(dim);
   auto & curContainer11 = curLayerAir.accessAirContainer({1, 1});
 
-  curContainer11.add(std::make_unique<Air::Plain>(Physical(10, 400, {300}, {}),
-                                                  Air::Type::PLAIN, 0.30));
-  curContainer11.add(std::make_unique<Air::Plain>(Physical(20, 600, {300}, {}),
-                                                  Air::Type::UNSPECIFIED, 0.30));
+  curContainer11.add(std::make_unique<Air::Plain>(
+      Physical(10, 400, {300}, {}), Air::Id{.type = Air::Type::PLAIN}, 0.30));
+  curContainer11.add(std::make_unique<Air::Plain>(
+      Physical(20, 600, {300}, {}), Air::Id{.type = Air::Type::UNSPECIFIED}, 0.30));
 
   auto & curContainer22 = curLayerAir.accessAirContainer({2, 2});
-  curContainer22.add(std::make_unique<Air::Plain>(Physical(20, 400, {100}, {}),
-                                                  Air::Type::PLAIN, 0.30));
+  curContainer22.add(std::make_unique<Air::Plain>(
+      Physical(20, 400, {100}, {}), Air::Id{.type = Air::Type::PLAIN}, 0.30));
   MapLayerAir nextLayerAir(curLayerAir);
 
   MapLayerSubject subject(dim);
@@ -299,14 +299,14 @@ TEST(MapLayerAir, nextCirculation) {
   MapLayerAir curLayerAir(dim);
   auto & curContainer11 = curLayerAir.accessAirContainer({1, 1});
 
-  curContainer11.add(std::make_unique<Air::Plain>(Physical(10, 400, {300}, {}),
-                                                  Air::Type::PLAIN, 0.30));
-  curContainer11.add(std::make_unique<Air::Plain>(Physical(20, 600, {300}, {}),
-                                                  Air::Type::UNSPECIFIED, 0.30));
+  curContainer11.add(std::make_unique<Air::Plain>(
+      Physical(10, 400, {300}, {}), Air::Id{.type = Air::Type::PLAIN}, 0.30));
+  curContainer11.add(std::make_unique<Air::Plain>(
+      Physical(20, 600, {300}, {}), Air::Id{.type = Air::Type::UNSPECIFIED}, 0.30));
 
   auto & curContainer22 = curLayerAir.accessAirContainer({2, 2});
-  curContainer22.add(std::make_unique<Air::Plain>(Physical(20, 400, {100}, {}),
-                                                  Air::Type::PLAIN, 0.30));
+  curContainer22.add(std::make_unique<Air::Plain>(
+      Physical(20, 400, {100}, {}), Air::Id{.type = Air::Type::PLAIN}, 0.30));
   MapLayerAir nextLayerAir(curLayerAir);
 
   MapLayerSubject subject(dim);
