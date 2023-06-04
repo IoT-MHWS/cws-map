@@ -15,19 +15,24 @@ protected:
 
 public:
   NetworkDevice(Plain && plain, Network::Type networkType) : Plain(std::move(plain)) {
-
     setType(Type::NETWORK_DEVICE);
   }
 
   virtual void transmitPackets(
       std::list<std::unique_ptr<Network::Packet>> && containerList) override;
 
-  virtual void clearTransmitBuffer() override;
+  void clearTransmitBuffer() final override { transmitPackets_.clear(); }
 
-  virtual const std::list<std::unique_ptr<Network::Packet>> &
-  getReceivedPackets() const override;
+  const std::list<std::unique_ptr<Network::Packet>> & getTransmitPackets() const {
+    return transmitPackets_;
+  }
 
-  virtual void clearReceiveBuffer() override;
+  const std::list<std::unique_ptr<Network::Packet>> &
+  getReceivedPackets() const final override {
+    return receivedPackets_;
+  }
+
+  void clearReceiveBuffer() final override { receivedPackets_.clear(); }
 };
 
 class WirelessNetworkDevice : public NetworkDevice {
@@ -38,7 +43,9 @@ private:
 public:
   WirelessNetworkDevice(Plain && plain, int transmitPower, int receiveThresh)
       : NetworkDevice(std::move(plain), Network::Type::WIRELESS),
-        transmitPower_(transmitPower), receiveThresh_(receiveThresh) {}
+        transmitPower_(transmitPower), receiveThresh_(receiveThresh) {
+    setType(Type::WIRELESS_NETWORK_DEVICE);
+  }
 
   int getTransmitPower() const { return transmitPower_; }
 

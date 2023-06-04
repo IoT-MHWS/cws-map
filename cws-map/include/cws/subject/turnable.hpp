@@ -28,6 +28,10 @@ public:
   TurnableStatus getStatus() const final override { return turnableStatus_; }
   void setStatus(TurnableStatus status) final override { turnableStatus_ = status; }
 
+  Obstruction getOffLightObstruction() const { return offLightObstruction_; }
+  Obstruction getOffWirelessObstruction() const { return offWirelessObstruction_; }
+  Obstruction getOffAirObstruction() const { return offAirObstruction_; }
+
   Obstruction getCurLightObstruction() const override;
   Obstruction getCurWirelessObstruction() const override;
   Obstruction getCurAirObstruction() const override;

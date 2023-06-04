@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "service/device.hpp"
-#include "service/map.hpp"
-#include "service/simulation.hpp"
+#include "service/sv_device.hpp"
+#include "service/sv_map.hpp"
+#include "service/sv_simulation.hpp"
 #include <cws/simulation/simulation.hpp>
 #include <grpcpp/completion_queue.h>
 #include <grpcpp/security/server_credentials.h>

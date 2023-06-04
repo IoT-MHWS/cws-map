@@ -33,7 +33,7 @@ public:
 
   SensorIllumination * clone() const override { return new SensorIllumination(*this); }
 
-  Illumination getIllumination() const { return cellIllumination_; }
+  Illumination getCellIllumination() const { return cellIllumination_; }
 
   void setup(Illumination cellIllumination) { cellIllumination_ = cellIllumination; }
 };

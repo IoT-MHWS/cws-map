@@ -51,6 +51,9 @@ public:
 
   TurnableStatus getStatus() const final override { return turnableStatus_; }
   void setStatus(TurnableStatus status) final override { turnableStatus_ = status; }
+
+  TempSourceParams getOffTempParams() const { return offTempParams_; }
+
   TempSourceParams getCurTempParams() const final override;
 };
 

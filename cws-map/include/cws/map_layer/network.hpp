@@ -24,9 +24,17 @@ public:
     return layerTransmittable_.getCell(c).getElement().getContainerList();
   }
 
+  const LayerNetwork & getTransmittableLayer(Coordinates c) const {
+    return layerTransmittable_.getCell(c).getElement();
+  }
+
   const std::list<std::unique_ptr<Network::Container>> &
   getReceivableContainers(Coordinates c) const {
     return layerReceivable_.getCell(c).getElement().getContainerList();
+  }
+
+  const LayerNetwork & getReceivableLayer(Coordinates c) const {
+    return layerReceivable_.getCell(c).getElement();
   }
 
   Network::Type getNetworkType() const { return networkType_; }

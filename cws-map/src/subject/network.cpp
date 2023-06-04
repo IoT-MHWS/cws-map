@@ -12,14 +12,6 @@ void NetworkDevice::transmitPackets(
   }
 }
 
-void NetworkDevice::clearTransmitBuffer() { transmitPackets_.clear(); }
-
-const std::list<std::unique_ptr<Packet>> & NetworkDevice::getReceivedPackets() const {
-  return receivedPackets_;
-}
-
-void NetworkDevice::clearReceiveBuffer() { receivedPackets_.clear(); }
-
 std::list<std::unique_ptr<Container>>
 WirelessNetworkDevice::collectNetworkContainers(Network::Type type) const {
   std::list<std::unique_ptr<Container>> result;

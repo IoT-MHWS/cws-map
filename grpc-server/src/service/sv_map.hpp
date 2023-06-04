@@ -17,17 +17,13 @@ public:
                                const cwspb::Request * request,
                                cwspb::ResponseDimension * response) override {
     auto map = interface.getMap();
-
-    if (!verifyMapSet(map, *response->mutable_base())) {
+    if (!verifyMapCreated(map, *response->mutable_base())) {
       return grpc::Status::OK;
     }
 
-    auto dimension = map->getDimension();
-
-    auto rDimension = response->mutable_dimension();
-    rDimension->set_width(dimension.width);
-    rDimension->set_height(dimension.height);
-
+    auto dim = map->getDimension();
+    auto out_dim = response->mutable_dimension();
+    toDimension(*out_dim, dim);
     return grpc::Status::OK;
   }
 
@@ -35,84 +31,82 @@ public:
                          const cwspb::RequestDimension * request,
                          cwspb::Response * response) override {
 
+    auto status = response->mutable_status();
+
     if (!request->has_dimension()) {
-      auto rStatus = response->mutable_status();
-      rStatus->set_text("dimension is not specified");
-      rStatus->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
+      status->set_text("dimension is not specified");
+      status->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
       return grpc::Status::OK;
     }
-    Dimension dimension{
-        .width = request->dimension().width(),
-        .height = request->dimension().height(),
-    };
 
+    Dimension dimension = fromDimension(request->dimension());
     interface.setDimension(dimension);
 
     return grpc::Status::OK;
   }
 
-  // grpc::Status GetCell(::grpc::ServerContext * context,
-  //                      const cwspb::RequestCell * request,
-  //                      cwspb::ResponseCell * response) override {
-  //   auto map = interface.getMap();
+  grpc::Status GetCell(::grpc::ServerContext * context,
+                       const cwspb::RequestCell * request,
+                       cwspb::ResponseCell * response) override {
+    auto map = interface.getMap();
+    if (!verifyMapCreated(map, *response->mutable_base())) {
+      return grpc::Status::OK;
+    }
 
-  //   if (!verifyMapSet(map, *response->mutable_base())) {
-  //     return grpc::Status::OK;
-  //   }
+    auto dimension = map->getDimension();
 
-  //   auto dimension = map->getDimension();
+    Coordinates coord = fromCoordinates(request->coordinates());
+    if (!verifyCoordinates(coord, dimension, *response->mutable_base())) {
+      return grpc::Status::OK;
+    }
 
-  //   Coordinates coord = fromCoordinates(request->coordinates());
+    const auto & layers = map->getLayers();
+    toCell(*response->mutable_cell(), map->getLayers(), coord);
 
-  //   if (!verifyCoordinates(coord, dimension, *response->mutable_base())) {
-  //     return grpc::Status::OK;
-  //   }
+    return grpc::Status::OK;
+  }
 
-  //   const auto & layers = map->getLayers();
-  //   const auto & subjectLayer = layers.subjectLayer;
+  grpc::Status GetMap(::grpc::ServerContext * context, const cwspb::Request * request,
+                      ::cwspb::ResponseMap * response) override {
+    grpc::WriteOptions options;
 
-  //   const auto cell =
-  //       Cell{.coordinates = coord, .subject =
-  //       subjectLayer.getCell(coord).getElement()};
+    auto map = interface.getMap();
+    if (!verifyMapCreated(map, *response->mutable_base())) {
+      return grpc::Status::OK;
+    }
 
-  //   toCell(*response->mutable_cell(), cell);
-  //   return grpc::Status::OK;
-  // }
+    auto dim = map->getDimension();
+    const auto & layers = map->getLayers();
 
-  // grpc::Status GetMap(::grpc::ServerContext * context, const cwspb::Request *
-  // request,
-  //                     grpc::ServerWriter<::cwspb::ResponseCell> * writer) override {
-  //   grpc::WriteOptions options;
+    toMap(*response->mutable_map(), layers, dim);
+    return grpc::Status::OK;
+  }
 
-  //   auto map = interface.getMap();
+  grpc::Status
+  GetMapCells(::grpc::ServerContext * context, const cwspb::Request * request,
+              grpc::ServerWriter<::cwspb::ResponseCell> * writer) override {
+    grpc::WriteOptions options;
+    cwspb::ResponseCell response;
 
-  //   cwspb::ResponseCell response;
+    auto map = interface.getMap();
+    if (!verifyMapCreated(map, *response.mutable_base())) {
+      writer->WriteLast(response, options);
+      return grpc::Status::OK;
+    }
 
-  //   if (!verifyMapSet(map, *response.mutable_base())) {
-  //     writer->WriteLast(response, options);
-  //     return grpc::Status::OK;
-  //   }
+    auto dimension = map->getDimension();
+    const auto & layers = map->getLayers();
 
-  //   auto dimension = map->getDimension();
-
-  //   const auto & layers = map->getLayers();
-  //   const auto & subjectLayer = layers.subjectLayer;
-
-  //   for (int x = 0; x < dimension.width; ++x) {
-  //     for (int y = 0; y < dimension.height; ++y) {
-  //       cwspb::ResponseCell response;
-
-  //       Coordinates coord{.x = x, .y = y};
-
-  //       const auto cell = Cell{.coordinates = coord,
-  //                              .subject = subjectLayer.getCell(coord).getElement()};
-
-  //       toCell(*response.mutable_cell(), cell);
-  //       writer->Write(response);
-  //     }
-  //   }
-  //   return grpc::Status::OK;
-  // }
+    Coordinates c;
+    for (c.x = 0; c.x < dimension.width; ++c.x) {
+      for (c.y = 0; c.y < dimension.height; ++c.y) {
+        cwspb::ResponseCell response;
+        toCell(*response.mutable_cell(), layers, c);
+        writer->Write(response);
+      }
+    }
+    return grpc::Status::OK;
+  }
 
   // grpc::Status GetSubject(::grpc::ServerContext * context,
   //                         const cwspb::RequestQuerySubject * request,
@@ -177,14 +171,14 @@ public:
   // }
 
 private:
-  bool verifyMapSet(const std::shared_ptr<const Map> & map,
-                    cwspb::Response & response) {
+  bool verifyMapCreated(const std::shared_ptr<const Map> & map,
+                        cwspb::Response & response) {
     bool bad = !map;
+    auto status = response.mutable_status();
 
     if (bad) {
-      auto resStatus = response.mutable_status();
-      resStatus->set_text("map is not created");
-      resStatus->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
+      status->set_text("map is not created");
+      status->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
     }
     return !bad;
   }
@@ -193,11 +187,11 @@ private:
                          cwspb::Response & response) {
     bool bad = (coord.x >= dimension.width || coord.x < 0 ||
                 coord.y >= dimension.height || coord.y < 0);
+    auto status = response.mutable_status();
 
     if (bad) {
-      auto resStatus = response.mutable_status();
-      resStatus->set_text("coordinates out of bounds");
-      resStatus->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
+      status->set_text("coordinates out of bounds");
+      status->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
     }
     return !bad;
   }
