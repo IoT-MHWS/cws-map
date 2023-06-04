@@ -2,20 +2,20 @@
 
 #include "converters.hpp"
 #include "cws/simulation/interface.hpp"
-#include "cwspb/service/subject_hub.grpc.pb.h"
-#include "cwspb/service/subject_hub.pb.h"
+#include "cwspb/service/sv_device.grpc.pb.h"
 #include <grpcpp/support/status.h>
 
-class SubjectHubService final : public cws::SubjectHubService::Service {
+class DeviceService final : public cwspb::DeviceService::Service {
 private:
   SimulationInterface & interface;
 
 public:
-  SubjectHubService(SimulationInterface & interface) : interface(interface) {}
+  DeviceService(SimulationInterface & interface) : interface(interface) {}
 
   // ::grpc::Status GetTemperature(::grpc::ServerContext * context,
-  //                               const ::cws::RequestSensorTemperature * request,
-  //                               ::cws::ResponseSensorTemperature * response) override
+  //                               const ::cwspb::RequestSensorTemperature * request,
+  //                               ::cwspb::ResponseSensorTemperature * response)
+  //                               override
   //                               {
 
   //   auto map = interface.getMap();
@@ -56,23 +56,24 @@ public:
   // }
 
 private:
-  bool verifyMapSet(const std::shared_ptr<const Map> & map, cws::Response & response) {
+  bool verifyMapSet(const std::shared_ptr<const Map> & map,
+                    cwspb::Response & response) {
     bool bad = !map;
 
     if (bad) {
       auto resStatus = response.mutable_status();
       resStatus->set_text("map is not created");
-      resStatus->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
+      resStatus->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
     }
     return !bad;
   }
 
 private:
-  bool verifySubjectExists(const void * subject, cws::Response & response) {
+  bool verifySubjectExists(const void * subject, cwspb::Response & response) {
     if (!subject) {
       auto resStatus = response.mutable_status();
       resStatus->set_text("subject does not exist");
-      resStatus->set_type(cws::ErrorType::ERROR_TYPE_BAD_REQUEST);
+      resStatus->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
     }
     return subject;
   }

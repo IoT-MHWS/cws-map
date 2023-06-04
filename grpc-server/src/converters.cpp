@@ -1,29 +1,29 @@
 #include "converters.hpp"
 
 // To
-cws::SimulationStatus toSimulationStatus(const SimulationStatus status) {
+cwspb::SimulationStatus toSimulationStatus(const SimulationStatus status) {
   switch (status) {
   case SimulationStatus::RUNNING:
-    return cws::SimulationStatus::SIMULATION_STATUS_RUNNING;
+    return cwspb::SimulationStatus::SIMULATION_STATUS_RUNNING;
   case SimulationStatus::STOPPED:
-    return cws::SimulationStatus::SIMULATION_STATUS_STOPPED;
+    return cwspb::SimulationStatus::SIMULATION_STATUS_STOPPED;
   default:
-    return cws::SimulationStatus::SIMULATION_STATUS_UNSPECIFIED;
+    return cwspb::SimulationStatus::SIMULATION_STATUS_UNSPECIFIED;
   }
 }
 
-cws::SimulationType toSimulationType(const SimulationType type) {
+cwspb::SimulationType toSimulationType(const SimulationType type) {
   switch (type) {
   case SimulationType::LIMITED:
-    return cws::SimulationType::SIMULATION_TYPE_LIMITED;
+    return cwspb::SimulationType::SIMULATION_TYPE_LIMITED;
   case SimulationType::INFINITE:
-    return cws::SimulationType::SIMULATION_TYPE_INFINITE;
+    return cwspb::SimulationType::SIMULATION_TYPE_INFINITE;
   default:
-    return cws::SimulationType::SIMULATION_TYPE_UNSPECIFIED;
+    return cwspb::SimulationType::SIMULATION_TYPE_UNSPECIFIED;
   }
 }
 
-void toSimulationState(cws::SimulationState & out, const struct SimulationState & in) {
+void toSimulationState(cwspb::SimulationState & out, const struct SimulationState & in) {
   out.set_status(toSimulationStatus(in.status));
   out.set_type(toSimulationType(in.type));
   out.set_task_frequency(in.taskFrequency);
@@ -31,23 +31,23 @@ void toSimulationState(cws::SimulationState & out, const struct SimulationState 
   out.set_last_tick(in.lastTick);
 }
 
-void toCell(cws::Cell & out, const Cell & cell) {
-  toCoordinates(*out.mutable_coordinates(), cell.coordinates);
-  // toLayerSubject(*out.mutable_subject(), cell.subject);
-}
+// void toCell(cwspb::Cell & out, const Cell & cell) {
+//   toCoordinates(*out.mutable_coordinates(), cell.coordinates);
+//   // toLayerSubject(*out.mutable_subject(), cell.subject);
+// }
 
-void toCoordinates(cws::Coordinates & out, const Coordinates & coord) {
-  out.set_x(coord.x);
-  out.set_y(coord.y);
-}
+// void toCoordinates(cwspb::Coordinates & out, const Coordinates & coord) {
+//   out.set_x(coord.x);
+//   out.set_y(coord.y);
+// }
 
-void toTemperature(cws::Temperature & out, const Temperature & temp) {
-  out.set_value(temp.value);
-}
+// void toTemperature(cwspb::Temperature & out, const Temperature & temp) {
+//   out.set_value(temp.value);
+// }
 
-void toLayer(cws::Layer & out, const Layer & layer) {}
+// void toLayer(cwspb::Layer & out, const Layer & layer) {}
 
-// void toLayerSubject(cws::LayerSubject & out, const LayerSubject & layerSubject) {
+// void toLayerSubject(cwspb::LayerSubject & out, const LayerSubject & layerSubject) {
 //   toLayer(*out.mutable_base(), static_cast<const Layer &>(layerSubject));
 //   for (const auto & subject : layerSubject.getSubjectList()) {
 //     auto outSubject = out.add_subjects();
@@ -55,23 +55,23 @@ void toLayer(cws::Layer & out, const Layer & layer) {}
 //   }
 // }
 
-// cws::SubjectType toSubjectType(SubjectType in) {
+// cwspb::SubjectType toSubjectType(SubjectType in) {
 //   switch (in) {
 //   case SubjectType::PLAIN:
-//     return cws::SubjectType::SUBJECT_TYPE_PLAIN;
+//     return cwspb::SubjectType::SUBJECT_TYPE_PLAIN;
 //   case SubjectType::INTERACTIVE:
-//     return cws::SubjectType::SUBJECT_TYPE_INTERACTIVE;
+//     return cwspb::SubjectType::SUBJECT_TYPE_INTERACTIVE;
 //   case SubjectType::SENSOR:
-//     return cws::SubjectType::SUBJECT_TYPE_SENSOR;
+//     return cwspb::SubjectType::SUBJECT_TYPE_SENSOR;
 //   case SubjectType::UNSPECIFIED:
 //   default:
-//     return cws::SubjectType::SUBJECT_TYPE_UNSPECIFIED;
+//     return cwspb::SubjectType::SUBJECT_TYPE_UNSPECIFIED;
 //   }
 // }
 
-// void toSubjectId(cws::SubjectId & out, const Id & id) { out.set_id(id.idx); }
+// void toSubjectId(cwspb::SubjectId & out, const Id & id) { out.set_id(id.idx); }
 
-// void toSubjectDerived(cws::SubjectDerived & out, const Subject::Plain * subject) {
+// void toSubjectDerived(cwspb::SubjectDerived & out, const Subject::Plain * subject) {
 //   switch (subject->getSubjectId().type) {
 //   case SubjectType::PLAIN:
 //     return toSubjectPlain(*out.mutable_plain(),
@@ -88,7 +88,7 @@ void toLayer(cws::Layer & out, const Layer & layer) {}
 //   }
 // }
 
-// void toSubject(cws::Subject & out, const Subject * subject) {
+// void toSubject(cwspb::Subject & out, const Subject * subject) {
 //   toSubjectId(*out.mutable_id(), subject->getSubjectId());
 
 //   auto params = subject->getSubjectParameters();
@@ -100,7 +100,7 @@ void toLayer(cws::Layer & out, const Layer & layer) {}
 //   // toPercentage(*out.mutable_humidity_transmission(), params.humidityTransmission);
 // }
 
-// void toSubjectSensorDerived(cws::SubjectSensorDerived & out,
+// void toSubjectSensorDerived(cwspb::SubjectSensorDerived & out,
 //                             const SubjectSensor * subject) {
 //   switch (subject->getSensorType()) {
 //   case SensorType::TEMPERATURE:
@@ -111,68 +111,68 @@ void toLayer(cws::Layer & out, const Layer & layer) {}
 //   }
 // }
 
-// cws::InteractionStateType toInteractionStateType(const InteractionStateType type) {
+// cwspb::InteractionStateType toInteractionStateType(const InteractionStateType type) {
 //   switch (type) {
 //   case InteractionStateType::ENABLED:
-//     return cws::InteractionStateType::INTERACTION_STATE_TYPE_OPENED;
+//     return cwspb::InteractionStateType::INTERACTION_STATE_TYPE_OPENED;
 //   case InteractionStateType::DISABLED:
-//     return cws::InteractionStateType::INTERACTION_STATE_TYPE_CLOSED;
+//     return cwspb::InteractionStateType::INTERACTION_STATE_TYPE_CLOSED;
 //   case InteractionStateType::UNSPECIFIED:
 //   default:
-//     return cws::InteractionStateType::INTERACTION_STATE_TYPE_UNSPECIFIED;
+//     return cwspb::InteractionStateType::INTERACTION_STATE_TYPE_UNSPECIFIED;
 //   }
 // }
 
-// void toSubjectInteractive(cws::SubjectInteractive & out,
+// void toSubjectInteractive(cwspb::SubjectInteractive & out,
 //                           const SubjectInteractive * subject) {
 //   toSubject(*out.mutable_base(), subject);
 //   out.set_interaction_state_type(
 //       toInteractionStateType(subject->getInteractionState().type));
 // }
 
-// void toSubjectPlain(cws::SubjectPlain & out, const SubjectPlain * plain) {
+// void toSubjectPlain(cwspb::SubjectPlain & out, const SubjectPlain * plain) {
 //   toSubject(*out.mutable_base(), plain);
 // }
 
-// void toSubjectSensor(cws::SubjectSensor & out, const SubjectSensor * subject) {
+// void toSubjectSensor(cwspb::SubjectSensor & out, const SubjectSensor * subject) {
 //   toSubject(*out.mutable_base(), subject);
 // }
 
-// void toSensorTemperature(cws::SensorTemperature & out,
+// void toSensorTemperature(cwspb::SensorTemperature & out,
 //                          const SensorTemperature * sensor) {
 //   toSubjectSensor(*out.mutable_base(), sensor);
 //   toTemperature(*out.mutable_temperature(), sensor->getTemperature());
 // }
 
 // From
-SimulationStatus fromSimulationStatus(const cws::SimulationStatus status) {
+SimulationStatus fromSimulationStatus(const cwspb::SimulationStatus status) {
   switch (status) {
-  case cws::SimulationStatus::SIMULATION_STATUS_RUNNING:
+  case cwspb::SimulationStatus::SIMULATION_STATUS_RUNNING:
     return SimulationStatus::RUNNING;
-  case cws::SimulationStatus::SIMULATION_STATUS_STOPPED:
+  case cwspb::SimulationStatus::SIMULATION_STATUS_STOPPED:
     return SimulationStatus::STOPPED;
   default:
     return SimulationStatus::STOPPED;
   }
 }
 
-SimulationType fromSimulationType(const cws::SimulationType type) {
+SimulationType fromSimulationType(const cwspb::SimulationType type) {
   switch (type) {
-  case cws::SimulationType::SIMULATION_TYPE_LIMITED:
+  case cwspb::SimulationType::SIMULATION_TYPE_LIMITED:
     return SimulationType::LIMITED;
-  case cws::SimulationType::SIMULATION_TYPE_INFINITE:
+  case cwspb::SimulationType::SIMULATION_TYPE_INFINITE:
     return SimulationType::INFINITE;
   default:
     return SimulationType::LIMITED;
   }
 }
 
-SimulationStateIn fromSimulationState(const cws::SimulationState & in) {
+SimulationStateIn fromSimulationState(const cwspb::SimulationState & in) {
   SimulationStateIn out;
-  if (in.has_status())
-    out.simStatus.set(fromSimulationStatus(in.status()));
   if (in.has_type())
     out.simType.set(fromSimulationType(in.type()));
+  if (in.has_status())
+    out.simStatus.set(fromSimulationStatus(in.status()));
   if (in.has_current_tick())
     out.currentTick.set(in.current_tick());
   if (in.has_last_tick())
@@ -182,34 +182,34 @@ SimulationStateIn fromSimulationState(const cws::SimulationState & in) {
   return out;
 }
 
-Coordinates fromCoordinates(const cws::Coordinates & coord) {
-  Coordinates out;
-  out.x = coord.x();
-  out.y = coord.y();
-  return out;
-}
+// Coordinates fromCoordinates(const cwspb::Coordinates & coord) {
+//   Coordinates out;
+//   out.x = coord.x();
+//   out.y = coord.y();
+//   return out;
+// }
 
-Temperature fromTemperature(const cws::Temperature & in) {
-  Temperature out;
-  out.value = in.value();
-  return out;
-}
+// Temperature fromTemperature(const cwspb::Temperature & in) {
+//   Temperature out;
+//   out.value = in.value();
+//   return out;
+// }
 
-// SubjectType fromSubjectType(cws::SubjectType in) {
+// SubjectType fromSubjectType(cwspb::SubjectType in) {
 //   switch (in) {
-//   case cws::SubjectType::SUBJECT_TYPE_PLAIN:
+//   case cwspb::SubjectType::SUBJECT_TYPE_PLAIN:
 //     return SubjectType::PLAIN;
-//   case cws::SubjectType::SUBJECT_TYPE_INTERACTIVE:
+//   case cwspb::SubjectType::SUBJECT_TYPE_INTERACTIVE:
 //     return SubjectType::INTERACTIVE;
-//   case cws::SubjectType::SUBJECT_TYPE_SENSOR:
+//   case cwspb::SubjectType::SUBJECT_TYPE_SENSOR:
 //     return SubjectType::SENSOR;
-//   case cws::SubjectType::SUBJECT_TYPE_UNSPECIFIED:
+//   case cwspb::SubjectType::SUBJECT_TYPE_UNSPECIFIED:
 //   default:
 //     return SubjectType::UNSPECIFIED;
 //   }
 // }
 
-// SubjectType fromSubjectType(const cws::SubjectDerived & in) {
+// SubjectType fromSubjectType(const cwspb::SubjectDerived & in) {
 //   if (in.has_plain())
 //     return SubjectType::PLAIN;
 //   else if (in.has_interactive())
@@ -220,14 +220,14 @@ Temperature fromTemperature(const cws::Temperature & in) {
 //     return SubjectType::UNSPECIFIED;
 // }
 
-// Id fromSubjectId(const cws::SubjectId & id, cws::SubjectType type) {
+// Id fromSubjectId(const cwspb::SubjectId & id, cwspb::SubjectType type) {
 //   Id out;
 //   out.type = fromSubjectType(type);
 //   out.idx = id.id();
 //   return out;
 // }
 
-// SubjectParameters fromSubjectParameters(const cws::Subject & in) {
+// SubjectParameters fromSubjectParameters(const cwspb::Subject & in) {
 //   return {
 //       // .weight = in.weight(),
 //       // .heatCapacity = in.heat_capacity(),
@@ -238,7 +238,7 @@ Temperature fromTemperature(const cws::Temperature & in) {
 //   };
 // }
 
-// std::unique_ptr<Subject> fromSubjectDerived(const cws::SubjectDerived & in) {
+// std::unique_ptr<Subject> fromSubjectDerived(const cwspb::SubjectDerived & in) {
 //   SubjectType outST = fromSubjectType(in);
 //   switch (outST) {
 //   case SubjectType::PLAIN:
@@ -257,32 +257,32 @@ Temperature fromTemperature(const cws::Temperature & in) {
 //   }
 // }
 
-// std::unique_ptr<Subject> fromSubject(const cws::Subject & in, SubjectType type) {
+// std::unique_ptr<Subject> fromSubject(const cwspb::Subject & in, SubjectType type) {
 //   auto params = fromSubjectParameters(in);
 //   auto id = fromSubjectId(in.id(), toSubjectType(type));
 //   return std::make_unique<Subject>(id, params);
 // }
 
-// std::unique_ptr<SubjectPlain> fromSubjectPlain(const cws::SubjectPlain & in) {
+// std::unique_ptr<SubjectPlain> fromSubjectPlain(const cwspb::SubjectPlain & in) {
 //   auto idx = in.base().id().id();
 //   auto params = fromSubjectParameters(in.base());
 //   return std::make_unique<SubjectPlain>(idx, params);
 // }
 
-// InteractionStateType fromInteractionStateType(const cws::InteractionStateType type) {
+// InteractionStateType fromInteractionStateType(const cwspb::InteractionStateType type) {
 //   switch (type) {
-//   case cws::InteractionStateType::INTERACTION_STATE_TYPE_CLOSED:
+//   case cwspb::InteractionStateType::INTERACTION_STATE_TYPE_CLOSED:
 //     return InteractionStateType::DISABLED;
-//   case cws::InteractionStateType::INTERACTION_STATE_TYPE_OPENED:
+//   case cwspb::InteractionStateType::INTERACTION_STATE_TYPE_OPENED:
 //     return InteractionStateType::ENABLED;
-//   case cws::InteractionStateType::INTERACTION_STATE_TYPE_UNSPECIFIED:
+//   case cwspb::InteractionStateType::INTERACTION_STATE_TYPE_UNSPECIFIED:
 //   default:
 //     return InteractionStateType::UNSPECIFIED;
 //   }
 // }
 
 // std::unique_ptr<SubjectInteractive>
-// fromSubjectInteractive(const cws::SubjectInteractive & in) {
+// fromSubjectInteractive(const cwspb::SubjectInteractive & in) {
 //   auto idx = in.base().id().id();
 //   auto params = fromSubjectParameters(in.base());
 //   auto ist = fromInteractionStateType(in.interaction_state_type());
@@ -290,7 +290,7 @@ Temperature fromTemperature(const cws::Temperature & in) {
 //   return std::make_unique<SubjectInteractive>(idx, params, is);
 // }
 
-// SensorType fromSensorType(const cws::SubjectSensorDerived & in) {
+// SensorType fromSensorType(const cwspb::SubjectSensorDerived & in) {
 //   if (in.has_temperature()) {
 //     return SensorType::TEMPERATURE;
 //   } else if (in.has_base()) {
@@ -300,7 +300,7 @@ Temperature fromTemperature(const cws::Temperature & in) {
 // }
 
 // std::unique_ptr<SubjectSensor>
-// fromSubjectSensorDerived(const cws::SubjectSensorDerived & in) {
+// fromSubjectSensorDerived(const cwspb::SubjectSensorDerived & in) {
 //   SensorType type = fromSensorType(in);
 //   switch (type) {
 //   case SensorType::TEMPERATURE:
@@ -314,7 +314,7 @@ Temperature fromTemperature(const cws::Temperature & in) {
 //     }
 //   }
 // }
-// std::unique_ptr<SubjectSensor> fromSubjectSensor(const cws::SubjectSensor & in,
+// std::unique_ptr<SubjectSensor> fromSubjectSensor(const cwspb::SubjectSensor & in,
 //                                                  SensorType type) {
 //   auto idx = in.base().id().id();
 //   auto params = fromSubjectParameters(in.base());
@@ -322,25 +322,25 @@ Temperature fromTemperature(const cws::Temperature & in) {
 // }
 
 // std::unique_ptr<SensorTemperature>
-// fromSensorTemperature(const cws::SensorTemperature & in) {
+// fromSensorTemperature(const cwspb::SensorTemperature & in) {
 //   auto idx = in.base().base().id().id();
 //   auto params = fromSubjectParameters(in.base().base());
 //   auto temp = fromTemperature(in.temperature());
 //   return std::make_unique<SensorTemperature>(idx, params, temp);
 // }
 
-SubjectQueryType fromSubjectQueryType(cws::SubjectQueryType type) {
-  switch (type) {
-  case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_DELETE:
-    return SubjectQueryType::DELETE;
-  case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_INSERT:
-    return SubjectQueryType::INSERT;
-  case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_UPDATE:
-    return SubjectQueryType::UPDATE;
-  case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_UNSPECIFIED:
-    // case cws::SubjectQueryType::SUBJECT_QUERY_TYPE_SELECT:
-    return SubjectQueryType::SELECT;
-  default:
-    return SubjectQueryType::UNSPECIFIED;
-  }
-}
+// SubjectQueryType fromSubjectQueryType(cwspb::SubjectQueryType type) {
+//   switch (type) {
+//   case cwspb::SubjectQueryType::SUBJECT_QUERY_TYPE_DELETE:
+//     return SubjectQueryType::DELETE;
+//   case cwspb::SubjectQueryType::SUBJECT_QUERY_TYPE_INSERT:
+//     return SubjectQueryType::INSERT;
+//   case cwspb::SubjectQueryType::SUBJECT_QUERY_TYPE_UPDATE:
+//     return SubjectQueryType::UPDATE;
+//   case cwspb::SubjectQueryType::SUBJECT_QUERY_TYPE_UNSPECIFIED:
+//     // case cwspb::SubjectQueryType::SUBJECT_QUERY_TYPE_SELECT:
+//     return SubjectQueryType::SELECT;
+//   default:
+//     return SubjectQueryType::UNSPECIFIED;
+//   }
+// }

@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "service/map_service.hpp"
-#include "service/simulation_service.hpp"
-#include "service/subject_hub_service.hpp"
+#include "service/device.hpp"
+#include "service/map.hpp"
+#include "service/simulation.hpp"
 #include <cws/simulation/simulation.hpp>
 #include <grpcpp/completion_queue.h>
 #include <grpcpp/security/server_credentials.h>
@@ -45,11 +45,11 @@ int run(const std::string & host, int port) {
 
   SimulationService simulationService(interface);
   MapService mapService(interface);
-  SubjectHubService subjectHubService(interface);
+  DeviceService deviceService(interface);
 
   registerService(builder, simulationService);
   registerService(builder, mapService);
-  registerService(builder, subjectHubService);
+  registerService(builder, deviceService);
 
   auto server(builder.BuildAndStart());
 
