@@ -29,6 +29,18 @@ const Subject::Plain * SimulationMap::select(const SubjectSelectQuery & query) c
   return nullptr;
 }
 
+Subject::Plain * SimulationMap::select(const SubjectSelectQuery & query) {
+  auto & subjectLayer = layers.subjectLayer;
+  auto & subjectList = subjectLayer.accessSubjectList(query.coordinates);
+
+  for (auto it = subjectList.begin(); it != subjectList.end(); ++it) {
+    if ((*it)->getId() == query.id) {
+      return it->get();
+    }
+  }
+  return nullptr;
+}
+
 void SimulationMap::modifyInsert(SubjectModifyQuery && query) {
   auto & subjectLayer = layers.subjectLayer;
   auto & subjectList = subjectLayer.accessSubjectList(query.coordinates);
@@ -77,4 +89,11 @@ const Air::Plain * SimulationMap::select(const AirSelectQuery & query) const {
     }
   }
   return nullptr;
+}
+
+void SimulationMap::modify(SubjectCallbackQ && query) {
+  auto subject = select(query.select);
+  if (subject) {
+    query.callback(subject, query.getData());
+  }
 }

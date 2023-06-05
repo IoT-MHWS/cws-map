@@ -29,6 +29,9 @@ private:
     QueueUP<AirInsertQuery> airQueries;
     mutable std::mutex airQMutex;
 
+    QueueUP<SubjectCallbackQ> callbQueries;
+    mutable std::mutex callbMutex;
+
     Optional<Dimension> dimension;// if set then new map creation request
     mutable std::mutex dimensionMutex;
   } in;
@@ -53,6 +56,7 @@ public:
 
   void addModifyQuery(std::unique_ptr<SubjectModifyQuery> && query);
   void addModifyQuery(std::unique_ptr<AirInsertQuery> && query);
+  void addModifyQuery(std::unique_ptr<SubjectCallbackQ> && query);
 
 private:
   SimulationStateIn masterGetState();
@@ -64,6 +68,9 @@ private:
 
   std::pair<std::unique_lock<std::mutex> &&, QueueUP<AirInsertQuery> &>
   masterAccessAirMQs();
+
+  std::pair<std::unique_lock<std::mutex> &&, QueueUP<SubjectCallbackQ> &>
+  masterAccessCallbackMQs();
 
   void masterSet(const SimulationState & state, const SimulationMap * map);
   void masterSet(const SimulationState & state);

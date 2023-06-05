@@ -562,3 +562,10 @@ std::unique_ptr<Air::Plain> fromAirPlain(const pb::air::Plain & in) {
   return std::make_unique<Air::Plain>(std::move(*base), id.idx,
                                       in.heat_transfer_coef());
 }
+
+std::unique_ptr<Network::Packet> fromPacket(const cwspb::network::Packet & in) {
+  auto & inStr = in.content();
+  const std::byte * byteA = reinterpret_cast<const std::byte *>(inStr.data());
+  std::vector<std::byte> byteV(byteA, byteA + inStr.size());
+  return std::make_unique<Network::Packet>(std::move(byteV));
+}

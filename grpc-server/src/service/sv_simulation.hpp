@@ -1,6 +1,7 @@
 #pragma once
 
 #include "converters.hpp"
+#include "service/verify.hpp"
 #include "cws/simulation/interface.hpp"
 #include "cwspb/service/sv_simulation.grpc.pb.h"
 #include <grpcpp/support/status.h>

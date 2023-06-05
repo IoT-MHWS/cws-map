@@ -35,6 +35,11 @@ void SimulationInterface::addModifyQuery(std::unique_ptr<AirInsertQuery> && quer
   in.airQueries.push(std::move(query));
 }
 
+void SimulationInterface::addModifyQuery(std::unique_ptr<SubjectCallbackQ> && query) {
+  std::unique_lock lock(in.callbMutex);
+  in.callbQueries.push(std::move(query));
+}
+
 SimulationStateIn SimulationInterface::masterGetState() {
   std::unique_lock lock(in.stateMutex);
   auto prev = this->in.state;
@@ -82,4 +87,11 @@ std::pair<std::unique_lock<std::mutex> &&,
 SimulationInterface::masterAccessAirMQs() {
   std::unique_lock lock(in.airQMutex);
   return std::make_pair(std::move(lock), std::ref(in.airQueries));
+}
+
+std::pair<std::unique_lock<std::mutex> &&,
+          SimulationInterface::QueueUP<SubjectCallbackQ> &>
+SimulationInterface::masterAccessCallbackMQs() {
+  std::unique_lock lock(in.callbMutex);
+  return std::make_pair(std::move(lock), std::ref(in.callbQueries));
 }

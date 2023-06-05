@@ -1,6 +1,7 @@
 #pragma once
 
 #include "converters.hpp"
+#include "service/verify.hpp"
 #include "cws/simulation/interface.hpp"
 #include "cwspb/service/sv_map.grpc.pb.h"
 #include <grpcpp/support/status.h>
@@ -224,28 +225,4 @@ public:
   }
 
 private:
-  bool verifyMapCreated(const std::shared_ptr<const Map> & map,
-                        cwspb::Response & response) {
-    bool bad = !map;
-    auto status = response.mutable_status();
-
-    if (bad) {
-      status->set_text("map is not created");
-      status->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
-    }
-    return !bad;
-  }
-
-  bool verifyCoordinates(const Coordinates & coord, const Dimension & dimension,
-                         cwspb::Response & response) {
-    bool bad = (coord.x >= dimension.width || coord.x < 0 ||
-                coord.y >= dimension.height || coord.y < 0);
-    auto status = response.mutable_status();
-
-    if (bad) {
-      status->set_text("coordinates out of bounds");
-      status->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
-    }
-    return !bad;
-  }
 };

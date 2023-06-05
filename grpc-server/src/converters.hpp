@@ -6,6 +6,7 @@
 #include "cws/simulation/general.hpp"
 #include "cws/simulation/simulation_map.hpp"
 #include "cws/simulation/state.hpp"
+#include "cws/subject/extension/turnable.hpp"
 #include "cwspb/common.pb.h"
 #include "cwspb/map.pb.h"
 #include "cwspb/service/common.pb.h"
@@ -64,6 +65,7 @@ Subject::Type fromSubjectType(const cwspb::subject::Any & in);
 Subject::Id fromSubjectId(const cwspb::subject::Id & id);
 void fromSubjectId(Subject::Id & outId, Coordinates & outC,
                    const cwspb::SubjectId & id);
+Subject::TurnableStatus fromTurnableStatus(int in);
 std::unique_ptr<Subject::Plain> fromSubjectAny(const cwspb::subject::Any & in);
 
 SubjectModifyType fromSubjectModifyType(cwspb::SubjectModifyType type);
@@ -72,3 +74,5 @@ Air::Id fromAirId(const cwspb::air::Id & id);
 void fromAirId(Air::Id & outId, Coordinates & outC,
                    const cwspb::AirId & id);
 std::unique_ptr<Air::Plain> fromAirPlain(const cwspb::air::Plain & in);
+
+std::unique_ptr<Network::Packet> fromPacket(const cwspb::network::Packet & in);

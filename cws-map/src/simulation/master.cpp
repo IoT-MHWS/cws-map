@@ -167,6 +167,18 @@ void SimulationMaster::updateMap() {
 #endif
     }
   }
+  {
+    auto [qlock, callbMQs] = interface.masterAccessCallbackMQs();
+
+    while (!callbMQs.empty()) {
+      const auto & callbMQ = callbMQs.front();
+      nextMap->modify(std::move(*callbMQ));
+      callbMQs.pop();
+#ifndef NDEBUG
+      std::cout << "master: callback query processed." << std::endl;
+#endif
+    }
+  }
 }
 
 // makes current and next state map the same
