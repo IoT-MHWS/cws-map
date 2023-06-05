@@ -142,15 +142,30 @@ void SimulationMaster::updateMap() {
     return;
   }
 
-  auto [qlock, subMQs] = interface.masterAccessSubjectMQs();
+  {
+    auto [qlock, subMQs] = interface.masterAccessSubjectMQs();
 
-  while (!subMQs.empty()) {
-    const auto & subMQ = subMQs.front();
-    nextMap->setModifyQuery(std::move(*subMQ));
-    subMQs.pop();
+    while (!subMQs.empty()) {
+      const auto & subMQ = subMQs.front();
+      nextMap->modify(std::move(*subMQ));
+      subMQs.pop();
 #ifndef NDEBUG
-    std::cout << "master: update query processed." << std::endl;
+      std::cout << "master: subject query processed." << std::endl;
 #endif
+    }
+  }
+
+  {
+    auto [qlock, airMQs] = interface.masterAccessAirMQs();
+
+    while (!airMQs.empty()) {
+      const auto & airMQ = airMQs.front();
+      nextMap->modify(std::move(*airMQ));
+      airMQs.pop();
+#ifndef NDEBUG
+      std::cout << "master: air query processed." << std::endl;
+#endif
+    }
   }
 }
 

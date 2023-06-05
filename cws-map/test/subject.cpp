@@ -21,8 +21,8 @@ TEST(Subject, TurnableLightEmitter) {
   EXPECT_EQ(2, emitter.getHeatCapacity());
   EXPECT_EQ(3, emitter.getTemperature().get());
   EXPECT_EQ(4, emitter.getDefLightObstruction().get());
-  EXPECT_EQ(1, emitter.getSubjectId().idx);
-  EXPECT_EQ(emitter.getSubjectId().type, Type::TURNABLE_LIGHT_EMITTER);
+  EXPECT_EQ(1, emitter.getId().idx);
+  EXPECT_EQ(emitter.getId().type, Type::TURNABLE_LIGHT_EMITTER);
   EXPECT_EQ(5, emitter.getSurfaceArea());
   EXPECT_EQ(0.5, emitter.getDefAirObstruction().get());
   EXPECT_EQ(10, emitter.getDefLightParams().rawIllumination.get());
@@ -162,6 +162,6 @@ TEST(SubjectLightCamera, getVisibleSubjectsUSE) {
 
   auto visSubs = camera->getVisibleSubjects();
   for (const auto & [coord, sub] : visSubs) {
-    std::cout << coord << " " << (int)sub.getSubjectId().type << std::endl;
+    std::cout << coord << " " << (int)sub.getId().type << std::endl;
   }
 }

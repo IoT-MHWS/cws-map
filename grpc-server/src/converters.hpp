@@ -41,6 +41,7 @@ void toWirelessContainer(cwspb::network::WirelessContainer & out,
 
 void toAirPlain(cwspb::air::Plain & out, const Air::Plain & in);
 void toAirId(cwspb::air::Id & out, const Air::Id & in);
+void toAirId(cwspb::AirId & out, const Air::Id & in, Coordinates c);
 int toAirType(Air::Type in);
 
 void toSubjectAny(cwspb::subject::Any & out, const Subject::Plain & in);
@@ -66,3 +67,8 @@ void fromSubjectId(Subject::Id & outId, Coordinates & outC,
 std::unique_ptr<Subject::Plain> fromSubjectAny(const cwspb::subject::Any & in);
 
 SubjectModifyType fromSubjectModifyType(cwspb::SubjectModifyType type);
+
+Air::Id fromAirId(const cwspb::air::Id & id);
+void fromAirId(Air::Id & outId, Coordinates & outC,
+                   const cwspb::AirId & id);
+std::unique_ptr<Air::Plain> fromAirPlain(const cwspb::air::Plain & in);

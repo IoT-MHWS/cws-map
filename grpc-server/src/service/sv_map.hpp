@@ -128,14 +128,13 @@ public:
     Subject::Id id = fromSubjectId(request->id().id());
 
     SubjectSelectQuery query(coord, id);
-    auto res = map->selectSubject(std::move(query));
+    auto res = map->select(std::move(query));
 
     if (res == nullptr) {
       auto status = respBase.mutable_status();
       status->set_text("subject doesn't exist");
       status->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
     } else {
-      toSubjectId(*response->mutable_id(), res->getSubjectId(), coord);
       toSubjectAny(*response->mutable_subject(), *res);
     }
 
@@ -162,8 +161,64 @@ public:
     }
 
     auto subject = fromSubjectAny(request->subject());
-    interface.addQuerySet(std::make_unique<SubjectModifyQuery>(queryType, coordinates,
+    interface.addModifyQuery(std::make_unique<SubjectModifyQuery>(queryType, coordinates,
                                                                std::move(subject)));
+
+    return grpc::Status::OK;
+  }
+
+  grpc::Status GetAir(::grpc::ServerContext * context,
+                      const cwspb::RequestSelectAir * request,
+                      cwspb::ResponseSelectAir * response) override {
+    auto & respBase = *response->mutable_base();
+
+    auto map = interface.getMap();
+    if (!verifyMapCreated(map, respBase)) {
+      return grpc::Status::OK;
+    }
+
+    auto dimension = map->getDimension();
+
+    Coordinates coord = fromCoordinates(request->id().coordinates());
+    if (!verifyCoordinates(coord, dimension, respBase)) {
+      return grpc::Status::OK;
+    }
+
+    Air::Id id = fromAirId(request->id().id());
+
+    AirSelectQuery query(coord, id);
+    auto res = map->select(std::move(query));
+
+    if (res == nullptr) {
+      auto status = respBase.mutable_status();
+      status->set_text("subject doesn't exist");
+      status->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
+    } else {
+      toAirPlain(*response->mutable_air(), *res);
+    }
+
+    return grpc::Status::OK;
+  }
+
+  grpc::Status InsertAir(::grpc::ServerContext * context,
+                         const cwspb::RequestInsertAir * request,
+                         cwspb::Response * response) override {
+
+    auto map = interface.getMap();
+    if (!verifyMapCreated(map, *response)) {
+      return grpc::Status::OK;
+    }
+
+    Coordinates coordinates = fromCoordinates(request->coordinates());
+    if (!verifyCoordinates(coordinates, map->getDimension(), *response)) {
+      return grpc::Status::OK;
+    }
+
+    auto air = fromAirPlain(request->air());
+    std::cout << air->getId() << std::endl;
+
+    interface.addModifyQuery(
+        std::make_unique<AirInsertQuery>(coordinates, std::move(air)));
 
     return grpc::Status::OK;
   }

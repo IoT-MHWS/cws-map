@@ -27,6 +27,22 @@ public:
   SubjectSelectQuery(Coordinates c, Subject::Id id) : coordinates(c), id(id) {}
 };
 
+struct AirInsertQuery final {
+  Coordinates coordinates;
+  std::unique_ptr<Air::Plain> air;
+
+  AirInsertQuery(Coordinates coordinates, std::unique_ptr<Air::Plain> && air)
+      : coordinates(coordinates), air(std::move(air)) {}
+};
+
+struct AirSelectQuery final {
+  Coordinates coordinates;
+  Air::Id id;
+
+public:
+  AirSelectQuery(Coordinates c, Air::Id id) : coordinates(c), id(id) {}
+};
+
 /*
  * Map with extended feature to update map from queries
  */
@@ -37,11 +53,15 @@ public:
 
   virtual SimulationMap * clone() { return new SimulationMap(*this); }
 
-  void setModifyQuery(SubjectModifyQuery && query);
-  const Subject::Plain * selectSubject(const SubjectSelectQuery & query) const;
+  void modify(SubjectModifyQuery && query);
+  const Subject::Plain * select(const SubjectSelectQuery & query) const;
+
+  void modify(AirInsertQuery && query);
+  const Air::Plain * select(const AirSelectQuery & query) const;
 
 private:
-  void modifyQueryInsert(SubjectModifyQuery && query);
-  void modifyQueryUpdate(SubjectModifyQuery && query);
-  void modifyQueryDelete(SubjectModifyQuery && query);
+  void modifyInsert(SubjectModifyQuery && query);
+  void modifyInsert(AirInsertQuery && query);
+  void modifyUpdate(SubjectModifyQuery && query);
+  void modifyDelete(SubjectModifyQuery && query);
 };

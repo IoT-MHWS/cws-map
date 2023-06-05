@@ -25,9 +25,14 @@ std::shared_ptr<const SimulationMap> SimulationInterface::getMap() const {
   return out.map;
 }
 
-void SimulationInterface::addQuerySet(std::unique_ptr<SubjectModifyQuery> && query) {
-  std::unique_lock lock(in.queueMutex);
-  in.queries.push(std::move(query));
+void SimulationInterface::addModifyQuery(std::unique_ptr<SubjectModifyQuery> && query) {
+  std::unique_lock lock(in.subQMutex);
+  in.subQueries.push(std::move(query));
+}
+
+void SimulationInterface::addModifyQuery(std::unique_ptr<AirInsertQuery> && query) {
+  std::unique_lock lock(in.airQMutex);
+  in.airQueries.push(std::move(query));
 }
 
 SimulationStateIn SimulationInterface::masterGetState() {
@@ -68,6 +73,13 @@ void SimulationInterface::masterSet(const SimulationState & state) {
 std::pair<std::unique_lock<std::mutex> &&,
           SimulationInterface::QueueUP<SubjectModifyQuery> &>
 SimulationInterface::masterAccessSubjectMQs() {
-  std::unique_lock lock(in.queueMutex);
-  return std::make_pair(std::move(lock), std::ref(in.queries));
+  std::unique_lock lock(in.subQMutex);
+  return std::make_pair(std::move(lock), std::ref(in.subQueries));
+}
+
+std::pair<std::unique_lock<std::mutex> &&,
+          SimulationInterface::QueueUP<AirInsertQuery> &>
+SimulationInterface::masterAccessAirMQs() {
+  std::unique_lock lock(in.airQMutex);
+  return std::make_pair(std::move(lock), std::ref(in.airQueries));
 }

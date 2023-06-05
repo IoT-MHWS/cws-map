@@ -48,7 +48,7 @@ void MapLayerSubject::setupSubject(Subject::Plain & subject, Coordinates c,
                                    const MapLayerIllumination & illuminationLayer) {
   using namespace Subject;
 
-  switch (subject.getSubjectId().type) {
+  switch (subject.getId().type) {
   case Type::INFRARED_CAMERA: {
     static_cast<InfraredCamera &>(subject).setup(c, *this, obstructionLayer);
     break;

@@ -140,11 +140,16 @@ void toAirId(pb::air::Id & out, const Air::Id & in) {
   out.set_idx(in.idx);
 }
 
+void toAirId(pb::AirId & out, const Air::Id & id, Coordinates c) {
+  toAirId(*out.mutable_id(), id);
+  toCoordinates(*out.mutable_coordinates(), c);
+}
+
 int toAirType(Air::Type in) { return static_cast<int>(in); }
 
 void toSubject(pb::subject::Plain & out, const Subject::Plain & in) {
   toPhysical(*out.mutable_base(), in);
-  toSubjectId(*out.mutable_id(), in.getSubjectId());
+  toSubjectId(*out.mutable_id(), in.getId());
   out.set_surface_area(in.getSurfaceArea());
   toObstruction(*out.mutable_air_obstruction(), in.getDefAirObstruction());
 }
@@ -237,7 +242,7 @@ void toSubject(pb::subject::WirelessNetworkDevice & out,
 void toSubjectAny(pb::subject::Any & out, const Subject::Plain & in) {
   using namespace Subject;
 
-  auto type = in.getSubjectId().type;
+  auto type = in.getId().type;
   switch (type) {
   case Type::PLAIN:
     return toSubject(*out.mutable_plain(), in);
@@ -392,8 +397,8 @@ std::unique_ptr<Physical> fromPhysical(const pb::Physical & in) {
 
 std::unique_ptr<Subject::Plain> fromSubject(const pb::subject::Plain & in) {
   auto base = fromPhysical(in.base());
-  return std::make_unique<Subject::Plain>(std::move(*base), in.id().idx(),
-                                          in.surface_area(),
+  auto id = fromSubjectId(in.id());
+  return std::make_unique<Subject::Plain>(std::move(*base), id.idx, in.surface_area(),
                                           fromObstruction(in.air_obstruction()));
 }
 
@@ -536,4 +541,24 @@ SubjectModifyType fromSubjectModifyType(pb::SubjectModifyType type) {
   default:
     return SubjectModifyType::UNSPECIFIED;
   }
+}
+
+Air::Type fromAirType(int in) { return static_cast<Air::Type>(in); }
+
+Air::Id fromAirId(const cwspb::air::Id & id) {
+  Air::Id out;
+  out.idx = id.idx();
+  out.type = fromAirType(id.type());
+  return out;
+}
+void fromAirId(Air::Id & outId, Coordinates & outC, const cwspb::AirId & id) {
+  outId = fromAirId(id.id());
+  outC = fromCoordinates(id.coordinates());
+}
+
+std::unique_ptr<Air::Plain> fromAirPlain(const pb::air::Plain & in) {
+  auto base = fromPhysical(in.base());
+  auto id = fromAirId(in.id());
+  return std::make_unique<Air::Plain>(std::move(*base), id.idx,
+                                      in.heat_transfer_coef());
 }

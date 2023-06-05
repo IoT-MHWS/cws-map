@@ -32,7 +32,7 @@ public:
   virtual Plain * clone() const { return new Plain(*this); }
 
 public:
-  Id getSubjectId() const { return id_; }
+  Id getId() const { return id_; }
   double getSurfaceArea() const { return surfaceArea_; }
 
   Obstruction getDefAirObstruction() const { return defAirObstruction_; }
