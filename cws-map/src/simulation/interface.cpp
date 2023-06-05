@@ -65,7 +65,8 @@ void SimulationInterface::masterSet(const SimulationState & state) {
   this->out.state = state;
 }
 
-std::pair<std::unique_lock<std::mutex> &&, SimulationInterface::QueueUP<SubjectModifyQuery> &>
+std::pair<std::unique_lock<std::mutex> &&,
+          SimulationInterface::QueueUP<SubjectModifyQuery> &>
 SimulationInterface::masterAccessSubjectMQs() {
   std::unique_lock lock(in.queueMutex);
   return std::make_pair(std::move(lock), std::ref(in.queries));

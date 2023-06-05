@@ -59,7 +59,7 @@ Coordinates fromCoordinates(const cwspb::Coordinates & coord);
 Temperature fromTemperature(const cwspb::Temperature & in);
 
 Subject::Type fromSubjectType(int in);
-Subject::Type fromSubjectType(const cwspb::subject::Any &in);
+Subject::Type fromSubjectType(const cwspb::subject::Any & in);
 Subject::Id fromSubjectId(const cwspb::subject::Id & id);
 void fromSubjectId(Subject::Id & outId, Coordinates & outC,
                    const cwspb::SubjectId & id);
