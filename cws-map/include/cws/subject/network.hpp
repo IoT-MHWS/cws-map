@@ -14,9 +14,7 @@ protected:
   std::list<PacketUPTR> receivedPackets_;
 
 public:
-  NetworkDevice(Plain && plain, Network::Type networkType) : Plain(std::move(plain)) {
-    setType(Type::NETWORK_DEVICE);
-  }
+  NetworkDevice(Plain && plain, Network::Type networkType) : Plain(std::move(plain)) {}
 
   virtual void transmitPackets(
       std::list<std::unique_ptr<Network::Packet>> && containerList) override;

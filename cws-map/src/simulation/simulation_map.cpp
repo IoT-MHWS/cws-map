@@ -1,44 +1,43 @@
 #include "cws/simulation/simulation_map.hpp"
 #include "cws/subject/plain.hpp"
 
-void SimulationMap::setQuery(SubjectQuery && query) {
+void SimulationMap::setModifyQuery(SubjectModifyQuery && query) {
   switch (query.queryType) {
-  case SubjectQueryType::INSERT:
-    setQueryInsert(std::move(query));
+  case SubjectModifyType::INSERT:
+    modifyQueryInsert(std::move(query));
     break;
-  case SubjectQueryType::UPDATE:
-    setQueryUpdate(std::move(query));
+  case SubjectModifyType::UPDATE:
+    modifyQueryUpdate(std::move(query));
     break;
-  case SubjectQueryType::DELETE:
-    setQueryDelete(std::move(query));
+  case SubjectModifyType::DELETE:
+    modifyQueryDelete(std::move(query));
     break;
   default:
     break;
   }
 }
 
-const Subject::Plain * SimulationMap::getQuery(const SubjectQuery & query) const {
-  if (query.queryType == SubjectQueryType::SELECT) {
-    auto & subjectLayer = layers.subjectLayer;
-    auto & cell = subjectLayer.getCell(query.coordinates);
-    auto & subjectList = cell.getElement().getSubjectList();
+const Subject::Plain *
+SimulationMap::selectSubject(const SubjectSelectQuery & query) const {
+  auto & subjectLayer = layers.subjectLayer;
+  auto & cell = subjectLayer.getCell(query.coordinates);
+  auto & subjectList = cell.getElement().getSubjectList();
 
-    for (auto it = subjectList.begin(); it != subjectList.end(); ++it) {
-      if ((*it)->getSubjectId() == query.subject->getSubjectId()) {
-        return it->get();
-      }
+  for (auto it = subjectList.begin(); it != subjectList.end(); ++it) {
+    if ((*it)->getSubjectId() == query.id) {
+      return it->get();
     }
   }
   return nullptr;
 }
 
-void SimulationMap::setQueryInsert(SubjectQuery && query) {
+void SimulationMap::modifyQueryInsert(SubjectModifyQuery && query) {
   auto & subjectLayer = layers.subjectLayer;
   auto & cell = subjectLayer.accessCell(query.coordinates);
-  cell.accessElement().accessSubjectList().push_back(std::move(query.subject));
+  cell.accessElement().accessSubjectList().push_front(std::move(query.subject));
 }
 
-void SimulationMap::setQueryUpdate(SubjectQuery && query) {
+void SimulationMap::modifyQueryUpdate(SubjectModifyQuery && query) {
   auto & subjectLayer = layers.subjectLayer;
   auto & cell = subjectLayer.accessCell(query.coordinates);
   auto & subjectList = cell.accessElement().accessSubjectList();
@@ -50,7 +49,7 @@ void SimulationMap::setQueryUpdate(SubjectQuery && query) {
     }
   }
 }
-void SimulationMap::setQueryDelete(SubjectQuery && query) {
+void SimulationMap::modifyQueryDelete(SubjectModifyQuery && query) {
   auto & subjectLayer = layers.subjectLayer;
   auto & cell = subjectLayer.accessCell(query.coordinates);
   auto & subjectList = cell.accessElement().accessSubjectList();

@@ -142,12 +142,12 @@ void SimulationMaster::updateMap() {
     return;
   }
 
-  auto [qlock, queries] = interface.masterAccessQueries();
+  auto [qlock, subMQs] = interface.masterAccessSubjectMQs();
 
-  while (!queries.empty()) {
-    const auto & query = queries.front();
-    nextMap->setQuery(std::move(*query));
-    queries.pop();
+  while (!subMQs.empty()) {
+    const auto & subMQ = subMQs.front();
+    nextMap->setModifyQuery(std::move(*subMQ));
+    subMQs.pop();
 #ifndef NDEBUG
     std::cout << "master: update query processed." << std::endl;
 #endif

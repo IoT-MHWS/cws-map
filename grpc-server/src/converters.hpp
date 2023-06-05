@@ -4,13 +4,16 @@
 #include "cws/common.hpp"
 #include "cws/map.hpp"
 #include "cws/simulation/general.hpp"
+#include "cws/simulation/simulation_map.hpp"
 #include "cws/simulation/state.hpp"
 #include "cwspb/common.pb.h"
 #include "cwspb/map.pb.h"
+#include "cwspb/service/common.pb.h"
+#include "cwspb/service/sv_map.pb.h"
 #include "cwspb/service/sv_simulation.pb.h"
 
-cwspb::SimulationStatus toSimulationStatus(const SimulationStatus status);
-cwspb::SimulationType toSimulationType(const SimulationType type);
+int toSimulationStatus(const SimulationStatus status);
+int toSimulationType(const SimulationType type);
 void toSimulationState(cwspb::SimulationState & out, const struct SimulationState & in);
 
 void toDimension(cwspb::Dimension & out, const Dimension & in);
@@ -38,15 +41,16 @@ void toWirelessContainer(cwspb::network::WirelessContainer & out,
 
 void toAirPlain(cwspb::air::Plain & out, const Air::Plain & in);
 void toAirId(cwspb::air::Id & out, const Air::Id & in);
-cwspb::air::Type toAirType(Air::Type in);
+int toAirType(Air::Type in);
 
 void toSubjectAny(cwspb::subject::Any & out, const Subject::Plain & in);
 void toSubjectId(cwspb::subject::Id & out, const Subject::Id & id);
-cwspb::subject::Type toSubjectType(Subject::Type in);
+void toSubjectId(cwspb::SubjectId & out, const Subject::Id & id, Coordinates c);
+int toSubjectType(Subject::Type in);
 
 // From
-SimulationStatus fromSimulationStatus(const cwspb::SimulationStatus status);
-SimulationType fromSimulationType(const cwspb::SimulationType type);
+SimulationStatus fromSimulationStatus(const int status);
+SimulationType fromSimulationType(const int type);
 SimulationStateIn fromSimulationState(const cwspb::SimulationState & in);
 
 Dimension fromDimension(const cwspb::Dimension & in);
@@ -54,25 +58,11 @@ Dimension fromDimension(const cwspb::Dimension & in);
 Coordinates fromCoordinates(const cwspb::Coordinates & coord);
 Temperature fromTemperature(const cwspb::Temperature & in);
 
-// Subject::Type fromSubjectType(cwspb::SubjectType in);
-// Subject::Type fromSubjectType(const cwspb::SubjectDerived & in);
-// Id fromSubjectId(const cwspb::SubjectId & id, cwspb::SubjectType type);
-// PlainParams fromSubjectParameters(const cwspb::Subject & in);
-// std::unique_ptr<Subject> fromSubjectDerived(const cwspb::SubjectDerived & in);
-// std::unique_ptr<Subject> fromSubject(const cwspb::Subject & in, SubjectType type);
+Subject::Type fromSubjectType(int in);
+Subject::Type fromSubjectType(const cwspb::subject::Any &in);
+Subject::Id fromSubjectId(const cwspb::subject::Id & id);
+void fromSubjectId(Subject::Id & outId, Coordinates & outC,
+                   const cwspb::SubjectId & id);
+std::unique_ptr<Subject::Plain> fromSubjectAny(const cwspb::subject::Any & in);
 
-// std::unique_ptr<SubjectPlain> fromSubjectPlain(const cwspb::SubjectPlain & in);
-
-// InteractionStateType fromInteractionStateType(const cwspb::InteractionStateType
-// type); std::unique_ptr<SubjectInteractive> fromSubjectInteractive(const
-// cwspb::SubjectInteractive & in);
-
-// SensorType fromSensorType(const cwspb::SubjectSensorDerived & in);
-// std::unique_ptr<SubjectSensor>
-// fromSubjectSensorDerived(const cwspb::SubjectSensorDerived & in);
-// std::unique_ptr<SubjectSensor> fromSubjectSensor(const cwspb::SubjectSensor & in,
-//                                                  SensorType type);
-// std::unique_ptr<SensorTemperature>
-// fromSensorTemperature(const cwspb::SensorTemperature & in);
-
-// SubjectQueryType fromSubjectQueryType(cwspb::SubjectQueryType type);
+SubjectModifyType fromSubjectModifyType(cwspb::SubjectModifyType type);

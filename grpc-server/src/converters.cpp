@@ -1,5 +1,6 @@
 #include "converters.hpp"
 
+#include "cws/simulation/simulation_map.hpp"
 #include "cws/subject/camera.hpp"
 #include "cws/subject/light_emitter.hpp"
 #include "cws/subject/network.hpp"
@@ -9,28 +10,11 @@
 
 namespace pb = cwspb;
 
-// To
-pb::SimulationStatus toSimulationStatus(const SimulationStatus status) {
-  switch (status) {
-  case SimulationStatus::RUNNING:
-    return pb::SimulationStatus::SIMULATION_STATUS_RUNNING;
-  case SimulationStatus::STOPPED:
-    return pb::SimulationStatus::SIMULATION_STATUS_STOPPED;
-  default:
-    return pb::SimulationStatus::SIMULATION_STATUS_UNSPECIFIED;
-  }
+int toSimulationStatus(const SimulationStatus status) {
+  return static_cast<int>(status);
 }
 
-pb::SimulationType toSimulationType(const SimulationType type) {
-  switch (type) {
-  case SimulationType::LIMITED:
-    return pb::SimulationType::SIMULATION_TYPE_LIMITED;
-  case SimulationType::INFINITE:
-    return pb::SimulationType::SIMULATION_TYPE_INFINITE;
-  default:
-    return pb::SimulationType::SIMULATION_TYPE_UNSPECIFIED;
-  }
-}
+int toSimulationType(const SimulationType type) { return static_cast<int>(type); }
 
 void toSimulationState(pb::SimulationState & out, const struct SimulationState & in) {
   out.set_status(toSimulationStatus(in.status));
@@ -156,14 +140,7 @@ void toAirId(pb::air::Id & out, const Air::Id & in) {
   out.set_idx(in.idx);
 }
 
-pb::air::Type toAirType(Air::Type in) {
-  switch (in) {
-  case Air::Type::PLAIN:
-    return pb::air::TYPE_PLAIN;
-  default:
-    return pb::air::TYPE_UNSPECIFIED;
-  }
-}
+int toAirType(Air::Type in) { return static_cast<int>(in); }
 
 void toSubject(pb::subject::Plain & out, const Subject::Plain & in) {
   toPhysical(*out.mutable_base(), in);
@@ -182,17 +159,7 @@ void toSubject(pb::subject::TempEmitter & out, const Subject::TempEmitter & in) 
   toTempSourceParams(*out.mutable_temp_params(), in.getDefTempParams());
 }
 
-pb::subject::TurnableStatus toTurnableStatus(Subject::TurnableStatus in) {
-  using namespace pb::subject;
-  switch (in) {
-  case Subject::TurnableStatus::ON:
-    return TurnableStatus::TURNABLE_STATUS_ON;
-  case Subject::TurnableStatus::OFF:
-    return TurnableStatus::TURNABLE_STATUS_OFF;
-  default:
-    return TurnableStatus::TURNABLE_STATUS_UNSPECIFIED;
-  }
-}
+int toTurnableStatus(Subject::TurnableStatus in) { return static_cast<int>(in); }
 
 void toSubject(pb::subject::TurnableTempEmitter & out,
                const Subject::TurnableTempEmitter & in) {
@@ -217,16 +184,6 @@ void toSubject(pb::subject::TurnableLightEmitter & out,
   out.set_turnable_status(toTurnableStatus(in.getStatus()));
   toTempSourceParams(*out.mutable_off_temp_params(), in.getOffTempParams());
   toLightSourceParams(*out.mutable_off_light_params(), in.getOffLightParams());
-}
-
-void toSubject(pb::subject::NetworkDevice & out, const Subject::NetworkDevice & in) {
-  toSubject(*out.mutable_base(), in);
-  for (const auto & packet : in.getTransmitPackets()) {
-    toPacket(*out.add_transmit_packets(), *packet);
-  }
-  for (const auto & packet : in.getReceivedPackets()) {
-    toPacket(*out.add_received_packets(), *packet);
-  }
 }
 
 void toSubject(pb::subject::BaseCamera & out, const Subject::BaseCamera & in) {
@@ -267,48 +224,50 @@ void toSubject(pb::subject::SensorIllumination & out,
 void toSubject(pb::subject::WirelessNetworkDevice & out,
                const Subject::WirelessNetworkDevice & in) {
   toSubject(*out.mutable_base(), in);
+  for (const auto & packet : in.getTransmitPackets()) {
+    toPacket(*out.add_transmit_packets(), *packet);
+  }
+  for (const auto & packet : in.getReceivedPackets()) {
+    toPacket(*out.add_received_packets(), *packet);
+  }
   out.set_transmit_power(in.getTransmitPower());
   out.set_receive_threshold(in.getReceiveThresh());
 }
 
 void toSubjectAny(pb::subject::Any & out, const Subject::Plain & in) {
   using namespace Subject;
-  namespace pbs = pb::subject;
 
-  auto type = toSubjectType(in.getSubjectId().type);
+  auto type = in.getSubjectId().type;
   switch (type) {
-  case pbs::Type::TYPE_PLAIN:
+  case Type::PLAIN:
     return toSubject(*out.mutable_plain(), in);
-  case pbs::Type::TYPE_TEMP_EMITTER:
+  case Type::TEMP_EMITTER:
     return toSubject(*out.mutable_temp_emitter(), static_cast<const TempEmitter &>(in));
-  case pbs::Type::TYPE_TURNABLE_TEMP_EMITTER:
+  case Type::TURNABLE_TEMP_EMITTER:
     return toSubject(*out.mutable_turnable_temp_emitter(),
                      static_cast<const TurnableTempEmitter &>(in));
-  case pbs::Type::TYPE_LIGHT_EMITTER:
+  case Type::LIGHT_EMITTER:
     return toSubject(*out.mutable_light_emitter(),
                      static_cast<const LightEmitter &>(in));
-  case pbs::Type::TYPE_TURNABLE_LIGHT_EMITTER:
+  case Type::TURNABLE_LIGHT_EMITTER:
     return toSubject(*out.mutable_turnable_light_emitter(),
                      static_cast<const TurnableLightEmitter &>(in));
-  case pbs::Type::TYPE_NETWORK_DEVICE:
-    return toSubject(*out.mutable_network_device(),
-                     static_cast<const NetworkDevice &>(in));
-  case pbs::Type::TYPE_INFRARED_CAMERA:
-    return toSubject(*out.mutable_infrared_camera(),
-                     static_cast<const InfraredCamera &>(in));
-  case pbs::Type::TYPE_LIGHT_CAMERA:
-    return toSubject(*out.mutable_light_camera(), static_cast<const LightCamera &>(in));
-  case pbs::Type::TYPE_TURNABLE:
-    return toSubject(*out.mutable_turnable(), static_cast<const Turnable &>(in));
-  case pbs::Type::TYPE_AIR_TEMPERATURE_SENSOR:
-    return toSubject(*out.mutable_sensor_air_temperature(),
-                     static_cast<const SensorAirTemperature &>(in));
-  case pbs::Type::TYPE_ILLUMINATION_SENSOR:
-    return toSubject(*out.mutable_sensor_illumination(),
-                     static_cast<const SensorIllumination &>(in));
-  case pbs::Type::TYPE_WIRELESS_NETWORK_DEVICE:
+  case Type::WIRELESS_NETWORK_DEVICE:
     return toSubject(*out.mutable_wireless_network_device(),
                      static_cast<const WirelessNetworkDevice &>(in));
+  case Type::INFRARED_CAMERA:
+    return toSubject(*out.mutable_infrared_camera(),
+                     static_cast<const InfraredCamera &>(in));
+  case Type::LIGHT_CAMERA:
+    return toSubject(*out.mutable_light_camera(), static_cast<const LightCamera &>(in));
+  case Type::TURNABLE:
+    return toSubject(*out.mutable_turnable(), static_cast<const Turnable &>(in));
+  case Type::AIR_TEMPERATURE_SENSOR:
+    return toSubject(*out.mutable_sensor_air_temperature(),
+                     static_cast<const SensorAirTemperature &>(in));
+  case Type::ILLUMINATION_SENSOR:
+    return toSubject(*out.mutable_sensor_illumination(),
+                     static_cast<const SensorIllumination &>(in));
   default:
     return;
   }
@@ -319,38 +278,12 @@ void toSubjectId(pb::subject::Id & out, const Subject::Id & id) {
   out.set_idx(id.idx);
 }
 
-pb::subject::Type toSubjectType(Subject::Type in) {
-  using namespace pb::subject;
-
-  switch (in) {
-  case Subject::Type::PLAIN:
-    return Type::TYPE_PLAIN;
-  case Subject::Type::TEMP_EMITTER:
-    return Type::TYPE_TEMP_EMITTER;
-  case Subject::Type::TURNABLE_TEMP_EMITTER:
-    return Type::TYPE_TURNABLE_TEMP_EMITTER;
-  case Subject::Type::LIGHT_EMITTER:
-    return Type::TYPE_LIGHT_EMITTER;
-  case Subject::Type::TURNABLE_LIGHT_EMITTER:
-    return Type::TYPE_TURNABLE_LIGHT_EMITTER;
-  case Subject::Type::NETWORK_DEVICE:
-    return Type::TYPE_NETWORK_DEVICE;
-  case Subject::Type::INFRARED_CAMERA:
-    return Type::TYPE_INFRARED_CAMERA;
-  case Subject::Type::LIGHT_CAMERA:
-    return Type::TYPE_LIGHT_CAMERA;
-  case Subject::Type::TURNABLE:
-    return Type::TYPE_TURNABLE;
-  case Subject::Type::AIR_TEMPERATURE_SENSOR:
-    return Type::TYPE_AIR_TEMPERATURE_SENSOR;
-  case Subject::Type::ILLUMINATION_SENSOR:
-    return Type::TYPE_ILLUMINATION_SENSOR;
-  case Subject::Type::WIRELESS_NETWORK_DEVICE:
-    return Type::TYPE_WIRELESS_NETWORK_DEVICE;
-  default:
-    return Type::TYPE_UNSPECIFIED;
-  }
+void toSubjectId(cwspb::SubjectId & out, const Subject::Id & id, Coordinates c) {
+  toSubjectId(*out.mutable_id(), id);
+  toCoordinates(*out.mutable_coordinates(), c);
 }
+
+int toSubjectType(Subject::Type in) { return static_cast<int>(in); }
 
 // void toSubjectDerived(pb::SubjectDerived & out, const Subject::Plain * subject) {
 //   switch (subject->getSubjectId().type) {
@@ -426,26 +359,12 @@ pb::subject::Type toSubjectType(Subject::Type in) {
 // }
 
 // From
-SimulationStatus fromSimulationStatus(const pb::SimulationStatus status) {
-  switch (status) {
-  case pb::SimulationStatus::SIMULATION_STATUS_RUNNING:
-    return SimulationStatus::RUNNING;
-  case pb::SimulationStatus::SIMULATION_STATUS_STOPPED:
-    return SimulationStatus::STOPPED;
-  default:
-    return SimulationStatus::STOPPED;
-  }
+SimulationStatus fromSimulationStatus(const int status) {
+  return static_cast<SimulationStatus>(status);
 }
 
-SimulationType fromSimulationType(const pb::SimulationType type) {
-  switch (type) {
-  case pb::SimulationType::SIMULATION_TYPE_LIMITED:
-    return SimulationType::LIMITED;
-  case pb::SimulationType::SIMULATION_TYPE_INFINITE:
-    return SimulationType::INFINITE;
-  default:
-    return SimulationType::LIMITED;
-  }
+SimulationType fromSimulationType(const int type) {
+  return static_cast<SimulationType>(type);
 }
 
 SimulationStateIn fromSimulationState(const pb::SimulationState & in) {
@@ -483,153 +402,211 @@ Temperature fromTemperature(const pb::Temperature & in) {
   return out;
 }
 
-// SubjectType fromSubjectType(pb::SubjectType in) {
-//   switch (in) {
-//   case pb::SubjectType::SUBJECT_TYPE_PLAIN:
-//     return SubjectType::PLAIN;
-//   case pb::SubjectType::SUBJECT_TYPE_INTERACTIVE:
-//     return SubjectType::INTERACTIVE;
-//   case pb::SubjectType::SUBJECT_TYPE_SENSOR:
-//     return SubjectType::SENSOR;
-//   case pb::SubjectType::SUBJECT_TYPE_UNSPECIFIED:
-//   default:
-//     return SubjectType::UNSPECIFIED;
-//   }
-// }
+Obstruction fromObstruction(const pb::Obstruction & in) {
+  Obstruction out;
+  out.value = in.value();
+  return out;
+}
 
-// SubjectType fromSubjectType(const pb::SubjectDerived & in) {
-//   if (in.has_plain())
-//     return SubjectType::PLAIN;
-//   else if (in.has_interactive())
-//     return SubjectType::INTERACTIVE;
-//   else if (in.has_sensor())
-//     return SubjectType::SENSOR;
-//   else
-//     return SubjectType::UNSPECIFIED;
-// }
+Illumination fromIllumination(const pb::Illumination & in) {
+  Illumination out;
+  out.value = in.value();
+  return out;
+}
 
-// Id fromSubjectId(const pb::SubjectId & id, pb::SubjectType type) {
-//   Id out;
-//   out.type = fromSubjectType(type);
-//   out.idx = id.id();
-//   return out;
-// }
+Subject::Id fromSubjectId(const pb::subject::Id & in) {
+  Subject::Id out;
+  out.idx = in.idx();
+  out.type = fromSubjectType(in.type());
+  return out;
+}
 
-// SubjectParameters fromSubjectParameters(const pb::Subject & in) {
-//   return {
-//       // .weight = in.weight(),
-//       // .heatCapacity = in.heat_capacity(),
-//       // .heatTransmission = fromPercentage(in.heat_transmission()),
-//       // .temperature = fromTemperature(in.temperature()),
-//       // .lightTransmission = fromPercentage(in.light_transmission()),
-//       // .humidityTransmission = fromPercentage(in.humidity_transmission()),
-//   };
-// }
+void fromSubjectId(Subject::Id & outId, Coordinates & outC,
+                   const cwspb::SubjectId & id) {
+  outId = fromSubjectId(id.id());
+  outC = fromCoordinates(id.coordinates());
+}
 
-// std::unique_ptr<Subject> fromSubjectDerived(const pb::SubjectDerived & in) {
-//   SubjectType outST = fromSubjectType(in);
-//   switch (outST) {
-//   case SubjectType::PLAIN:
-//     return fromSubjectPlain(in.plain());
-//   case SubjectType::INTERACTIVE:
-//     return fromSubjectInteractive(in.interactive());
-//   case SubjectType::SENSOR:
-//     return fromSubjectSensorDerived(in.sensor());
-//   case SubjectType::UNSPECIFIED:
-//   default:
-//     if (in.has_base()) {
-//       return fromSubject(in.base(), outST);
-//     } else {
-//       return std::unique_ptr<Subject>();
-//     }
-//   }
-// }
+Subject::Type fromSubjectType(int in) { return static_cast<Subject::Type>(in); }
 
-// std::unique_ptr<Subject> fromSubject(const pb::Subject & in, SubjectType type) {
-//   auto params = fromSubjectParameters(in);
-//   auto id = fromSubjectId(in.id(), toSubjectType(type));
-//   return std::make_unique<Subject>(id, params);
-// }
+// NOTE: may pass to proto type as separate field
+Subject::Type fromSubjectType(const cwspb::subject::Any & in) {
+  if (in.has_plain())
+    return Subject::Type::PLAIN;
+  if (in.has_temp_emitter())
+    return Subject::Type::TEMP_EMITTER;
+  if (in.has_turnable_temp_emitter())
+    return Subject::Type::TURNABLE_TEMP_EMITTER;
+  if (in.has_light_emitter())
+    return Subject::Type::LIGHT_EMITTER;
+  if (in.has_turnable_light_emitter())
+    return Subject::Type::TURNABLE_LIGHT_EMITTER;
+  if (in.has_wireless_network_device())
+    return Subject::Type::WIRELESS_NETWORK_DEVICE;
+  if (in.has_infrared_camera())
+    return Subject::Type::INFRARED_CAMERA;
+  if (in.has_light_camera())
+    return Subject::Type::LIGHT_CAMERA;
+  if (in.has_turnable())
+    return Subject::Type::TURNABLE;
+  if (in.has_sensor_air_temperature())
+    return Subject::Type::AIR_TEMPERATURE_SENSOR;
+  if (in.has_sensor_illumination())
+    return Subject::Type::ILLUMINATION_SENSOR;
+  return Subject::Type::UNSPECIFIED;
+}
 
-// std::unique_ptr<SubjectPlain> fromSubjectPlain(const pb::SubjectPlain & in) {
-//   auto idx = in.base().id().id();
-//   auto params = fromSubjectParameters(in.base());
-//   return std::make_unique<SubjectPlain>(idx, params);
-// }
+std::unique_ptr<Physical> fromPhysical(const pb::Physical & in) {
+  return std::make_unique<Physical>(in.weight(), in.heat_capacity(),
+                                    fromTemperature(in.temperature()),
+                                    fromObstruction(in.light_obstruction()),
+                                    fromObstruction(in.wireless_obstruction()));
+}
 
-// InteractionStateType fromInteractionStateType(const pb::InteractionStateType type)
-// {
-//   switch (type) {
-//   case pb::InteractionStateType::INTERACTION_STATE_TYPE_CLOSED:
-//     return InteractionStateType::DISABLED;
-//   case pb::InteractionStateType::INTERACTION_STATE_TYPE_OPENED:
-//     return InteractionStateType::ENABLED;
-//   case pb::InteractionStateType::INTERACTION_STATE_TYPE_UNSPECIFIED:
-//   default:
-//     return InteractionStateType::UNSPECIFIED;
-//   }
-// }
+std::unique_ptr<Subject::Plain> fromSubject(const pb::subject::Plain & in) {
+  auto base = fromPhysical(in.base());
+  return std::make_unique<Subject::Plain>(std::move(*base), in.id().idx(),
+                                          in.surface_area(),
+                                          fromObstruction(in.air_obstruction()));
+}
 
-// std::unique_ptr<SubjectInteractive>
-// fromSubjectInteractive(const pb::SubjectInteractive & in) {
-//   auto idx = in.base().id().id();
-//   auto params = fromSubjectParameters(in.base());
-//   auto ist = fromInteractionStateType(in.interaction_state_type());
-//   InteractiveState is{.type = ist};
-//   return std::make_unique<SubjectInteractive>(idx, params, is);
-// }
+Subject::TempSourceParams
+fromTempSourceParams(const pb::subject::TempSourceParams & in) {
+  return {.heatProduction = in.heat_production()};
+}
 
-// SensorType fromSensorType(const pb::SubjectSensorDerived & in) {
-//   if (in.has_temperature()) {
-//     return SensorType::TEMPERATURE;
-//   } else if (in.has_base()) {
-//     return SensorType::UNSPECIFIED;
-//   }
-//   return SensorType::UNSPECIFIED;
-// }
+Subject::LightSourceParams
+fromLightSourceParams(const pb::subject::LightSourceParams & in) {
+  return {.rawIllumination = fromIllumination(in.raw_illumination())};
+}
 
-// std::unique_ptr<SubjectSensor>
-// fromSubjectSensorDerived(const pb::SubjectSensorDerived & in) {
-//   SensorType type = fromSensorType(in);
-//   switch (type) {
-//   case SensorType::TEMPERATURE:
-//     return fromSensorTemperature(in.temperature());
-//   case SensorType::UNSPECIFIED:
-//   default:
-//     if (in.has_base()) {
-//       return fromSubjectSensor(in.base(), type);
-//     } else {
-//       return std::unique_ptr<SubjectSensor>();
-//     }
-//   }
-// }
-// std::unique_ptr<SubjectSensor> fromSubjectSensor(const pb::SubjectSensor & in,
-//                                                  SensorType type) {
-//   auto idx = in.base().id().id();
-//   auto params = fromSubjectParameters(in.base());
-//   return std::make_unique<SubjectSensor>(type, idx, params);
-// }
+std::unique_ptr<Subject::TempEmitter> fromSubject(const pb::subject::TempEmitter & in) {
+  auto base = fromSubject(in.base());
+  auto tempSP = fromTempSourceParams(in.temp_params());
+  return std::make_unique<Subject::TempEmitter>(std::move(*base), tempSP);
+}
 
-// std::unique_ptr<SensorTemperature>
-// fromSensorTemperature(const pb::SensorTemperature & in) {
-//   auto idx = in.base().base().id().id();
-//   auto params = fromSubjectParameters(in.base().base());
-//   auto temp = fromTemperature(in.temperature());
-//   return std::make_unique<SensorTemperature>(idx, params, temp);
-// }
+Subject::TurnableStatus fromTurnableStatus(int in) {
+  return static_cast<Subject::TurnableStatus>(in);
+}
 
-// SubjectQueryType fromSubjectQueryType(pb::SubjectQueryType type) {
-//   switch (type) {
-//   case pb::SubjectQueryType::SUBJECT_QUERY_TYPE_DELETE:
-//     return SubjectQueryType::DELETE;
-//   case pb::SubjectQueryType::SUBJECT_QUERY_TYPE_INSERT:
-//     return SubjectQueryType::INSERT;
-//   case pb::SubjectQueryType::SUBJECT_QUERY_TYPE_UPDATE:
-//     return SubjectQueryType::UPDATE;
-//   case pb::SubjectQueryType::SUBJECT_QUERY_TYPE_UNSPECIFIED:
-//     // case pb::SubjectQueryType::SUBJECT_QUERY_TYPE_SELECT:
-//     return SubjectQueryType::SELECT;
-//   default:
-//     return SubjectQueryType::UNSPECIFIED;
-//   }
-// }
+std::unique_ptr<Subject::TurnableTempEmitter>
+fromSubject(const pb::subject::TurnableTempEmitter & in) {
+  auto base = fromSubject(in.base());
+  auto turnS = fromTurnableStatus(in.turnable_status());
+  auto offTempSP = fromTempSourceParams(in.off_temp_params());
+  return std::make_unique<Subject::TurnableTempEmitter>(std::move(*base), turnS,
+                                                        offTempSP);
+}
+
+std::unique_ptr<Subject::LightEmitter>
+fromSubject(const pb::subject::LightEmitter & in) {
+  auto base = fromSubject(in.base());
+  auto tempSP = fromTempSourceParams(in.temp_params());
+  auto lightSP = fromLightSourceParams(in.light_params());
+  return std::make_unique<Subject::LightEmitter>(std::move(*base), tempSP, lightSP);
+}
+
+std::unique_ptr<Subject::TurnableLightEmitter>
+fromSubject(const pb::subject::TurnableLightEmitter & in) {
+  auto base = fromSubject(in.base());
+  auto turnS = fromTurnableStatus(in.turnable_status());
+  auto tempSP = fromTempSourceParams(in.off_temp_params());
+  auto lightSP = fromLightSourceParams(in.off_light_params());
+  return std::make_unique<Subject::TurnableLightEmitter>(std::move(*base), turnS,
+                                                         lightSP, tempSP);
+}
+
+std::unique_ptr<Subject::WirelessNetworkDevice>
+fromSubject(const pb::subject::WirelessNetworkDevice & in) {
+  auto base = fromSubject(in.base());
+  auto transP = in.transmit_power();
+  auto receivTH = in.receive_threshold();
+  return std::make_unique<Subject::WirelessNetworkDevice>(std::move(*base), transP,
+                                                          receivTH);
+}
+
+std::unique_ptr<Subject::InfraredCamera>
+fromSubject(const pb::subject::InfraredCamera & in) {
+  auto base = fromSubject(in.base().base());
+  auto power = in.base().power();
+  auto powerTH = in.base().power_threshold();
+  return std::make_unique<Subject::InfraredCamera>(std::move(*base), power, powerTH);
+}
+
+std::unique_ptr<Subject::LightCamera> fromSubject(const pb::subject::LightCamera & in) {
+  auto base = fromSubject(in.base().base());
+  auto power = in.base().power();
+  auto powerTH = in.base().power_threshold();
+  auto lightTH = in.light_threshold();
+  return std::make_unique<Subject::LightCamera>(std::move(*base), power, powerTH,
+                                                lightTH);
+}
+
+std::unique_ptr<Subject::Turnable> fromSubject(const pb::subject::Turnable & in) {
+  auto base = fromSubject(in.base());
+  auto status = fromTurnableStatus(in.turnable_status());
+  auto lightObs = fromObstruction(in.off_light_obs());
+  auto wirelessObs = fromObstruction(in.off_wireless_obs());
+  auto airObs = fromObstruction(in.off_air_obs());
+  return std::make_unique<Subject::Turnable>(std::move(*base), status, lightObs,
+                                             wirelessObs, airObs);
+}
+
+std::unique_ptr<Subject::SensorAirTemperature>
+fromSubject(const pb::subject::SensorAirTemperature & in) {
+  auto base = fromSubject(in.base());
+  return std::make_unique<Subject::SensorAirTemperature>(std::move(*base));
+}
+
+std::unique_ptr<Subject::SensorIllumination>
+fromSubject(const pb::subject::SensorIllumination & in) {
+  auto base = fromSubject(in.base());
+  return std::make_unique<Subject::SensorIllumination>(std::move(*base));
+}
+
+std::unique_ptr<Subject::Plain> fromSubjectAny(const pb::subject::Any & in) {
+  using namespace Subject;
+
+  auto outST = fromSubjectType(in);
+
+  switch (outST) {
+  case Type::PLAIN:
+    return fromSubject(in.plain());
+  case Type::TEMP_EMITTER:
+    return fromSubject(in.temp_emitter());
+  case Type::TURNABLE_TEMP_EMITTER:
+    return fromSubject(in.turnable_temp_emitter());
+  case Type::LIGHT_EMITTER:
+    return fromSubject(in.light_emitter());
+  case Type::TURNABLE_LIGHT_EMITTER:
+    return fromSubject(in.turnable_light_emitter());
+  case Type::WIRELESS_NETWORK_DEVICE:
+    return fromSubject(in.wireless_network_device());
+  case Type::INFRARED_CAMERA:
+    return fromSubject(in.infrared_camera());
+  case Type::LIGHT_CAMERA:
+    return fromSubject(in.light_camera());
+  case Type::TURNABLE:
+    return fromSubject(in.turnable());
+  case Type::AIR_TEMPERATURE_SENSOR:
+    return fromSubject(in.sensor_air_temperature());
+  case Type::ILLUMINATION_SENSOR:
+    return fromSubject(in.sensor_illumination());
+  default:
+    return std::unique_ptr<Subject::Plain>();
+  }
+}
+
+SubjectModifyType fromSubjectModifyType(pb::SubjectModifyType type) {
+  switch (type) {
+  case pb::SubjectModifyType::SUBJECT_MODIFY_TYPE_DELETE:
+    return SubjectModifyType::DELETE;
+  case pb::SubjectModifyType::SUBJECT_MODIFY_TYPE_INSERT:
+    return SubjectModifyType::INSERT;
+  case pb::SubjectModifyType::SUBJECT_MODIFY_TYPE_UPDATE:
+    return SubjectModifyType::UPDATE;
+  default:
+    return SubjectModifyType::UNSPECIFIED;
+  }
+}

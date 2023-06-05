@@ -2,22 +2,29 @@
 
 #include "cws/map.hpp"
 
-enum SubjectQueryType {
+enum SubjectModifyType {
   UNSPECIFIED = 0,
   INSERT = 1,
   UPDATE = 2,
   DELETE = 3,
-  SELECT = 4
 };
 
-struct SubjectQuery final {
-  SubjectQueryType queryType;
+struct SubjectModifyQuery final {
+  SubjectModifyType queryType;
   Coordinates coordinates;
   std::unique_ptr<Subject::Plain> subject;
 
-  SubjectQuery(SubjectQueryType type, Coordinates coordinates,
-               std::unique_ptr<Subject::Plain> && subject)
+  SubjectModifyQuery(SubjectModifyType type, Coordinates coordinates,
+                     std::unique_ptr<Subject::Plain> && subject)
       : queryType(type), coordinates(coordinates), subject(std::move(subject)) {}
+};
+
+struct SubjectSelectQuery final {
+  Coordinates coordinates;
+  Subject::Id id;
+
+public:
+  SubjectSelectQuery(Coordinates c, Subject::Id id) : coordinates(c), id(id) {}
 };
 
 /*
@@ -30,11 +37,11 @@ public:
 
   virtual SimulationMap * clone() { return new SimulationMap(*this); }
 
-  void setQuery(SubjectQuery && query);
-  const Subject::Plain * getQuery(const SubjectQuery & query) const;
+  void setModifyQuery(SubjectModifyQuery && query);
+  const Subject::Plain * selectSubject(const SubjectSelectQuery & query) const;
 
 private:
-  void setQueryInsert(SubjectQuery && query);
-  void setQueryUpdate(SubjectQuery && query);
-  void setQueryDelete(SubjectQuery && query);
+  void modifyQueryInsert(SubjectModifyQuery && query);
+  void modifyQueryUpdate(SubjectModifyQuery && query);
+  void modifyQueryDelete(SubjectModifyQuery && query);
 };

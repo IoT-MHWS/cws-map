@@ -31,11 +31,11 @@ public:
                          const cwspb::RequestDimension * request,
                          cwspb::Response * response) override {
 
-    auto status = response->mutable_status();
+    auto & status = *response->mutable_status();
 
     if (!request->has_dimension()) {
-      status->set_text("dimension is not specified");
-      status->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
+      status.set_text("dimension is not specified");
+      status.set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
       return grpc::Status::OK;
     }
 
@@ -108,67 +108,65 @@ public:
     return grpc::Status::OK;
   }
 
-  // grpc::Status GetSubject(::grpc::ServerContext * context,
-  //                         const cwspb::RequestQuerySubject * request,
-  //                         cwspb::ResponseSelectSubject * response) override {
-  //   auto map = interface.getMap();
+  grpc::Status GetSubject(::grpc::ServerContext * context,
+                          const cwspb::RequestSelectSubject * request,
+                          cwspb::ResponseSelectSubject * response) override {
+    auto & respBase = *response->mutable_base();
 
-  //   if (!verifyMapSet(map, *response->mutable_base())) {
-  //     return grpc::Status::OK;
-  //   }
+    auto map = interface.getMap();
+    if (!verifyMapCreated(map, respBase)) {
+      return grpc::Status::OK;
+    }
 
-  //   auto queryType = fromSubjectQueryType(request->query_type());
+    auto dimension = map->getDimension();
 
-  //   auto dimension = map->getDimension();
+    Coordinates coord = fromCoordinates(request->id().coordinates());
+    if (!verifyCoordinates(coord, dimension, respBase)) {
+      return grpc::Status::OK;
+    }
 
-  //   Coordinates coord = fromCoordinates(request->coordinates());
+    Subject::Id id = fromSubjectId(request->id().id());
 
-  //   if (!verifyCoordinates(coord, dimension, *response->mutable_base())) {
-  //     return grpc::Status::OK;
-  //   }
+    SubjectSelectQuery query(coord, id);
+    auto res = map->selectSubject(std::move(query));
 
-  //   SubjectQuery query(queryType, coord, fromSubjectDerived(request->subject()));
-  //   auto res = map->getQuery(std::move(query));
+    if (res == nullptr) {
+      auto status = respBase.mutable_status();
+      status->set_text("subject doesn't exist");
+      status->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
+    } else {
+      toSubjectId(*response->mutable_id(), res->getSubjectId(), coord);
+      toSubjectAny(*response->mutable_subject(), *res);
+    }
 
-  //   if (res == nullptr) {
-  //     auto respBase = response->mutable_base();
-  //     auto status = respBase->mutable_status();
-  //     status->set_text("element doesn't exist");
-  //     status->set_type(cwspb::ErrorType::ERROR_TYPE_BAD_REQUEST);
-  //   } else {
-  //     auto subject = response->mutable_derived();
-  //     toSubjectDerived(*subject, res);
-  //     auto coordinates = response->mutable_coordinates();
-  //     toCoordinates(*coordinates, coord);
-  //   }
+    return grpc::Status::OK;
+  }
 
-  //   return grpc::Status::OK;
-  // }
+  grpc::Status SetSubject(::grpc::ServerContext * context,
+                          const cwspb::RequestModifySubject * request,
+                          cwspb::Response * response) override {
 
-  // grpc::Status SetSubject(::grpc::ServerContext * context,
-  //                         const cwspb::RequestQuerySubject * request,
-  //                         cwspb::Response * response) override {
+    auto map = interface.getMap();
+    if (!verifyMapCreated(map, *response)) {
+      return grpc::Status::OK;
+    }
 
-  //   auto map = interface.getMap();
+    SubjectModifyType queryType = fromSubjectModifyType(request->modify_type());
 
-  //   if (!verifyMapSet(map, *response)) {
-  //     return grpc::Status::OK;
-  //   }
+    Subject::Id id;
+    Coordinates coordinates;
+    fromSubjectId(id, coordinates, request->id());
 
-  //   SubjectQueryType queryType = fromSubjectQueryType(request->query_type());
-  //   Coordinates coordinates = fromCoordinates(request->coordinates());
+    if (!verifyCoordinates(coordinates, map->getDimension(), *response)) {
+      return grpc::Status::OK;
+    }
 
-  //   if (!verifyCoordinates(coordinates, map->getDimension(), *response)) {
-  //     return grpc::Status::OK;
-  //   }
+    auto subject = fromSubjectAny(request->subject());
+    interface.addQuerySet(std::make_unique<SubjectModifyQuery>(queryType, coordinates,
+                                                               std::move(subject)));
 
-  //   auto subject = fromSubjectDerived(request->subject());
-
-  //   interface.addQuerySet(
-  //       std::make_unique<SubjectQuery>(queryType, coordinates, std::move(subject)));
-
-  //   return grpc::Status::OK;
-  // }
+    return grpc::Status::OK;
+  }
 
 private:
   bool verifyMapCreated(const std::shared_ptr<const Map> & map,
