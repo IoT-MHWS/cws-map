@@ -59,7 +59,7 @@ public:
 };
 
 template<typename T>
-struct SubjectCallbackQuery final : public SubjectCallbackQ {
+struct SubjectCallbackQuery : public SubjectCallbackQ {
   T data;
 
 public:

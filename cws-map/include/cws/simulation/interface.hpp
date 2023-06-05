@@ -14,7 +14,7 @@ class SimulationInterface final {
   friend SimulationMaster;
 
   template<class T>
-  using QueueUP = std::queue<std::unique_ptr<T>>;
+  using Queue = std::queue<T>;
 
 private:
   SimulationMaster * master;
@@ -23,13 +23,13 @@ private:
     SimulationStateIn state;
     mutable std::mutex stateMutex;
 
-    QueueUP<SubjectModifyQuery> subQueries;
+    Queue<SubjectModifyQuery> subQueries;
     mutable std::mutex subQMutex;
 
-    QueueUP<AirInsertQuery> airQueries;
+    Queue<AirInsertQuery> airQueries;
     mutable std::mutex airQMutex;
 
-    QueueUP<SubjectCallbackQ> callbQueries;
+    Queue<std::unique_ptr<SubjectCallbackQ>> callbQueries;
     mutable std::mutex callbMutex;
 
     Optional<Dimension> dimension;// if set then new map creation request
@@ -54,8 +54,8 @@ public:
 
   std::shared_ptr<const SimulationMap> getMap() const;
 
-  void addModifyQuery(std::unique_ptr<SubjectModifyQuery> && query);
-  void addModifyQuery(std::unique_ptr<AirInsertQuery> && query);
+  void addModifyQuery(SubjectModifyQuery && query);
+  void addModifyQuery(AirInsertQuery && query);
   void addModifyQuery(std::unique_ptr<SubjectCallbackQ> && query);
 
 private:
@@ -63,13 +63,13 @@ private:
 
   Optional<Dimension> masterGetDimension();
 
-  std::pair<std::unique_lock<std::mutex> &&, QueueUP<SubjectModifyQuery> &>
+  std::pair<std::unique_lock<std::mutex> &&, Queue<SubjectModifyQuery> &>
   masterAccessSubjectMQs();
 
-  std::pair<std::unique_lock<std::mutex> &&, QueueUP<AirInsertQuery> &>
+  std::pair<std::unique_lock<std::mutex> &&, Queue<AirInsertQuery> &>
   masterAccessAirMQs();
 
-  std::pair<std::unique_lock<std::mutex> &&, QueueUP<SubjectCallbackQ> &>
+  std::pair<std::unique_lock<std::mutex> &&, Queue<std::unique_ptr<SubjectCallbackQ>> &>
   masterAccessCallbackMQs();
 
   void masterSet(const SimulationState & state, const SimulationMap * map);

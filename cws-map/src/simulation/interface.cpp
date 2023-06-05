@@ -1,6 +1,9 @@
 #include "cws/simulation/interface.hpp"
 #include "cws/simulation/simulation.hpp"
 
+template<typename T>
+using Queue = SimulationInterface::Queue<T>;
+
 void SimulationInterface::run() { master->run(); }
 
 void SimulationInterface::exit() { master->exit(); }
@@ -25,12 +28,12 @@ std::shared_ptr<const SimulationMap> SimulationInterface::getMap() const {
   return out.map;
 }
 
-void SimulationInterface::addModifyQuery(std::unique_ptr<SubjectModifyQuery> && query) {
+void SimulationInterface::addModifyQuery(SubjectModifyQuery && query) {
   std::unique_lock lock(in.subQMutex);
   in.subQueries.push(std::move(query));
 }
 
-void SimulationInterface::addModifyQuery(std::unique_ptr<AirInsertQuery> && query) {
+void SimulationInterface::addModifyQuery(AirInsertQuery && query) {
   std::unique_lock lock(in.airQMutex);
   in.airQueries.push(std::move(query));
 }
@@ -75,22 +78,19 @@ void SimulationInterface::masterSet(const SimulationState & state) {
   this->out.state = state;
 }
 
-std::pair<std::unique_lock<std::mutex> &&,
-          SimulationInterface::QueueUP<SubjectModifyQuery> &>
+std::pair<std::unique_lock<std::mutex> &&, Queue<SubjectModifyQuery> &>
 SimulationInterface::masterAccessSubjectMQs() {
   std::unique_lock lock(in.subQMutex);
   return std::make_pair(std::move(lock), std::ref(in.subQueries));
 }
 
-std::pair<std::unique_lock<std::mutex> &&,
-          SimulationInterface::QueueUP<AirInsertQuery> &>
+std::pair<std::unique_lock<std::mutex> &&, Queue<AirInsertQuery> &>
 SimulationInterface::masterAccessAirMQs() {
   std::unique_lock lock(in.airQMutex);
   return std::make_pair(std::move(lock), std::ref(in.airQueries));
 }
 
-std::pair<std::unique_lock<std::mutex> &&,
-          SimulationInterface::QueueUP<SubjectCallbackQ> &>
+std::pair<std::unique_lock<std::mutex> &&, Queue<std::unique_ptr<SubjectCallbackQ>> &>
 SimulationInterface::masterAccessCallbackMQs() {
   std::unique_lock lock(in.callbMutex);
   return std::make_pair(std::move(lock), std::ref(in.callbQueries));

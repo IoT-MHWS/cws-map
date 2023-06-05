@@ -162,8 +162,8 @@ public:
     }
 
     auto subject = fromSubjectAny(request->subject());
-    interface.addModifyQuery(std::make_unique<SubjectModifyQuery>(
-        queryType, coordinates, std::move(subject)));
+    interface.addModifyQuery(
+        SubjectModifyQuery(queryType, coordinates, std::move(subject)));
 
     return grpc::Status::OK;
   }
@@ -218,8 +218,7 @@ public:
     auto air = fromAirPlain(request->air());
     std::cout << air->getId() << std::endl;
 
-    interface.addModifyQuery(
-        std::make_unique<AirInsertQuery>(coordinates, std::move(air)));
+    interface.addModifyQuery(AirInsertQuery(coordinates, std::move(air)));
 
     return grpc::Status::OK;
   }

@@ -146,8 +146,7 @@ void SimulationMaster::updateMap() {
     auto [qlock, subMQs] = interface.masterAccessSubjectMQs();
 
     while (!subMQs.empty()) {
-      const auto & subMQ = subMQs.front();
-      nextMap->modify(std::move(*subMQ));
+      nextMap->modify(std::move(subMQs.front()));
       subMQs.pop();
 #ifndef NDEBUG
       std::cout << "master: subject query processed." << std::endl;
@@ -159,8 +158,7 @@ void SimulationMaster::updateMap() {
     auto [qlock, airMQs] = interface.masterAccessAirMQs();
 
     while (!airMQs.empty()) {
-      const auto & airMQ = airMQs.front();
-      nextMap->modify(std::move(*airMQ));
+      nextMap->modify(std::move(airMQs.front()));
       airMQs.pop();
 #ifndef NDEBUG
       std::cout << "master: air query processed." << std::endl;
@@ -171,8 +169,7 @@ void SimulationMaster::updateMap() {
     auto [qlock, callbMQs] = interface.masterAccessCallbackMQs();
 
     while (!callbMQs.empty()) {
-      const auto & callbMQ = callbMQs.front();
-      nextMap->modify(std::move(*callbMQ));
+      nextMap->modify(std::move(*callbMQs.front()));
       callbMQs.pop();
 #ifndef NDEBUG
       std::cout << "master: callback query processed." << std::endl;
