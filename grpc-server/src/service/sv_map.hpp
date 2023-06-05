@@ -1,9 +1,9 @@
 #pragma once
 
 #include "converters.hpp"
-#include "service/verify.hpp"
 #include "cws/simulation/interface.hpp"
 #include "cwspb/service/sv_map.grpc.pb.h"
+#include "service/verify.hpp"
 #include <grpcpp/support/status.h>
 
 class MapService final : public cwspb::MapService::Service {
@@ -162,8 +162,8 @@ public:
     }
 
     auto subject = fromSubjectAny(request->subject());
-    interface.addModifyQuery(std::make_unique<SubjectModifyQuery>(queryType, coordinates,
-                                                               std::move(subject)));
+    interface.addModifyQuery(std::make_unique<SubjectModifyQuery>(
+        queryType, coordinates, std::move(subject)));
 
     return grpc::Status::OK;
   }

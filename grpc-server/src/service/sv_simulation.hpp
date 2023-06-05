@@ -1,9 +1,9 @@
 #pragma once
 
 #include "converters.hpp"
-#include "service/verify.hpp"
 #include "cws/simulation/interface.hpp"
 #include "cwspb/service/sv_simulation.grpc.pb.h"
+#include "service/verify.hpp"
 #include <grpcpp/support/status.h>
 
 class SimulationService final : public cwspb::SimulationService::Service {

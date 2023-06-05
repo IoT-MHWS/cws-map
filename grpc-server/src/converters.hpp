@@ -71,8 +71,7 @@ std::unique_ptr<Subject::Plain> fromSubjectAny(const cwspb::subject::Any & in);
 SubjectModifyType fromSubjectModifyType(cwspb::SubjectModifyType type);
 
 Air::Id fromAirId(const cwspb::air::Id & id);
-void fromAirId(Air::Id & outId, Coordinates & outC,
-                   const cwspb::AirId & id);
+void fromAirId(Air::Id & outId, Coordinates & outC, const cwspb::AirId & id);
 std::unique_ptr<Air::Plain> fromAirPlain(const cwspb::air::Plain & in);
 
 std::unique_ptr<Network::Packet> fromPacket(const cwspb::network::Packet & in);

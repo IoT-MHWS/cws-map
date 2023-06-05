@@ -23,8 +23,7 @@ public:
       : Physical(std::move(base)), id_(id), heatTransferCoef_(heatTransferCoef) {}
 
   Plain(Physical && base, int idx, double heatTransferCoef)
-      : Plain(std::move(base), Id{.type = Type::PLAIN, .idx = idx},
-              heatTransferCoef) {}
+      : Plain(std::move(base), Id{.type = Type::PLAIN, .idx = idx}, heatTransferCoef) {}
 
   virtual Plain * clone() const { return new Plain(*this); }
 
