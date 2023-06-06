@@ -194,7 +194,7 @@ void toSubject(pb::subject::TurnableLightEmitter & out,
 void toSubject(pb::subject::BaseCamera & out, const Subject::BaseCamera & in) {
   toSubject(*out.mutable_base(), in);
   out.set_power(in.getPower());
-  out.set_power(in.getPowerThreshold());
+  out.set_power_threshold(in.getPowerThreshold());
 }
 
 void toSubject(pb::subject::InfraredCamera & out, const Subject::InfraredCamera & in) {
