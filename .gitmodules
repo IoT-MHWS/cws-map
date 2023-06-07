@@ -1,3 +1,0 @@
-[submodule "proto"]
-	path = common/proto
-	url = git@github.com:IoT-MHWS/proto.git
