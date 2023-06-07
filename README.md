@@ -1,5 +1,10 @@
 # cws-map
+
 Coworking space map
+
+## Add dependencies
+
+* Add proto files to `/common/proto` directory. `conan create` doesn't handle symlinks, but `conan install` could be done.
 
 ## Build and install dependencies
 
