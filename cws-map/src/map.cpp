@@ -29,6 +29,8 @@ void Map::next(const Map & curMap) {
   layers.networkWireless.clearNetwork();
   layers.networkWireless.collectTransmittableContainers(layers.subjectLayer);
   layers.networkWireless.updateNetwork(layers.obstructionLayer);
+
+  layers.subjectLayer.clearNetworkBuffers();
   layers.subjectLayer.receiveContainers(layers.networkWireless);
   // like cameras and so on
   layers.subjectLayer.setupSubjects(layers.airLayer, layers.obstructionLayer,

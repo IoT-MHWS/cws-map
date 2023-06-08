@@ -32,7 +32,7 @@ void MapLayerSubject::nextTemperature() {
   Coordinates c;
   for (c.x = 0; c.x < dim.width; ++c.x) {
     for (c.y = 0; c.y < dim.height; ++c.y) {
-      auto & cellSubs = this->accessCell(c).accessElement().accessSubjectList();
+      auto & cellSubs = this->accessSubjectList(c);
       for (auto & sub : cellSubs) {
         if (auto tempSub = dynamic_cast<ExtTempSource *>(sub.get())) {
           tempSub->nextTemperature();
@@ -84,7 +84,7 @@ void MapLayerSubject::setupSubjects(const MapLayerAir & airLayer,
   Coordinates c;
   for (c.x = 0; c.x < dim.width; ++c.x) {
     for (c.y = 0; c.y < dim.height; ++c.y) {
-      auto & cellSubs = this->accessCell(c).accessElement().accessSubjectList();
+      auto & cellSubs = this->accessSubjectList(c);
       for (auto & sub : cellSubs) {
         setupSubject(*sub, c, airLayer, obstructionLayer, illuminationLayer);
       }
@@ -98,11 +98,30 @@ void MapLayerSubject::receiveContainers(const MapLayerNetwork & networkLayer) {
   Coordinates c;
   for (c.x = 0; c.x < dim.width; ++c.x) {
     for (c.y = 0; c.y < dim.height; ++c.y) {
-      auto & cellSubs = this->accessCell(c).accessElement().accessSubjectList();
+      auto & cellSubs = this->accessSubjectList(c);
       for (auto & sub : cellSubs) {
         if (auto netSub = dynamic_cast<Subject::ExtReceiver *>(sub.get())) {
           netSub->placeNetworkContainers(networkLayer.getReceivableContainers(c),
                                          networkLayer.getNetworkType());
+        }
+      }
+    }
+  }
+}
+
+void MapLayerSubject::clearNetworkBuffers() {
+  Dimension dim = getDimension();
+
+  Coordinates c;
+  for (c.x = 0; c.x < dim.width; ++c.x) {
+    for (c.y = 0; c.y < dim.height; ++c.y) {
+      auto & cellSubs = this->accessSubjectList(c);
+      for (auto & sub : cellSubs) {
+        if (auto trans = dynamic_cast<Subject::ExtTransmitter *>(sub.get())) {
+          trans->clearTransmitBuffer();
+        }
+        if (auto receiv = dynamic_cast<Subject::ExtReceiver *>(sub.get())) {
+          receiv->clearReceiveBuffer();
         }
       }
     }

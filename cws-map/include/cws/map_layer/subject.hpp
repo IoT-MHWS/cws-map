@@ -33,6 +33,7 @@ public:
                      const MapLayerIllumination & illuminationLayer);
 
   void receiveContainers(const MapLayerNetwork & networkLayer);
+  void clearNetworkBuffers();
 
 private:
   void setupSubject(Subject::Plain & subject, Coordinates c,
