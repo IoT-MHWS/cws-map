@@ -16,6 +16,24 @@ protected:
 public:
   NetworkDevice(Plain && plain, Network::Type networkType) : Plain(std::move(plain)) {}
 
+  NetworkDevice(NetworkDevice && obj) noexcept : Plain(std::move(obj)) {
+    this->transmitPackets_ = std::move(obj.transmitPackets_);
+    this->receivedPackets_ = std::move(obj.receivedPackets_);
+  }
+
+  NetworkDevice(const NetworkDevice & obj) noexcept : Plain(obj) {
+    transmitPackets_.clear();
+    for (const auto & e : obj.transmitPackets_) {
+      transmitPackets_.push_back(std::unique_ptr<Network::Packet>(e->clone()));
+    }
+    receivedPackets_.clear();
+    for (const auto & e : obj.receivedPackets_) {
+      receivedPackets_.push_back(std::unique_ptr<Network::Packet>(e->clone()));
+    }
+  }
+
+  NetworkDevice * clone() const override = 0;
+
   virtual void transmitPackets(
       std::list<std::unique_ptr<Network::Packet>> && containerList) override;
 
@@ -48,6 +66,10 @@ public:
   int getTransmitPower() const { return transmitPower_; }
 
   int getReceiveThresh() const { return receiveThresh_; }
+
+  WirelessNetworkDevice * clone() const override {
+    return new WirelessNetworkDevice(*this);
+  }
 
   virtual std::list<std::unique_ptr<Network::Container>>
   collectNetworkContainers(Network::Type type) const override;
