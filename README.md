@@ -2,11 +2,11 @@
 
 Coworking space map
 
-## Add dependencies
+## Before build
 
-* Add proto files to `/common/proto` directory. `conan create` doesn't handle symlinks, but `conan install` could be done.
+* Add proto repository in `/common/proto` directory. `conan create` doesn't handle symlinks, but `conan install` could be done.
 
-## Build and install dependencies
+## Build and install
 
 Install `>=conan-2.0.0`.
 
