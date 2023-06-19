@@ -81,7 +81,9 @@ Create snapshot of this image to use it to compile application:
 docker commit cws-map-builder-debug cws-map-builder:debug-latest
 ```
 
-Use this image to compile application. Can be done the same with mounts and running commands like in `Dockerfile.debug` or by creating a new image. Commands in container if using volumes:
+Use this image to compile application. Can be done the same with mounts and running commands like in `Dockerfile.debug` or by creating a new image.
+
+First of all, copy necessary dependencies from first section. Then run. Commands in container if using volumes:
 
 ```bash
 conan install . --settings=build_type=Debug # should have all libraries installed

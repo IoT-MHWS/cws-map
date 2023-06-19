@@ -1,6 +1,8 @@
 FROM zubrailx/cws-map-builder:debug-latest
 
 COPY . .
+RUN rm -f common/proto
+RUN git clone https://github.com/IoT-MHWS/proto common/proto
 RUN conan install . --settings=build_type=Debug # should have all libraries installed
 RUN cmake --preset conan-debug
 RUN cmake --build --preset conan-debug -j8
