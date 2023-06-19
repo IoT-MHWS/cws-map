@@ -10,4 +10,4 @@ RUN conan profile detect
 RUN mkdir -p /app
 WORKDIR /app
 
-# Run `conan install` manually not to invalidate layer because of conanfile.py changes
+# Use this image to run `conan install` to create cws-map-builder images

@@ -1,4 +1,4 @@
-FROM zubrailx/cws-map-install:debug-latest
+FROM zubrailx/cws-map-builder:debug-latest
 
 COPY . .
 RUN conan install . --build=missing --settings=build_type=Debug
