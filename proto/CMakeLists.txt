@@ -20,6 +20,9 @@ file(MAKE_DIRECTORY ${PROTOC_OUT_DIR})
 
 # root of protobuf project
 set(CWS_PROTO_LOC ${CMAKE_CURRENT_SOURCE_DIR}/../common/proto)
+if (NOT EXISTS ${CWS_PROTO_LOC})
+  message(FATAL_ERROR "${CWS_PROTO_LOC} with proto files is not present")
+endif()
 
 file(GLOB_RECURSE PROTO_FILES CONFIGURE_DEPENDS
   ${CWS_PROTO_LOC}/cwspb/*.proto
