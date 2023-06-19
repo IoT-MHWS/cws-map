@@ -39,20 +39,12 @@ Check executables in `build` folder.
 
 ## Docker
 
+### Using image from dockerhub
+
 Example using debug version. Create a new image from `Dockerfile.debug`:
 
 ```bash
-docker build -t cws-map-app:build-latest -f Dockerfile.debug .
-```
-
-### Using image from dockerhub
-
-```bash
-docker run -d \
-    -it \
-    --name cws-map-dev \
-    --mount type=bind,source="$(pwd)",target=/app \
-    cws-map-builder:latest
+docker build -t cws-map-app:debug-latest -f Dockerfile.debug .
 ```
 
 ### Creating images step by step locally
