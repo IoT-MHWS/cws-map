@@ -39,13 +39,13 @@ Check executables in `build` folder.
 
 ## Docker
 
-Build image:
+Example using debug version. Create a new image from `Dockerfile.debug`:
 
 ```bash
-docker build -t cws-map-builder:latest .
+docker build -t cws-map-app:build-latest -f Dockerfile.debug .
 ```
 
-Start container with bind-mounted directory:
+### Using image from dockerhub
 
 ```bash
 docker run -d \
@@ -55,13 +55,47 @@ docker run -d \
     cws-map-builder:latest
 ```
 
-Now you can attach to it:
+### Creating images step by step locally
+
+Create base image
 
 ```bash
-docker exec -it cws-map-dev bash
+docker build -t cws-map-base:latest -f Dockerfile.base .
 ```
 
-Install dependencies and build program. I hope you won't accidentally remove container.
+Create image with installed libraries without using builder image from dockerhub. 
+
+Run docker container:
+
+```bash
+docker run -d \
+    -it \
+    --name cws-map-builder-debug \
+    --mount type=bind,source="$(pwd)",target=/app \
+    cws-map-base:latest
+```
+
+Attach to running container and compile libraries using `conanfile.py` and `conan.lock`:
+
+```bash
+docker exec -t cws-map-builder-debug bash
+# In container:
+conan install . --build=missing --settings=build_type=Debug
+```
+
+Create snapshot of this image to use it to compile application:
+
+```bash
+docker commit cws-map-builder-debug cws-map-builder:debug-latest
+```
+
+Use this image to compile application. Can be done the same with mounts and running commands like in `Dockerfile.debug` or by creating a new image. Commands in container if using volumes:
+
+```bash
+conan install . --settings=build_type=Debug # should have all libraries installed
+cmake --preset conan-debug # generate cmakefiles
+cmake --build --preset conan-debug -j8 # build program
+```
 
 ## CMake targets
 

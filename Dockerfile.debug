@@ -1,6 +1,6 @@
 FROM zubrailx/cws-map-builder:debug-latest
 
 COPY . .
-RUN conan install . --build=missing --settings=build_type=Debug
+RUN conan install . --settings=build_type=Debug # should have all libraries installed
 RUN cmake --preset conan-debug
 RUN cmake --build --preset conan-debug -j8
