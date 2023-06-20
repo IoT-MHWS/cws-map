@@ -39,12 +39,18 @@ Check executables in `build` folder.
 
 ## Docker
 
-### Using image from dockerhub
+### Using runner image from dockerhub
+
+```bash
+docker run --rm zubrailx/cws-map-runner:debug-latest
+```
+
+### Using builder image from dockerhub to build runner
 
 Example using debug version. Create a new image from `Dockerfile.debug`:
 
 ```bash
-docker build -t cws-map-app:debug-latest -f Dockerfile.debug .
+docker build -t cws-map-runner:debug-latest -f Dockerfile.runner-debug .
 ```
 
 ### Creating images step by step locally
