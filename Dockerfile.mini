@@ -1,0 +1,18 @@
+FROM zubrailx/cws-map-builder:debug-latest AS builder
+
+COPY . .
+RUN rm -f common/proto
+RUN git clone https://github.com/IoT-MHWS/proto common/proto
+RUN conan install . --settings=build_type=Debug # should have all libraries installed
+RUN cmake --preset conan-debug
+RUN cmake --build --preset conan-debug
+
+FROM ubuntu:23.10
+
+WORKDIR /app
+
+COPY --from=builder /app/build/Debug/grpc-server/src/grpc_server grpc_server
+
+EXPOSE 8000
+CMD ["0.0.0.0", "8000"]
+ENTRYPOINT ["/app/grpc_server"]
