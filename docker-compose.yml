@@ -1,0 +1,8 @@
+services:
+  map:
+    build:
+      dockerfile: Dockerfile.mini
+      context: .
+    image: zubrailx/cws-map-runner:debug-latest
+    ports:
+      - 8000:8000
