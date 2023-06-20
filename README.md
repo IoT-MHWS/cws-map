@@ -41,8 +41,16 @@ Check executables in `build` folder.
 
 ### Using runner image from dockerhub
 
+Docker:
+
 ```bash
-docker run --rm zubrailx/cws-map-runner:debug-latest
+docker run --rm -p 8000:8000 zubrailx/cws-map-runner:debug-latest
+```
+
+Docker-compose:
+
+```bash
+docker-compose up --no-build
 ```
 
 ### Using builder image from dockerhub to build runner
